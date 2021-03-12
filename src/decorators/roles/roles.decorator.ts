@@ -1,7 +1,7 @@
 import { CustomDecorator, SetMetadata } from '@nestjs/common'
 
 /**
- * Decorator that is used to set all the roles that can access some route
+ * Decorator that is used to set all the roles that is allowed access some route
  * @param roles stores the roles values
  */
 export const Roles = (
