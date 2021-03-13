@@ -5,7 +5,7 @@ import { CustomDecorator, SetMetadata } from '@nestjs/common'
  * @param roles stores the roles values
  */
 export const Roles = (
-  ...roles: string[]
+  ...roles: ('user' | 'admin')[]
 ): ((
   metadataKey: string,
   metadataValue: string[]
