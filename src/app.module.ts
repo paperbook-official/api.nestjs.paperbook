@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common'
-
-import { AppService } from './app.service'
-
-import { AppController } from './app.controller'
+import { ConfigModule } from '@nestjs/config'
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService]
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env']
+    })
+  ]
 })
 export class AppModule {}
