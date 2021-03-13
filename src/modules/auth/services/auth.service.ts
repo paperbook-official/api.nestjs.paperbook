@@ -2,6 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 
+import { UserEntity } from 'src/modules/user/entities/user.entity'
+
 import { LoginPayload } from '../models/login.payload'
 import { TokenProxy } from '../models/token.proxy'
 
