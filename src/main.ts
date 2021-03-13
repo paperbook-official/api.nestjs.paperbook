@@ -10,8 +10,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService)
 
-  console.log(configService.get<string>('SWAGGER_DESCRIPTION'))
-
   setupPipes(app)
   setupSwagger(app, configService)
 
