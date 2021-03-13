@@ -9,6 +9,8 @@ import { Reflector } from '@nestjs/core'
 import { RequestUser } from 'src/utils/type.shared'
 
 /**
+ * The app's main roles guard class
+ *
  * Guard that protects some route testing the roles saved in the metadata
  */
 export class RolesGuard implements CanActivate {
