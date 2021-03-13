@@ -6,7 +6,7 @@ import { DefaultValidationMessages } from 'src/models/default-validation-message
 /**
  * The app's main login payload class
  *
- * Class that handles the payload sent by the user to execute the login
+ * Class that handles the payload sent by the user to perform the login
  */
 export class LoginPayload {
   @ApiProperty()
