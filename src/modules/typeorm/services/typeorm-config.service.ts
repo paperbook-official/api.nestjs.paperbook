@@ -4,10 +4,19 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm'
 
 import * as path from 'path'
 
+/**
+ * The app's main typeorm config service class
+ *
+ * Class that deals with the typeorm setup
+ */
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   public constructor(private readonly configService: ConfigService) {}
 
+  /**
+   * Method to create the typeorm settings
+   * @returns an objects with the options
+   */
   public createTypeOrmOptions(): TypeOrmModuleOptions {
     const entitiesPath = path.resolve(
       path.dirname(require.main.filename),
