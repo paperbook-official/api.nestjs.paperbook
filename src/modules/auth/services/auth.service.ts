@@ -39,7 +39,7 @@ export class AuthService {
    * saved
    * @param loginPayload stores the data that will be tested
    */
-  public async authenticate(loginPayload: LoginPayload): Promise<RequestUser> {
+  public async authenticate(loginPayload: LoginPayload): Promise<UserEntity> {
     const { email, password } = loginPayload
 
     const entity = await UserEntity.findOne({ email })
@@ -56,10 +56,6 @@ export class AuthService {
         'You have no permission to access those sources'
       )
 
-    return {
-      email,
-      id: entity.id,
-      roles: entity.roles
-    }
+    return entity
   }
 }
