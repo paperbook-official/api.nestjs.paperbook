@@ -10,7 +10,7 @@ import {
  */
 export abstract class BaseEntity extends BaseEntityTypeOrm {
   @PrimaryGeneratedColumn()
-  public id: number
+  public id: number | string
 
   @CreateDateColumn()
   public createdAt: Date
