@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsOptional, IsString } from 'class-validator'
-import { DefaultValidationMessages } from 'src/models/default-validation-messages'
+import { IsOptional, IsPhoneNumber, IsString } from 'class-validator'
+import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
  * The app's main update user payload class
@@ -13,4 +13,22 @@ export class UpdateUserPaylaod {
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
   public name: string
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString({ message: DefaultValidationMessages.IsString })
+  public lastName: string
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString({ message: DefaultValidationMessages.IsString })
+  public cpf: string
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString({ message: DefaultValidationMessages.IsString })
+  @IsPhoneNumber('BR', {
+    message: 'It is required to send a valid phone number'
+  })
+  public phone: string
 }

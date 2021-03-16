@@ -1,7 +1,16 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsDefined, IsEmail, IsString, MinLength } from 'class-validator'
-import { DefaultValidationMessages } from 'src/models/default-validation-messages'
+import {
+  IsDefined,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  MinLength
+} from 'class-validator'
+import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main create user payload class
@@ -15,6 +24,11 @@ export class CreateUserPayload {
   public name: string
 
   @ApiProperty()
+  @IsDefined({ message: 'It is required to send the last name.' })
+  @IsString({ message: DefaultValidationMessages.IsString })
+  public lastName: string
+
+  @ApiProperty()
   @IsDefined({ message: 'It is required to send the email.' })
   @IsString({ message: DefaultValidationMessages.IsString })
   @IsEmail({}, { message: DefaultValidationMessages.IsEmail })
@@ -23,6 +37,26 @@ export class CreateUserPayload {
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the password.' })
   @IsString({ message: DefaultValidationMessages.IsString })
-  @MinLength(6, { message: 'The password mut have, at least, 6 characters.' })
+  @MinLength(6, { message: 'The password must have, at least, 6 characters.' })
   public password: string
+
+  @ApiProperty()
+  @IsDefined({ message: 'It is required to send the cpf.' })
+  @IsString({ message: DefaultValidationMessages.IsString })
+  public cpf: string
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsEnum(RolesEnum, {
+    message: 'It is required to send "user", "admin" or "seller"'
+  })
+  public roles?: string
+
+  @ApiProperty()
+  @IsDefined({ message: 'It is required to send the cpf.' })
+  @IsString({ message: DefaultValidationMessages.IsString })
+  @IsPhoneNumber('BR', {
+    message: 'It is required to send a valid phone number'
+  })
+  public phone: string
 }

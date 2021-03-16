@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import { Column, Entity } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base-entity'
@@ -19,6 +20,7 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
     Object.assign(this, partialEntity)
   }
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
     length: 30,
@@ -26,6 +28,7 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   })
   public name: string
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
     length: 60,
@@ -33,6 +36,7 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   })
   public lastName: string
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
     length: 50,
@@ -41,6 +45,7 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   })
   public email: string
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
     length: 100,
@@ -48,6 +53,7 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   })
   public password: string
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
     length: 11,
@@ -55,6 +61,7 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   })
   public cpf: string
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
     length: 12,
@@ -62,6 +69,7 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   })
   public roles: RolesEnum
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
     length: 11,
