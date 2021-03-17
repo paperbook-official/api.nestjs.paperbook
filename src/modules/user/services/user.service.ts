@@ -93,7 +93,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   }
 
   /**
-   * Method that can update the user data
+   * Method that can update some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
@@ -117,6 +117,28 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
 
     await UserEntity.update({ id: userId }, updatedUserPayload)
+  }
+
+  /**
+   * Method can delete some user
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  public async delete(userId: number, requestUser: RequestUser): Promise<void> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${userId}" does not exist or is disabled`
+      )
+    }
+
+    if (!UserService.hasPermissions(entity, requestUser))
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+
+    await UserEntity.delete({ id: userId })
   }
 
   //#region Utils

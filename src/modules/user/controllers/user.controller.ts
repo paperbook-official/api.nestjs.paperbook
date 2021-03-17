@@ -2,6 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -183,5 +184,20 @@ export class UserController {
     @Body() updatedUserPayload: UpdateUserPaylaod
   ): Promise<void> {
     await this.userService.update(userId, requestUser, updatedUserPayload)
+  }
+
+  /**
+   * Method that is called when the user access the "/user/:id" route with "DELETE" method
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Delete(':id')
+  public async delete(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.userService.delete(userId, requestUser)
   }
 }
