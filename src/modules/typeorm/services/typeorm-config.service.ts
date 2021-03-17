@@ -36,7 +36,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       case 'postgres':
         return {
           type: 'postgres',
-          // url: this.configService.get<string>('DB_URL'),
           host: this.configService.get<string>('DB_HOST'),
           port: this.configService.get<number>('DB_PORT'),
           database: this.configService.get<string>('DB_DATABASE'),
@@ -44,8 +43,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
           password: this.configService.get<string>('DB_PASSWORD'),
           synchronize: this.configService.get<boolean>('DB_SYNCHRONIZE'),
           migrationsRun: this.configService.get<boolean>('DB_MIGRATIONS_RUN'),
-          entities: [entitiesPath],
-          ssl: true
+          entities: [entitiesPath]
         }
     }
   }
