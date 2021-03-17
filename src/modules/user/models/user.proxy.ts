@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { UserEntity } from '../entities/user.entity'
 
@@ -20,6 +20,9 @@ export class UserProxy {
   public updatedAt: Date
 
   @ApiProperty()
+  public isActive: boolean
+
+  @ApiProperty()
   public name: string
 
   @ApiProperty()
@@ -28,19 +31,20 @@ export class UserProxy {
   @ApiProperty()
   public email: string
 
-  @ApiProperty()
-  public cpf: string
+  @ApiPropertyOptional()
+  public cpf?: string
 
   @ApiProperty()
   public permissions: RolesEnum
 
-  @ApiProperty()
-  public phone: string
+  @ApiPropertyOptional()
+  public phone?: string
 
   public constructor(userEntity: UserEntity) {
     this.id = +userEntity.id
     this.createdAt = userEntity.createdAt
     this.updatedAt = userEntity.updatedAt
+    this.isActive = userEntity.isActive
     this.name = userEntity.name
     this.lastName = userEntity.lastName
     this.email = userEntity.email

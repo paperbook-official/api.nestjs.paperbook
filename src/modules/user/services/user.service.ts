@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException
@@ -11,6 +12,7 @@ import { Repository } from 'typeorm'
 import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
+import { UpdateUserPaylaod } from '../models/update-user.payload'
 
 import { encryptPassword } from 'src/utils/password'
 import { RequestUser } from 'src/utils/type.shared'
@@ -50,7 +52,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can get one user entity
-   * @param userId stores the user id
+   * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
@@ -60,22 +62,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     requestUser: RequestUser,
     crudRequest?: CrudRequest
   ): Promise<UserEntity> {
-    let entity: UserEntity
-
-    if (!crudRequest) {
-      entity = await UserEntity.findOne({ id: userId })
-    } else {
-      crudRequest.parsed.search = {
-        $and: [
-          {
-            isActive: true
-          },
-          ...crudRequest.parsed.search.$and
-        ]
-      }
-
-      entity = await super.getOne(crudRequest)
-    }
+    const entity = crudRequest
+      ? await super.getOne(crudRequest).catch(() => undefined)
+      : await UserEntity.findOne({ id: userId })
 
     if (!entity || !entity.isActive) {
       throw new NotFoundException(
@@ -89,6 +78,114 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
 
     return entity
+  }
+
+  /**
+   * Method that can update some user
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   * @param updatedUserPayload stores the new user data
+   */
+  public async update(
+    userId: number,
+    requestUser: RequestUser,
+    updatedUserPayload: UpdateUserPaylaod
+  ): Promise<void> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${userId}" does not exist or is disabled`
+      )
+    }
+
+    if (!UserService.hasPermissions(entity, requestUser))
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+
+    await UserEntity.update({ id: userId }, updatedUserPayload)
+  }
+
+  /**
+   * Method can delete some user
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  public async delete(userId: number, requestUser: RequestUser): Promise<void> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${userId}" does not exist or is disabled`
+      )
+    }
+
+    if (!UserService.hasPermissions(entity, requestUser))
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+
+    await UserEntity.delete({ id: userId })
+  }
+
+  /**
+   * Method that can disable some user
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  public async disable(
+    userId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity) {
+      throw new NotFoundException(
+        `The entity identified by "${userId}" does not exist or is disabled`
+      )
+    }
+
+    if (!entity.isActive) {
+      throw new ConflictException(
+        `The entity identified by "${userId}" is already disabled`
+      )
+    }
+
+    if (!UserService.hasPermissions(entity, requestUser))
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+
+    await UserEntity.update({ id: userId }, { isActive: false })
+  }
+
+  /**
+   * Method that can enable some user
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  public async enable(userId: number, requestUser: RequestUser): Promise<void> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity) {
+      throw new NotFoundException(
+        `The entity identified by "${userId}" does not exist or is disabled`
+      )
+    }
+
+    if (entity.isActive) {
+      throw new ConflictException(
+        `The entity identified by "${userId}" is already enabled`
+      )
+    }
+
+    if (!UserService.hasPermissions(entity, requestUser))
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+
+    await UserEntity.update({ id: userId }, { isActive: true })
   }
 
   //#region Utils

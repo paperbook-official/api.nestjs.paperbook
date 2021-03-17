@@ -31,7 +31,10 @@ export abstract class BaseEntity extends BaseEntityTypeOrm {
    * @returns true if all the ids were found, otherwise false
    */
   public static async exists(...ids: (number | string)[]): Promise<boolean> {
-    const entities = await this.findByIds(ids)
+    const entities = await this.findByIds(ids).then(entities =>
+      entities.filter(entity => entity.isActive)
+    )
+
     return entities && entities.length !== ids.length
   }
 }
