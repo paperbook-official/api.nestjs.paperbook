@@ -36,7 +36,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       case 'postgres':
         return {
           type: 'postgres',
-          url: this.configService.get<string>('DB_URL'),
+          // url: this.configService.get<string>('DB_URL'),
           host: this.configService.get<string>('DB_HOST'),
           port: this.configService.get<number>('DB_PORT'),
           database: this.configService.get<string>('DB_DATABASE'),
