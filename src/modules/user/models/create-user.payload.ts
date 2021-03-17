@@ -4,6 +4,7 @@ import {
   IsDefined,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
@@ -21,6 +22,7 @@ export class CreateUserPayload {
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the name.' })
   @IsString({ message: DefaultValidationMessages.IsString })
+  @IsNotEmpty({ message: DefaultValidationMessages.IsNotEmpty })
   public name: string
 
   @ApiProperty()
@@ -50,7 +52,7 @@ export class CreateUserPayload {
   @IsEnum(RolesEnum, {
     message: 'It is required to send "user", "admin" or "seller"'
   })
-  public roles?: string
+  public roles?: RolesEnum
 
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the cpf.' })
