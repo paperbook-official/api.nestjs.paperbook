@@ -20,6 +20,9 @@ export class UserProxy {
   public updatedAt: Date
 
   @ApiProperty()
+  public isActive: boolean
+
+  @ApiProperty()
   public name: string
 
   @ApiProperty()
@@ -41,6 +44,7 @@ export class UserProxy {
     this.id = +userEntity.id
     this.createdAt = userEntity.createdAt
     this.updatedAt = userEntity.updatedAt
+    this.isActive = userEntity.isActive
     this.name = userEntity.name
     this.lastName = userEntity.lastName
     this.email = userEntity.email
