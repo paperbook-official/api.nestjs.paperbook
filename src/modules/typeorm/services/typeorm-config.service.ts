@@ -43,7 +43,11 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
           password: this.configService.get<string>('DB_PASSWORD'),
           synchronize: this.configService.get<boolean>('DB_SYNCHRONIZE'),
           migrationsRun: this.configService.get<boolean>('DB_MIGRATIONS_RUN'),
-          ssl: this.configService.get<boolean>('DB_SSL'),
+          ssl: {
+            rejectUnauthorized: this.configService.get<boolean>(
+              'DB_REJECT_UNAUTHORIZED'
+            )
+          },
           entities: [entitiesPath]
         }
     }
