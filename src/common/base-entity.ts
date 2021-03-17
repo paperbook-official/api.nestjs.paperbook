@@ -1,5 +1,6 @@
 import {
   BaseEntity as BaseEntityTypeOrm,
+  Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -17,6 +18,12 @@ export abstract class BaseEntity extends BaseEntityTypeOrm {
 
   @UpdateDateColumn()
   public updatedAt: Date
+
+  @Column({
+    type: 'boolean',
+    default: true
+  })
+  public isActive: boolean
 
   /**
    * Static method to validate if some entities exists in the database
