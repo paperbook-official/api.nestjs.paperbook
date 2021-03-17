@@ -13,6 +13,8 @@ async function bootstrap() {
   setupPipes(app)
   setupSwagger(app, configService)
 
+  app.enableCors()
+
   await app.listen(configService.get<number>('PORT') || 3000)
 }
 bootstrap()
