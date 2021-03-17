@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 import { IsDefined, IsEmail, IsString, MinLength } from 'class-validator'
-import { DefaultValidationMessages } from 'src/models/default-validation-messages'
+import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
  * The app's main login payload class

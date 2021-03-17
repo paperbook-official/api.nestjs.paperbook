@@ -29,7 +29,17 @@ export class AuthService {
    */
   public async signIn(requestUser: RequestUser): Promise<TokenProxy> {
     const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN')
-    const token = await this.jwtService.signAsync(requestUser, { expiresIn })
+
+    const { id, email, roles } = requestUser
+
+    const token = await this.jwtService.signAsync(
+      {
+        id,
+        email,
+        roles
+      },
+      { expiresIn }
+    )
     return { token, expiresIn }
   }
 

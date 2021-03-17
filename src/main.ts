@@ -13,7 +13,7 @@ async function bootstrap() {
   setupPipes(app)
   setupSwagger(app, configService)
 
-  await app.listen(3000)
+  await app.listen(configService.get<number>('PORT') || 3000)
 }
 bootstrap()
 

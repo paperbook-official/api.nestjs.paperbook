@@ -1,9 +1,12 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base-entity'
 
 import { UserProxy } from '../models/user.proxy'
 import { ToProxy } from 'src/common/to-proxy'
+
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main user entity class
@@ -17,34 +20,62 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
     Object.assign(this, partialEntity)
   }
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
-    length: 50,
+    length: 30,
     nullable: false
   })
   public name: string
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
-    length: 25,
+    length: 60,
+    nullable: false
+  })
+  public lastName: string
+
+  @ApiProperty()
+  @Column({
+    type: 'varchar',
+    length: 50,
     nullable: false,
     unique: true
   })
   public email: string
 
+  @ApiProperty()
   @Column({
     type: 'varchar',
-    length: 25,
+    length: 100,
     nullable: false
   })
   public password: string
 
+  @ApiPropertyOptional()
   @Column({
     type: 'varchar',
-    length: 10,
+    length: 11,
+    nullable: true
+  })
+  public cpf?: string
+
+  @ApiProperty()
+  @Column({
+    type: 'varchar',
+    length: 12,
     nullable: false
   })
-  public roles: string
+  public roles: RolesEnum
+
+  @ApiPropertyOptional()
+  @Column({
+    type: 'varchar',
+    length: 11,
+    nullable: true
+  })
+  public phone?: string
 
   /**
    * Method that converts the entity to your proxy
