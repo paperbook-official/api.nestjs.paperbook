@@ -219,4 +219,21 @@ export class UserController {
   ): Promise<void> {
     await this.userService.disable(userId, requestUser)
   }
+
+  /**
+   * Method that is called when the user access the "user/:id/enable" route with "PUT" method
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Enables a single user' })
+  @ApiOkResponse({ description: 'Enables a single user' })
+  @Roles(RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Put(':id/enable')
+  public async enable(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.userService.enable(userId, requestUser)
+  }
 }
