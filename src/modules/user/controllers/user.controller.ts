@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseGuards,
   UseInterceptors
 } from '@nestjs/common'
@@ -54,7 +55,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     type: UserEntity
   },
   query: {
-    persist: ['id', 'isActive']
+    persist: ['id', 'isActive'],
+    filter: [{ field: 'isActive', operator: '$eq', value: true }]
   },
   routes: {
     exclude: [
@@ -199,5 +201,22 @@ export class UserController {
     @User() requestUser: RequestUser
   ): Promise<void> {
     await this.userService.delete(userId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user access the "user/:id/disable" route with "PUT" method
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Disables a single user' })
+  @ApiOkResponse({ description: 'Disables a single user' })
+  @Roles(RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Put(':id/disable')
+  public async disable(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.userService.disable(userId, requestUser)
   }
 }

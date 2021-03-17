@@ -75,7 +75,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         ]
       }
 
-      entity = await super.getOne(crudRequest)
+      entity = await super.getOne(crudRequest).catch(() => undefined)
     }
 
     if (!entity || !entity.isActive) {
@@ -139,6 +139,31 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
 
     await UserEntity.delete({ id: userId })
+  }
+
+  /**
+   * Method that can disable some user
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  public async disable(
+    userId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${userId}" does not exist or is disabled`
+      )
+    }
+
+    if (!UserService.hasPermissions(entity, requestUser))
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+
+    await UserEntity.update({ id: userId }, { isActive: false })
   }
 
   //#region Utils
