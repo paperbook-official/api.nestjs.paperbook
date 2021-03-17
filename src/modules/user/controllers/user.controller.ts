@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
   UseInterceptors
@@ -12,7 +13,6 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiTags
 } from '@nestjs/swagger'
@@ -33,6 +33,7 @@ import { RolesGuard } from 'src/guards/roles/roles.guard'
 import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
+import { UpdateUserPaylaod } from '../models/update-user.payload'
 import { UserProxy } from '../models/user.proxy'
 
 import { UserService } from '../services/user.service'
@@ -55,7 +56,12 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     persist: ['id', 'isActive']
   },
   routes: {
-    only: ['getManyBase']
+    exclude: [
+      'createManyBase',
+      'createOneBase',
+      'updateOneBase',
+      'replaceOneBase'
+    ]
   }
 })
 @UseInterceptors(CrudRequestInterceptor)
@@ -110,7 +116,8 @@ export class UserController {
   })
   @ApiOperation({ summary: 'Gets the logged user' })
   @ApiOkResponse({ description: 'Gets the logged user data', type: UserProxy })
-  @UseGuards(JwtGuard)
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('me')
   public async getMe(
@@ -127,38 +134,13 @@ export class UserController {
 
   /**
    * Method that is called when the user access the "/user/:userId" route with "GET" method
-   * @param userId stores the user id
+   * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
-  @ApiQuery({
-    required: false,
-    name: 'cache',
-    type: 'integer',
-    description: 'Reset cache (if was enabled).'
-  })
-  @ApiQuery({
-    required: false,
-    name: 'fields',
-    type: 'string',
-    isArray: true,
-    description: 'Selects resource fields.'
-  })
-  @ApiQuery({
-    required: false,
-    name: 'join',
-    type: 'string',
-    isArray: true,
-    description: 'Adds relational resources.'
-  })
-  @ApiParam({
-    name: 'id',
-    type: 'number'
-  })
-  @ApiOperation({ summary: 'Gets the user by id' })
-  @ApiOkResponse({ description: 'Gets the user data' })
-  @UseGuards(JwtGuard)
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
   @Get(':id')
   public async get(
     @Param('id') userId: number,
@@ -182,5 +164,24 @@ export class UserController {
   ): Promise<GetManyDefaultResponse<UserProxy> | UserProxy[]> {
     const getManyDefaultResponse = await this.userService.getMany(crudRequest)
     return mapCrud(getManyDefaultResponse)
+  }
+
+  /**
+   * Method that is called when the user access the "/user/:id" route with "PATCH"
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   * @param updatedUserPayload stores the new user data
+   */
+  @ApiOperation({ summary: 'Updates a single user' })
+  @ApiOkResponse({ description: 'Updates user' })
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Patch(':id')
+  public async update(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser,
+    @Body() updatedUserPayload: UpdateUserPaylaod
+  ): Promise<void> {
+    await this.userService.update(userId, requestUser, updatedUserPayload)
   }
 }
