@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  UseInterceptors
+} from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -7,11 +16,19 @@ import {
   ApiQuery,
   ApiTags
 } from '@nestjs/swagger'
-import { Crud, CrudRequest, ParsedRequest } from '@nestjsx/crud'
+import {
+  Crud,
+  CrudRequest,
+  CrudRequestInterceptor,
+  GetManyDefaultResponse,
+  ParsedRequest
+} from '@nestjsx/crud'
 
+import { Roles } from 'src/decorators/roles/roles.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 
 import { JwtGuard } from 'src/guards/jwt/jwt.guard'
+import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 import { UserEntity } from '../entities/user.entity'
 
@@ -20,7 +37,10 @@ import { UserProxy } from '../models/user.proxy'
 
 import { UserService } from '../services/user.service'
 
+import { mapCrud } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
+
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main user controller class
@@ -31,10 +51,14 @@ import { RequestUser } from 'src/utils/type.shared'
   model: {
     type: UserEntity
   },
+  query: {
+    persist: ['id', 'isActive']
+  },
   routes: {
     only: ['getManyBase']
   }
 })
+@UseInterceptors(CrudRequestInterceptor)
 @ApiTags('users')
 @Controller('users')
 export class UserController {
@@ -87,6 +111,7 @@ export class UserController {
   @ApiOperation({ summary: 'Gets the logged user' })
   @ApiOkResponse({ description: 'Gets the logged user data', type: UserProxy })
   @UseGuards(JwtGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get('me')
   public async getMe(
     @User() requestUser: RequestUser,
@@ -128,19 +153,34 @@ export class UserController {
     description: 'Adds relational resources.'
   })
   @ApiParam({
-    name: 'userId',
+    name: 'id',
     type: 'number'
   })
   @ApiOperation({ summary: 'Gets the user by id' })
   @ApiOkResponse({ description: 'Gets the user data' })
   @UseGuards(JwtGuard)
-  @Get(':userId')
+  @Get(':id')
   public async get(
-    @Param('userId') userId: number,
+    @Param('id') userId: number,
     @User() requestUser: RequestUser,
     @ParsedRequest() crudRequest: CrudRequest
   ): Promise<UserProxy> {
     const entity = await this.userService.get(userId, requestUser, crudRequest)
     return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user access the "/user" route with "GET" method
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found user data
+   */
+  @Roles(RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Get()
+  public async getMany(
+    @ParsedRequest() crudRequest: CrudRequest
+  ): Promise<GetManyDefaultResponse<UserProxy> | UserProxy[]> {
+    const getManyDefaultResponse = await this.userService.getMany(crudRequest)
+    return mapCrud(getManyDefaultResponse)
   }
 }
