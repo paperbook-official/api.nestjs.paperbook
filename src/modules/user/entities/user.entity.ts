@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base-entity'
@@ -53,13 +53,13 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   })
   public password: string
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @Column({
     type: 'varchar',
     length: 11,
-    nullable: false
+    nullable: true
   })
-  public cpf: string
+  public cpf?: string
 
   @ApiProperty()
   @Column({
@@ -69,13 +69,13 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   })
   public roles: RolesEnum
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @Column({
     type: 'varchar',
     length: 11,
-    nullable: false
+    nullable: true
   })
-  public phone: string
+  public phone?: string
 
   /**
    * Method that converts the entity to your proxy

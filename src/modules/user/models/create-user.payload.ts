@@ -42,10 +42,9 @@ export class CreateUserPayload {
   @MinLength(6, { message: 'The password must have, at least, 6 characters.' })
   public password: string
 
-  @ApiProperty()
-  @IsDefined({ message: 'It is required to send the cpf.' })
+  @ApiPropertyOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
-  public cpf: string
+  public cpf?: string
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -54,11 +53,10 @@ export class CreateUserPayload {
   })
   public roles?: RolesEnum
 
-  @ApiProperty()
-  @IsDefined({ message: 'It is required to send the cpf.' })
+  @ApiPropertyOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
   @IsPhoneNumber('BR', {
     message: 'It is required to send a valid phone number'
   })
-  public phone: string
+  public phone?: string
 }
