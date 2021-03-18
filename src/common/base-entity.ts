@@ -11,7 +11,7 @@ import {
  */
 export abstract class BaseEntity extends BaseEntityTypeOrm {
   @PrimaryGeneratedColumn()
-  public id: number | string
+  public id: number
 
   @CreateDateColumn()
   public createdAt: Date
