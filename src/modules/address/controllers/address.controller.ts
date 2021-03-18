@@ -187,7 +187,7 @@ export class AddressController {
    */
   @ApiOperation({ summary: 'Disables a single address' })
   @ApiOkResponse({ description: 'Disables a single address' })
-  @Roles(RolesEnum.Admin)
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @Put(':id/disable')
   public async disable(
@@ -205,7 +205,7 @@ export class AddressController {
    */
   @ApiOperation({ summary: 'Enables a single address' })
   @ApiOkResponse({ description: 'Enables a single address' })
-  @Roles(RolesEnum.Admin)
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @Put(':id/enable')
   public async enable(

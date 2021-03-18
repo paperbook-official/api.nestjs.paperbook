@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable
+} from '@nestjs/common'
 import { NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
@@ -179,9 +183,15 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   ): Promise<void> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
-    if (!entity || !entity.isActive) {
+    if (!entity) {
       throw new NotFoundException(
         `The entity identified by "${addressId}" does not exist or is disabled`
+      )
+    }
+
+    if (!entity.isActive) {
+      throw new ConflictException(
+        `The entity identified by "${addressId}" is already disabled`
       )
     }
 
@@ -205,9 +215,15 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   ): Promise<void> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
-    if (!entity || !entity.isActive) {
+    if (!entity) {
       throw new NotFoundException(
         `The entity identified by "${addressId}" does not exist or is disabled`
+      )
+    }
+
+    if (entity.isActive) {
+      throw new ConflictException(
+        `The entity identified by "${addressId}" is already enabled`
       )
     }
 
