@@ -43,6 +43,9 @@ export class AddressProxy {
   @ApiProperty()
   public state: string
 
+  @ApiProperty()
+  public userId: number
+
   @ApiPropertyOptional()
   public user?: UserProxy
 
@@ -58,6 +61,7 @@ export class AddressProxy {
     this.district = addressEntity.district
     this.city = addressEntity.city
     this.state = addressEntity.state
+    this.userId = addressEntity.userId
 
     this.user = addressEntity.user?.toProxy()
   }
