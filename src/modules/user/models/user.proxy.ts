@@ -2,6 +2,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { UserEntity } from '../entities/user.entity'
 
+import { AddressProxy } from 'src/modules/address/models/address.proxy'
+
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
@@ -40,6 +42,9 @@ export class UserProxy {
   @ApiPropertyOptional()
   public phone?: string
 
+  @ApiPropertyOptional({ type: () => AddressProxy, isArray: true })
+  public addresses?: AddressProxy[]
+
   public constructor(userEntity: UserEntity) {
     this.id = +userEntity.id
     this.createdAt = userEntity.createdAt
@@ -51,5 +56,7 @@ export class UserProxy {
     this.cpf = userEntity.cpf
     this.permissions = userEntity.roles
     this.phone = userEntity.phone
+
+    this.addresses = userEntity.addresses?.map(address => address.toProxy())
   }
 }

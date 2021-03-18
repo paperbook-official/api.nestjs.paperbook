@@ -22,3 +22,19 @@ export function mapCrud<TProxy, TEntity extends ToProxy<TProxy>>(
     data: getManyDefaultResponse.data.map(entity => entity.toProxy(...params))
   }
 }
+
+/**
+ * Function that validates if the object that is being passed in the "value"
+ * parameter is a GetManyDefaultResponse class instance
+ * @param value stores an object that will be tested
+ * @returns true if "value" is a "GetManyDefaultResponse" class instance
+ */
+export function isGetMany<T>(
+  value: GetManyDefaultResponse<T> | T[]
+): value is GetManyDefaultResponse<T> {
+  if (!value || Array.isArray(value)) return false
+
+  if (value.hasOwnProperty('data') && Array.isArray(value.data)) return true
+
+  return false
+}

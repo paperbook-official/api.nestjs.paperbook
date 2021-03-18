@@ -5,9 +5,11 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsNumberString,
   IsOptional,
   IsPhoneNumber,
   IsString,
+  Length,
   MinLength
 } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
@@ -43,7 +45,8 @@ export class CreateUserPayload {
   public password: string
 
   @ApiPropertyOptional()
-  @IsString({ message: DefaultValidationMessages.IsString })
+  @IsNumberString({}, { message: 'It is required to send a numeric string' })
+  @Length(11)
   public cpf?: string
 
   @ApiPropertyOptional()
@@ -54,7 +57,7 @@ export class CreateUserPayload {
   public roles?: RolesEnum
 
   @ApiPropertyOptional()
-  @IsString({ message: DefaultValidationMessages.IsString })
+  @IsNumberString({}, { message: 'It is required to send a numeric string' })
   @IsPhoneNumber('BR', {
     message: 'It is required to send a valid phone number'
   })

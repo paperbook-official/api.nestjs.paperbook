@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base-entity'
+import { AddressEntity } from 'src/modules/address/entities/address.entity'
 
 import { UserProxy } from '../models/user.proxy'
 import { ToProxy } from 'src/common/to-proxy'
@@ -15,10 +16,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Entity('user')
 export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
-  public constructor(partialEntity: Partial<UserEntity>) {
-    super()
-    Object.assign(this, partialEntity)
-  }
+  //#region Columns
 
   @ApiProperty()
   @Column({
@@ -76,6 +74,24 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
     nullable: true
   })
   public phone?: string
+
+  //#region Relations
+
+  @ApiPropertyOptional()
+  @OneToMany(
+    () => AddressEntity,
+    address => address.user
+  )
+  public addresses?: AddressEntity[]
+
+  //#endregion
+
+  //#endregion
+
+  public constructor(partialEntity: Partial<UserEntity>) {
+    super()
+    Object.assign(this, partialEntity)
+  }
 
   /**
    * Method that converts the entity to your proxy
