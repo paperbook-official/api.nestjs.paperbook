@@ -7,7 +7,13 @@ import {
   UseGuards,
   UseInterceptors
 } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { Patch } from '@nestjs/common'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -26,6 +32,7 @@ import { AddressEntity } from '../entities/address.entity'
 
 import { AddressProxy } from '../models/address.proxy'
 import { CreateAddressPayload } from '../models/create-address.payload'
+import { UpdatedAddressPayload } from '../models/update-address.payload'
 
 import { AddressService } from '../services/address.service'
 
@@ -91,6 +98,7 @@ export class AddressController {
   /**
    * Method that is called when the user access the "/addresses/:id"
    * route with "GET" method
+   * @param addressId stores the target address id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found address data
@@ -127,5 +135,29 @@ export class AddressController {
   ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
     const entities = await this.addressService.getMore(requestUser, crudRequest)
     return mapCrud(entities)
+  }
+
+  /**
+   * Method that is called when the user access the "/addresses/:id"
+   * route with "PATCH"
+   * @param addressId stores the target address id
+   * @param requestUser stores the logged user data
+   * @param updatedUserPayload stores the new user data
+   */
+  @ApiOperation({ summary: 'Updates a single address' })
+  @ApiOkResponse({ description: 'Updates user' })
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Patch(':id')
+  public async update(
+    @Param('id') addressId: number,
+    @User() requestUser: RequestUser,
+    @Body() updatedAddressPayload: UpdatedAddressPayload
+  ): Promise<void> {
+    await this.addressService.update(
+      addressId,
+      requestUser,
+      updatedAddressPayload
+    )
   }
 }

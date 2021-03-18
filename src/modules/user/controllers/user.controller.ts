@@ -74,7 +74,7 @@ export class UserController {
   public constructor(private readonly userService: UserService) {}
 
   /**
-   * Method that is called when the user access the "/user" route with
+   * Method that is called when the user access the "/users" route with
    * the "POST"
    * @param createdUserPayload stores the new user data
    * @returns the created user data
@@ -93,7 +93,7 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/user/me" route
+   * Method that is called when the user access the "/users/me" route
    * with "GET" method
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -138,7 +138,7 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/user/:userId"
+   * Method that is called when the user access the "/users/:userId"
    * route with "GET" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
@@ -158,7 +158,7 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/user" route with
+   * Method that is called when the user access the "/users" route with
    * "GET" method
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
@@ -174,7 +174,7 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/user/:id" route
+   * Method that is called when the user access the "/users/:id" route
    * with "PATCH"
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
@@ -194,7 +194,7 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/user/:id" route
+   * Method that is called when the user access the "/users/:id" route
    * with "DELETE" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
@@ -210,7 +210,7 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "user/:id/disable"
+   * Method that is called when the user access the "users/:id/disable"
    * route with "PUT" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
@@ -228,7 +228,7 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "user/:id/enable"
+   * Method that is called when the user access the "users/:id/enable"
    * route with "PUT" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
