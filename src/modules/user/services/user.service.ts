@@ -1,18 +1,23 @@
 import {
   ConflictException,
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { CrudRequest } from '@nestjsx/crud'
+import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { UserEntity } from '../entities/user.entity'
+import { AddressEntity } from 'src/modules/address/entities/address.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
+
+import { AddressService } from 'src/modules/address/services/address.service'
 
 import { encryptPassword } from 'src/utils/password'
 import { RequestUser } from 'src/utils/type.shared'
@@ -29,7 +34,9 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
 export class UserService extends TypeOrmCrudService<UserEntity> {
   public constructor(
     @InjectRepository(UserEntity)
-    private readonly repository: Repository<UserEntity>
+    private readonly repository: Repository<UserEntity>,
+    @Inject(forwardRef(() => AddressService))
+    private readonly addressService: AddressService
   ) {
     super(repository)
   }
@@ -62,9 +69,16 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     requestUser: RequestUser,
     crudRequest?: CrudRequest
   ): Promise<UserEntity> {
-    const entity: UserEntity = crudRequest
-      ? await super.getOne(crudRequest).catch(() => undefined)
-      : await UserEntity.findOne({ id: userId })
+    let entity: UserEntity
+
+    if (crudRequest) {
+      crudRequest.parsed.search = {
+        $and: [...crudRequest.parsed.search.$and, { id: userId }]
+      }
+      entity = await super.getOne(crudRequest).catch(() => undefined)
+    } else {
+      entity = await UserEntity.findOne({ id: userId })
+    }
 
     if (!entity || !entity.isActive) {
       throw new NotFoundException(
@@ -79,6 +93,37 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     return entity
+  }
+
+  /**
+   * Method that gets all the addresses of some user
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found elements
+   */
+  public async getAddressesByUserId(
+    userId: number,
+    requestUser: RequestUser,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${userId}" does not exist or is disabled`
+      )
+    }
+
+    if (!this.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+    }
+
+    crudRequest.parsed.search = { $and: [{ userId }] }
+
+    return await this.addressService.getMany(crudRequest)
   }
 
   /**
@@ -105,6 +150,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         'You have no permission to access those sources'
       )
     }
+
     await UserEntity.update({ id: userId }, updatedUserPayload)
   }
 

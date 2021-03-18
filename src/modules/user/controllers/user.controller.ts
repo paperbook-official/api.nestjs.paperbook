@@ -37,6 +37,7 @@ import { UserEntity } from '../entities/user.entity'
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
 import { UserProxy } from '../models/user.proxy'
+import { AddressProxy } from 'src/modules/address/models/address.proxy'
 
 import { UserService } from '../services/user.service'
 
@@ -75,7 +76,7 @@ export class UserController {
 
   /**
    * Method that is called when the user access the "/users" route with
-   * the "POST"
+   * the "POST" method
    * @param createdUserPayload stores the new user data
    * @returns the created user data
    */
@@ -138,7 +139,30 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/users/:userId"
+   * Method that is called when the user access the "/user/me/addresses" route
+   * with the "GET" method
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found data
+   */
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get('me/addresses')
+  public async getMyAddresses(
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+    const entities = await this.userService.getAddressesByUserId(
+      requestUser.id,
+      requestUser,
+      crudRequest
+    )
+    return mapCrud(entities)
+  }
+
+  /**
+   * Method that is called when the user access the "/users/:id"
    * route with "GET" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
@@ -155,6 +179,31 @@ export class UserController {
   ): Promise<UserProxy> {
     const entity = await this.userService.get(userId, requestUser, crudRequest)
     return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user access the "users/:id/addresses"
+   * route with "GET" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found data
+   */
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get(':id/addresses')
+  public async getAddressesByUserId(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+    const entities = await this.userService.getAddressesByUserId(
+      userId,
+      requestUser,
+      crudRequest
+    )
+    return mapCrud(entities)
   }
 
   /**
