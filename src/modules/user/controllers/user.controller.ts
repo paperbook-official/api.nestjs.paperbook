@@ -74,7 +74,8 @@ export class UserController {
   public constructor(private readonly userService: UserService) {}
 
   /**
-   * Method that is called when the user access the "/user" route with the "POST"
+   * Method that is called when the user access the "/user" route with
+   * the "POST"
    * @param createdUserPayload stores the new user data
    * @returns the created user data
    */
@@ -92,7 +93,8 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/user/me" route with "GET" method
+   * Method that is called when the user access the "/user/me" route
+   * with "GET" method
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the logged user data
@@ -125,7 +127,7 @@ export class UserController {
   @Get('me')
   public async getMe(
     @User() requestUser: RequestUser,
-    @ParsedRequest() crudRequest: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<UserProxy> {
     const entity = await this.userService.get(
       requestUser.id,
@@ -136,7 +138,8 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/user/:userId" route with "GET" method
+   * Method that is called when the user access the "/user/:userId"
+   * route with "GET" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -148,14 +151,15 @@ export class UserController {
   public async get(
     @Param('id') userId: number,
     @User() requestUser: RequestUser,
-    @ParsedRequest() crudRequest: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<UserProxy> {
     const entity = await this.userService.get(userId, requestUser, crudRequest)
     return entity.toProxy()
   }
 
   /**
-   * Method that is called when the user access the "/user" route with "GET" method
+   * Method that is called when the user access the "/user" route with
+   * "GET" method
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
@@ -163,14 +167,15 @@ export class UserController {
   @UseGuards(JwtGuard, RolesGuard)
   @Get()
   public async getMore(
-    @ParsedRequest() crudRequest: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<UserProxy> | UserProxy[]> {
     const getManyDefaultResponse = await this.userService.getMany(crudRequest)
     return mapCrud(getManyDefaultResponse)
   }
 
   /**
-   * Method that is called when the user access the "/user/:id" route with "PATCH"
+   * Method that is called when the user access the "/user/:id" route
+   * with "PATCH"
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
@@ -189,7 +194,8 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/user/:id" route with "DELETE" method
+   * Method that is called when the user access the "/user/:id" route
+   * with "DELETE" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
@@ -204,7 +210,8 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "user/:id/disable" route with "PUT" method
+   * Method that is called when the user access the "user/:id/disable"
+   * route with "PUT" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
@@ -221,7 +228,8 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "user/:id/enable" route with "PUT" method
+   * Method that is called when the user access the "user/:id/enable"
+   * route with "PUT" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
