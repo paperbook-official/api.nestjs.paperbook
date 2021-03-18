@@ -42,7 +42,7 @@ export class UserProxy {
   @ApiPropertyOptional()
   public phone?: string
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => AddressProxy, isArray: true })
   public addresses?: AddressProxy[]
 
   public constructor(userEntity: UserEntity) {

@@ -46,7 +46,7 @@ export class AddressProxy {
   @ApiProperty()
   public userId: number
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => UserProxy })
   public user?: UserProxy
 
   public constructor(addressEntity: AddressEntity) {
