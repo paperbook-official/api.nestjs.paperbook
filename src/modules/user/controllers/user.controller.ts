@@ -162,7 +162,7 @@ export class UserController {
   @Roles(RolesEnum.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @Get()
-  public async getMany(
+  public async getMore(
     @ParsedRequest() crudRequest: CrudRequest
   ): Promise<GetManyDefaultResponse<UserProxy> | UserProxy[]> {
     const getManyDefaultResponse = await this.userService.getMany(crudRequest)
