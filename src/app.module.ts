@@ -8,12 +8,14 @@ import { AddressModule } from './modules/address/address.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { TypeOrmConfigModule } from './modules/typeorm/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
+import { CategoryModule } from './modules/category/category.module'
 
 @Module({
   imports: [
     UserModule,
     AddressModule,
     AuthModule,
+    CategoryModule,
     TypeOrmModule.forRootAsync({
       imports: [TypeOrmConfigModule],
       inject: [TypeOrmConfigService],
