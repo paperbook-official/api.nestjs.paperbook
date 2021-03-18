@@ -199,7 +199,7 @@ export class UserController {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Roles(RolesEnum.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @Delete(':id')
   public async delete(

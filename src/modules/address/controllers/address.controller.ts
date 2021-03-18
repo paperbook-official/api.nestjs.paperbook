@@ -4,10 +4,12 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseGuards,
   UseInterceptors
 } from '@nestjs/common'
 import { Patch } from '@nestjs/common'
+import { Delete } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -159,5 +161,57 @@ export class AddressController {
       requestUser,
       updatedAddressPayload
     )
+  }
+
+  /**
+   * Method that is called when the user acces the "/addresses/:id"
+   * route with "DELETE" method
+   * @param addressId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Delete(':id')
+  public async delete(
+    @Param('id') addressId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.addressService.delete(addressId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user acces the "addresses/:id/disable"
+   * route with "PUT" method
+   * @param addressId stores the target address id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Disables a single address' })
+  @ApiOkResponse({ description: 'Disables a single address' })
+  @Roles(RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Put(':id/disable')
+  public async disable(
+    @Param('id') addressId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.addressService.disable(addressId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user acces the "addresses/:id/enable"
+   * route with "PUT" method
+   * @param addressId stores the target address id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Enables a single address' })
+  @ApiOkResponse({ description: 'Enables a single address' })
+  @Roles(RolesEnum.Admin)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Put(':id/enable')
+  public async enable(
+    @Param('id') addressId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.addressService.enable(addressId, requestUser)
   }
 }
