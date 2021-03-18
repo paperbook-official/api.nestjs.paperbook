@@ -71,6 +71,12 @@ export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
   })
   public state: string
 
+  @Column({
+    type: 'integer',
+    nullable: false
+  })
+  public userId: number
+
   //#region Relations
 
   @ApiPropertyOptional()
