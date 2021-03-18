@@ -42,7 +42,6 @@ export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
   @ApiProperty()
   @Column({
     type: 'text',
-    length: 100,
     nullable: false
   })
   public complement: string
