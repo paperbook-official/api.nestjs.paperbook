@@ -7,6 +7,7 @@ import { Repository } from 'typeorm'
 
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 
+import { UpdatedAddressPayload } from '../models/update-address.payload'
 import { CreateAddressPayload } from 'src/modules/address/models/create-address.payload'
 
 import { UserService } from 'src/modules/user/services/user.service'
@@ -111,5 +112,111 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
     }
 
     return entities
+  }
+
+  /**
+   * Method that can update some address
+   * @param addressId stores the address id
+   * @param requestUser stores the logged user data
+   * @param updateAddressPayload stores the new address data
+   */
+  public async update(
+    addressId: number,
+    requestUser: RequestUser,
+    updateAddressPayload: UpdatedAddressPayload
+  ): Promise<void> {
+    const entity = await AddressEntity.findOne({ id: addressId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${addressId}" does not exist or is disabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+    }
+
+    await AddressEntity.update({ id: addressId }, updateAddressPayload)
+  }
+
+  /**
+   * Method that can delete some address
+   * @param addressId stores the address id
+   * @param requestUser stores the logged user data
+   */
+  public async delete(
+    addressId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await AddressEntity.findOne({ id: addressId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${addressId}" does not exist or is disabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+    }
+
+    await AddressEntity.delete({ id: addressId })
+  }
+
+  /**
+   * Method that can disable some address
+   * @param addressId stores the address id
+   * @param requestUser stores the logged user data
+   */
+  public async disable(
+    addressId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await AddressEntity.findOne({ id: addressId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${addressId}" does not exist or is disabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+    }
+
+    await AddressEntity.update({ id: addressId }, { isActive: false })
+  }
+
+  /**
+   * Method that can enable some address
+   * @param addressId stores the address id
+   * @param requestUser stores the logged user data
+   */
+  public async enable(
+    addressId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await AddressEntity.findOne({ id: addressId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${addressId}" does not exist or is disabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+    }
+
+    await AddressEntity.update({ id: addressId }, { isActive: true })
   }
 }
