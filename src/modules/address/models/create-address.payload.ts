@@ -28,7 +28,6 @@ export class CreateAddressPayload {
 
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the house number' })
-  @IsString({ message: DefaultValidationMessages.IsString })
   @IsNumber({ maxDecimalPlaces: 0 })
   public houseNumber: number
 

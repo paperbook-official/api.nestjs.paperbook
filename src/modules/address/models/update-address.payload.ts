@@ -28,7 +28,6 @@ export class UpdatedAddressPayload {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString({ message: DefaultValidationMessages.IsString })
   @IsNumber({ maxDecimalPlaces: 0 })
   public houseNumber?: number
 
