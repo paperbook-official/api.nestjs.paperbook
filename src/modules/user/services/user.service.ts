@@ -55,14 +55,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found user data
+   * @returns the found user entity
    */
   public async get(
     userId: number,
     requestUser: RequestUser,
     crudRequest?: CrudRequest
   ): Promise<UserEntity> {
-    const entity = crudRequest
+    const entity: UserEntity = crudRequest
       ? await super.getOne(crudRequest).catch(() => undefined)
       : await UserEntity.findOne({ id: userId })
 
@@ -72,10 +72,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
     }
 
-    if (!UserService.hasPermissions(entity, requestUser))
+    if (!this.hasPermissions(entity.id, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )
+    }
 
     return entity
   }
@@ -99,11 +100,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
     }
 
-    if (!UserService.hasPermissions(entity, requestUser))
+    if (!this.hasPermissions(entity.id, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )
-
+    }
     await UserEntity.update({ id: userId }, updatedUserPayload)
   }
 
@@ -121,11 +122,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
     }
 
-    if (!UserService.hasPermissions(entity, requestUser))
+    if (!this.hasPermissions(entity.id, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )
-
+    }
     await UserEntity.delete({ id: userId })
   }
 
@@ -152,10 +153,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
     }
 
-    if (!UserService.hasPermissions(entity, requestUser))
+    if (!this.hasPermissions(entity.id, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )
+    }
 
     await UserEntity.update({ id: userId }, { isActive: false })
   }
@@ -180,10 +182,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
     }
 
-    if (!UserService.hasPermissions(entity, requestUser))
+    if (!this.hasPermissions(entity.id, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )
+    }
 
     await UserEntity.update({ id: userId }, { isActive: true })
   }
@@ -192,15 +195,12 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that validates if the user can access some source
-   * @param entity stores the found entity
+   * @param entityId stores the found entity
    * @param requestUser stores the logged user
    * @returns true if the user can access some source, otherwise false
    */
-  private static hasPermissions(
-    entity: UserEntity,
-    requestUser: RequestUser
-  ): boolean {
-    return entity.id === requestUser.id || isAdminUser(requestUser)
+  public hasPermissions(entityId: number, requestUser: RequestUser): boolean {
+    return entityId === requestUser.id || isAdminUser(requestUser)
   }
 
   //#endregion
