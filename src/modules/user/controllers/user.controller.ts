@@ -1,6 +1,5 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -101,7 +100,6 @@ export class UserController {
   @ApiOperation({ summary: 'Gets the logged user' })
   @ApiOkResponse({ description: 'Gets the logged user data', type: UserProxy })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('me')
   public async getMe(
     @User() requestUser: RequestUser,
@@ -126,7 +124,6 @@ export class UserController {
   @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
   @ApiOkResponse({ description: 'Gets all the logged user addresses' })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('me/addresses')
   public async getMyAddresses(
     @User() requestUser: RequestUser,
@@ -169,7 +166,6 @@ export class UserController {
    */
   @ApiPropertyGetManyDefaultResponse()
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id/addresses')
   public async getAddressesByUserId(
     @Param('id') userId: number,

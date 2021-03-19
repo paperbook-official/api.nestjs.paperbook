@@ -81,7 +81,10 @@ export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
   @ApiPropertyOptional()
   @ManyToOne(
     () => UserEntity,
-    user => user.addresses
+    user => user.addresses,
+    {
+      onDelete: 'CASCADE'
+    }
   )
   public user?: UserEntity
 
