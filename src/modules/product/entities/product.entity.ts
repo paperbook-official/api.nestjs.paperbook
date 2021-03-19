@@ -1,0 +1,70 @@
+import { Column, Entity } from 'typeorm'
+
+import { BaseEntity } from 'src/common/base-entity'
+
+import { ProductProxy } from '../models/product.proxy'
+import { ToProxy } from 'src/common/to-proxy'
+
+@Entity('products')
+export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
+  //#region Columns
+
+  @Column({
+    type: 'varchar',
+    length: 30,
+    nullable: false,
+    unique: true
+  })
+  public name: string
+
+  @Column({
+    type: 'text',
+    nullable: false
+  })
+  public description: string
+
+  @Column({
+    type: 'float',
+    nullable: false
+  })
+  public fullPrice: number
+
+  @Column({
+    type: 'float',
+    nullable: false
+  })
+  public installmentPrice: number
+
+  @Column({
+    type: 'int',
+    nullable: false
+  })
+  public installmentAmount: number
+
+  @Column({
+    type: 'float',
+    nullable: false
+  })
+  public discountAmount: number
+
+  @Column({
+    type: 'int',
+    nullable: false
+  })
+  public stockAmount: number
+
+  //#endregion
+
+  public constructor(partialEntity: Partial<ProductEntity>) {
+    super()
+    Object.assign(this, partialEntity)
+  }
+
+  /**
+   * Method that converts the entity to you proxy
+   * @returns the proxy data
+   */
+  public toProxy(): ProductProxy {
+    return new ProductProxy(this)
+  }
+}
