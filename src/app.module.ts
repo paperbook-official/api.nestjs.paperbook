@@ -6,14 +6,16 @@ import { TypeOrmConfigService } from './modules/typeorm/services/typeorm-config.
 
 import { AddressModule } from './modules/address/address.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { ProductModule } from './modules/product/product.module'
 import { TypeOrmConfigModule } from './modules/typeorm/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
 
 @Module({
   imports: [
     UserModule,
-    AddressModule,
     AuthModule,
+    AddressModule,
+    ProductModule,
     TypeOrmModule.forRootAsync({
       imports: [TypeOrmConfigModule],
       inject: [TypeOrmConfigService],
