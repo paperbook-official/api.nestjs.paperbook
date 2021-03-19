@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+import { applyDecorators } from '@nestjs/common'
 import { ApiQuery } from '@nestjs/swagger'
-
-import { applyDecorators } from 'src/utils/apply-decorators'
 
 /**
  * Decorator that sets all the get swagger properties
