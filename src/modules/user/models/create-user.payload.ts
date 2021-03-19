@@ -45,6 +45,7 @@ export class CreateUserPayload {
   public password: string
 
   @ApiPropertyOptional()
+  @IsOptional()
   @IsNumberString({}, { message: 'It is required to send a numeric string' })
   @Length(11)
   public cpf?: string
@@ -57,6 +58,7 @@ export class CreateUserPayload {
   public roles?: RolesEnum
 
   @ApiPropertyOptional()
+  @IsOptional()
   @IsNumberString({}, { message: 'It is required to send a numeric string' })
   @IsPhoneNumber('BR', {
     message: 'It is required to send a valid phone number'
