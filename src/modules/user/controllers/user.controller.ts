@@ -8,14 +8,12 @@ import {
   Patch,
   Post,
   Put,
-  UseGuards,
   UseInterceptors
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags
 } from '@nestjs/swagger'
 import {
@@ -26,17 +24,17 @@ import {
   ParsedRequest
 } from '@nestjsx/crud'
 
-import { Roles } from 'src/decorators/roles/roles.decorator'
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/get-many/api-property-get-many.decorator'
+import { ApiPropertyGet } from 'src/decorators/get/api-property-get.decorator'
+import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
-
-import { JwtGuard } from 'src/guards/jwt/jwt.guard'
-import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
 import { UserProxy } from '../models/user.proxy'
+import { AddressProxy } from 'src/modules/address/models/address.proxy'
 
 import { UserService } from '../services/user.service'
 
@@ -75,7 +73,7 @@ export class UserController {
 
   /**
    * Method that is called when the user access the "/users" route with
-   * the "POST"
+   * the "POST" method
    * @param createdUserPayload stores the new user data
    * @returns the created user data
    */
@@ -99,30 +97,10 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the logged user data
    */
-  @ApiQuery({
-    required: false,
-    name: 'cache',
-    type: 'integer',
-    description: 'Reset cache (if was enabled).'
-  })
-  @ApiQuery({
-    required: false,
-    name: 'fields',
-    type: 'string',
-    isArray: true,
-    description: 'Selects resource fields.'
-  })
-  @ApiQuery({
-    required: false,
-    name: 'join',
-    type: 'string',
-    isArray: true,
-    description: 'Adds relational resources.'
-  })
+  @ApiPropertyGet()
   @ApiOperation({ summary: 'Gets the logged user' })
   @ApiOkResponse({ description: 'Gets the logged user data', type: UserProxy })
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('me')
   public async getMe(
@@ -138,15 +116,39 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/users/:userId"
+   * Method that is called when the user access the "/user/me/addresses" route
+   * with the "GET" method
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found data
+   */
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
+  @ApiOkResponse({ description: 'Gets all the logged user addresses' })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get('me/addresses')
+  public async getMyAddresses(
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+    const entities = await this.userService.getAddressesByUserId(
+      requestUser.id,
+      requestUser,
+      crudRequest
+    )
+    return mapCrud(entities)
+  }
+
+  /**
+   * Method that is called when the user access the "/users/:id"
    * route with "GET" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') userId: number,
@@ -158,13 +160,37 @@ export class UserController {
   }
 
   /**
+   * Method that is called when the user access the "users/:id/addresses"
+   * route with "GET" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found data
+   */
+  @ApiPropertyGetManyDefaultResponse()
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get(':id/addresses')
+  public async getAddressesByUserId(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+    const entities = await this.userService.getAddressesByUserId(
+      userId,
+      requestUser,
+      crudRequest
+    )
+    return mapCrud(entities)
+  }
+
+  /**
    * Method that is called when the user access the "/users" route with
    * "GET" method
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest?: CrudRequest
@@ -182,8 +208,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Updates a single user' })
   @ApiOkResponse({ description: 'Updates user' })
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
     @Param('id') userId: number,
@@ -199,8 +224,7 @@ export class UserController {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Delete(':id')
   public async delete(
     @Param('id') userId: number,
@@ -217,8 +241,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Disables a single user' })
   @ApiOkResponse({ description: 'Disables a single user' })
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Put(':id/disable')
   public async disable(
     @Param('id') userId: number,
@@ -235,8 +258,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Enables a single user' })
   @ApiOkResponse({ description: 'Enables a single user' })
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Put(':id/enable')
   public async enable(
     @Param('id') userId: number,

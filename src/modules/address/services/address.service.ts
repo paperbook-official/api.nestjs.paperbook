@@ -1,9 +1,11 @@
 import {
   ConflictException,
   ForbiddenException,
-  Injectable
+  Injectable,
+  NotFoundException,
+  forwardRef,
+  Inject
 } from '@nestjs/common'
-import { NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
@@ -29,6 +31,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   public constructor(
     @InjectRepository(AddressEntity)
     private readonly repository: Repository<AddressEntity>,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService
   ) {
     super(repository)
