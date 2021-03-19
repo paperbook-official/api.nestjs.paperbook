@@ -121,7 +121,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
     }
 
-    crudRequest.parsed.search = { $and: [{ userId }] }
+    crudRequest.parsed.search = {
+      $and: [...crudRequest.parsed.search.$and, { userId }]
+    }
 
     return await this.addressService.getMany(crudRequest)
   }
