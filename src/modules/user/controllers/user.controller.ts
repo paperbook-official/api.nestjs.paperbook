@@ -8,7 +8,6 @@ import {
   Patch,
   Post,
   Put,
-  UseGuards,
   UseInterceptors
 } from '@nestjs/common'
 import {
@@ -27,11 +26,8 @@ import {
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/get-many/api-property-get-many.decorator'
 import { ApiPropertyGet } from 'src/decorators/get/api-property-get.decorator'
-import { Roles } from 'src/decorators/roles/roles.decorator'
+import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
-
-import { JwtGuard } from 'src/guards/jwt/jwt.guard'
-import { RolesGuard } from 'src/guards/roles/roles.guard'
 
 import { UserEntity } from '../entities/user.entity'
 
@@ -104,8 +100,7 @@ export class UserController {
   @ApiPropertyGet()
   @ApiOperation({ summary: 'Gets the logged user' })
   @ApiOkResponse({ description: 'Gets the logged user data', type: UserProxy })
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('me')
   public async getMe(
@@ -130,8 +125,7 @@ export class UserController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
   @ApiOkResponse({ description: 'Gets all the logged user addresses' })
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('me/addresses')
   public async getMyAddresses(
@@ -154,8 +148,7 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') userId: number,
@@ -175,8 +168,7 @@ export class UserController {
    * @returns all the found data
    */
   @ApiPropertyGetManyDefaultResponse()
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id/addresses')
   public async getAddressesByUserId(
@@ -198,8 +190,7 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest?: CrudRequest
@@ -217,8 +208,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Updates a single user' })
   @ApiOkResponse({ description: 'Updates user' })
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
     @Param('id') userId: number,
@@ -234,8 +224,7 @@ export class UserController {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Delete(':id')
   public async delete(
     @Param('id') userId: number,
@@ -252,8 +241,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Disables a single user' })
   @ApiOkResponse({ description: 'Disables a single user' })
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Put(':id/disable')
   public async disable(
     @Param('id') userId: number,
@@ -270,8 +258,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Enables a single user' })
   @ApiOkResponse({ description: 'Enables a single user' })
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Put(':id/enable')
   public async enable(
     @Param('id') userId: number,
