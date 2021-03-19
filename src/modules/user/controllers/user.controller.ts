@@ -15,7 +15,6 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags
 } from '@nestjs/swagger'
 import {
@@ -26,6 +25,8 @@ import {
   ParsedRequest
 } from '@nestjsx/crud'
 
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/get-many/api-property-get-many.decorator'
+import { ApiPropertyGet } from 'src/decorators/get/api-property-get.decorator'
 import { Roles } from 'src/decorators/roles/roles.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 
@@ -100,26 +101,7 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the logged user data
    */
-  @ApiQuery({
-    required: false,
-    name: 'cache',
-    type: 'integer',
-    description: 'Reset cache (if was enabled).'
-  })
-  @ApiQuery({
-    required: false,
-    name: 'fields',
-    type: 'string',
-    isArray: true,
-    description: 'Selects resource fields.'
-  })
-  @ApiQuery({
-    required: false,
-    name: 'join',
-    type: 'string',
-    isArray: true,
-    description: 'Adds relational resources.'
-  })
+  @ApiPropertyGet()
   @ApiOperation({ summary: 'Gets the logged user' })
   @ApiOkResponse({ description: 'Gets the logged user data', type: UserProxy })
   @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
@@ -145,6 +127,9 @@ export class UserController {
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found data
    */
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
+  @ApiOkResponse({ description: 'Gets all the logged user addresses' })
   @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
@@ -189,6 +174,7 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found data
    */
+  @ApiPropertyGetManyDefaultResponse()
   @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
