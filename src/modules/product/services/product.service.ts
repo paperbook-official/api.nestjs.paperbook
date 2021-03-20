@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException
@@ -73,7 +74,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       )
     }
 
-    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )
@@ -99,7 +100,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       )
     }
 
-    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )
@@ -119,13 +120,19 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 
-    if (!entity || !entity.isActive) {
+    if (!entity) {
       throw new NotFoundException(
         `The entity identified by "${productId}" does not exist or is disabled`
       )
     }
 
-    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+    if (!entity.isActive) {
+      throw new ConflictException(
+        `The entity identified by "${productId}" is already disabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )
@@ -145,13 +152,19 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 
-    if (!entity || !entity.isActive) {
+    if (!entity) {
       throw new NotFoundException(
         `The entity identified by "${productId}" does not exist or is disabled`
       )
     }
 
-    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+    if (entity.isActive) {
+      throw new ConflictException(
+        `The entity identified by "${productId}" is already enabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException(
         'You have no permission to access those sources'
       )

@@ -1,7 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
 import {
-  IsDefined,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -24,12 +23,12 @@ export class UpdateProductPayload {
   public name: string
 
   @ApiPropertyOptional()
-  @IsDefined({ message: 'It is required to send the description' })
+  @IsOptional({ message: 'It is required to send the description' })
   @IsString({ message: DefaultValidationMessages.IsString })
   public description: string
 
   @ApiPropertyOptional()
-  @IsDefined({ message: 'It is required to send the full price' })
+  @IsOptional({ message: 'It is required to send the full price' })
   @IsNumber({}, { message: DefaultValidationMessages.IsNumber })
   @Min(0)
   public fullPrice: number
