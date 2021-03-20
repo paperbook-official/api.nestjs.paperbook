@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -138,5 +139,22 @@ export class ProductController {
       requestUser,
       updateProductPayload
     )
+  }
+
+  /**
+   * Method that is called when the user access the "/products/:id"
+   * route with the "DELETE" method
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Updates a single product' })
+  @ApiOkResponse({ description: 'Updates  user' })
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @Delete(':id')
+  public async delete(
+    @Param('id') productId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.productService.delete(productId, requestUser)
   }
 }

@@ -81,4 +81,30 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
     await ProductEntity.update({ id: productId }, updateProductPayload)
   }
+
+  /**
+   * Method that can remove some product from the database
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   */
+  public async delete(
+    productId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await ProductEntity.findOne({ id: productId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${productId}" does not exist or is disabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+    }
+
+    await ProductEntity.delete({ id: productId })
+  }
 }
