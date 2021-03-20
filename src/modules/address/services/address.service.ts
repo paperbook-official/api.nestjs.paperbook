@@ -49,17 +49,11 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   ): Promise<AddressEntity> {
     const { userId } = createAddressPayload
 
-    const userEntity = await this.userService.get(userId, requestUser)
-
-    if (!userEntity || !userEntity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
-    }
+    const user = await this.userService.get(userId, requestUser)
 
     const entity = new AddressEntity({
       ...createAddressPayload,
-      user: userEntity
+      user
     })
 
     return await entity.save()

@@ -26,8 +26,6 @@ import {
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 
-import { AddressEntity } from '../entities/address.entity'
-
 import { AddressProxy } from '../models/address.proxy'
 import { CreateAddressPayload } from '../models/create-address.payload'
 import { UpdatedAddressPayload } from '../models/update-address.payload'
@@ -46,7 +44,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: AddressEntity
+    type: AddressProxy
   },
   query: {
     persist: ['id', 'isActive'],
@@ -140,7 +138,7 @@ export class AddressController {
    * @param updatedUserPayload stores the new user data
    */
   @ApiOperation({ summary: 'Updates a single address' })
-  @ApiOkResponse({ description: 'Updates user' })
+  @ApiOkResponse({ description: 'Updates the user' })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(

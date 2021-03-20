@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base-entity'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
+import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { UserProxy } from '../models/user.proxy'
 import { ToProxy } from 'src/common/to-proxy'
@@ -83,6 +84,13 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
     address => address.user
   )
   public addresses?: AddressEntity[]
+
+  @ApiPropertyOptional()
+  @OneToMany(
+    () => ProductEntity,
+    product => product.user
+  )
+  public products?: ProductEntity[]
 
   //#endregion
 

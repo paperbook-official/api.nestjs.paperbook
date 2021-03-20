@@ -30,9 +30,8 @@ export class RolesGuard implements CanActivate {
 
     if (user.roles && hasRole) return true
 
-    if (!user)
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+    throw new ForbiddenException(
+      'You have no permission to access those sources'
+    )
   }
 }
