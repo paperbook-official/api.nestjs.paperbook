@@ -31,7 +31,10 @@ import { User } from 'src/decorators/user/user.decorator'
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
 import { UserProxy } from '../models/user.proxy'
-import { AddressProxy } from 'src/modules/address/models/address.proxy'
+import {
+  AddressProxy,
+  GetManyAddressProxyResponse
+} from 'src/modules/address/models/address.proxy'
 
 import { UserService } from '../services/user.service'
 
@@ -121,7 +124,8 @@ export class UserController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
   @ApiOkResponse({
-    description: 'Gets all the logged user addresses'
+    description: 'Gets all the logged user addresses',
+    type: GetManyAddressProxyResponse
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/addresses')
@@ -167,7 +171,8 @@ export class UserController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({ summary: 'Retrieves all the user addresses' })
   @ApiOkResponse({
-    description: 'Gets all the user addresses'
+    description: 'Gets all the user addresses',
+    type: GetManyAddressProxyResponse
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/addresses')
