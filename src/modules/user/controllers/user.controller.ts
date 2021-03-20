@@ -35,6 +35,10 @@ import {
   AddressProxy,
   GetManyAddressProxyResponse
 } from 'src/modules/address/models/address.proxy'
+import {
+  GetManyProductProxyResponse,
+  ProductProxy
+} from 'src/modules/product/models/product.proxy'
 
 import { UserService } from '../services/user.service'
 
@@ -142,6 +146,32 @@ export class UserController {
   }
 
   /**
+   * Method that is called when the user access the "/user/me/products" route
+   * with the "GET" method
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found data
+   */
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves all the logged user products' })
+  @ApiOkResponse({
+    description: 'Gets all the logged user products',
+    type: GetManyProductProxyResponse
+  })
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @Get('me/products')
+  public async getMyProducts(
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.userService.getProductsByUserId(
+      requestUser.id,
+      crudRequest
+    )
+    return mapCrud(entities)
+  }
+
+  /**
    * Method that is called when the user access the "/users/:id"
    * route with "GET" method
    * @param userId stores the target user id
@@ -184,6 +214,32 @@ export class UserController {
     const entities = await this.userService.getAddressesByUserId(
       userId,
       requestUser,
+      crudRequest
+    )
+    return mapCrud(entities)
+  }
+
+  /**
+   * Method that is called when the user access the "users/:id/products"
+   * route with "GET" method
+   * @param userId stores the user id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found data
+   */
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves all the user products' })
+  @ApiOkResponse({
+    description: 'Gets all the user products',
+    type: GetManyProductProxyResponse
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get(':id/products')
+  public async getProductsByUserId(
+    @Param('id') userId: number,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.userService.getProductsByUserId(
+      userId,
       crudRequest
     )
     return mapCrud(entities)

@@ -13,11 +13,13 @@ import { Repository } from 'typeorm'
 
 import { UserEntity } from '../entities/user.entity'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
+import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
 
 import { AddressService } from 'src/modules/address/services/address.service'
+import { ProductService } from 'src/modules/product/services/product.service'
 
 import { encryptPassword } from 'src/utils/password'
 import { RequestUser } from 'src/utils/type.shared'
@@ -36,7 +38,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     @InjectRepository(UserEntity)
     private readonly repository: Repository<UserEntity>,
     @Inject(forwardRef(() => AddressService))
-    private readonly addressService: AddressService
+    private readonly addressService: AddressService,
+    @Inject(forwardRef(() => ProductService))
+    private readonly productService: ProductService
   ) {
     super(repository)
   }
@@ -131,7 +135,37 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       $and: [...crudRequest.parsed.search.$and, { userId }]
     }
 
+    console.log(crudRequest.parsed.search.$and)
+
     return await this.addressService.getMany(crudRequest)
+  }
+
+  /**
+   * Method that gets all the products of some user
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @throws {NotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
+   * @returns all the found elements
+   */
+  public async getProductsByUserId(
+    userId: number,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    const entity = await UserEntity.findOne({ id: userId })
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${userId}" does not exist or is disabled`
+      )
+    }
+
+    crudRequest.parsed.search = {
+      $and: [...crudRequest.parsed.search.$and, { userId }]
+    }
+
+    return await this.productService.getMany(crudRequest)
   }
 
   /**

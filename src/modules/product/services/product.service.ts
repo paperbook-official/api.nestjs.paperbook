@@ -1,9 +1,11 @@
 import {
   ConflictException,
   ForbiddenException,
+  forwardRef,
   Injectable,
   NotFoundException
 } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
@@ -27,6 +29,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   public constructor(
     @InjectRepository(ProductEntity)
     private readonly repository: Repository<ProductEntity>,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService
   ) {
     super(repository)
