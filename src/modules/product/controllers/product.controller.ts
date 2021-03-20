@@ -1,5 +1,18 @@
-import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors
+} from '@nestjs/common'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -13,6 +26,7 @@ import { User } from 'src/decorators/user/user.decorator'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
 import { ProductProxy } from '../models/product.proxy'
+import { UpdateProductPayload } from '../models/update-product.payload'
 
 import { ProductService } from '../services/product.service'
 
@@ -90,8 +104,8 @@ export class ProductController {
   }
 
   /**
-   * Method that is called when the user acces the "/products" route
-   * with "GET" method
+   * Method that is called when the user access the "/products" route
+   * with the "GET" method
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found entities
    */
@@ -101,5 +115,28 @@ export class ProductController {
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getMany(crudRequest)
     return mapCrud(entities)
+  }
+
+  /**
+   * Method that is called when the user access the "/products/:id"
+   * route with the "PATCH" method
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   * @param updateProductPayload stores the new product data
+   */
+  @ApiOperation({ summary: 'Updates a single product' })
+  @ApiOkResponse({ description: 'Updates  user' })
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @Patch(':id')
+  public async update(
+    @Param('id') productId: number,
+    @User() requestUser: RequestUser,
+    @Body() updateProductPayload: UpdateProductPayload
+  ): Promise<void> {
+    await this.productService.update(
+      productId,
+      requestUser,
+      updateProductPayload
+    )
   }
 }

@@ -138,7 +138,7 @@ export class AddressController {
    * @param updatedUserPayload stores the new user data
    */
   @ApiOperation({ summary: 'Updates a single address' })
-  @ApiOkResponse({ description: 'Updates user' })
+  @ApiOkResponse({ description: 'Updates the user' })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
