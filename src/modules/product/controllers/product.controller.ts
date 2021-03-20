@@ -1,6 +1,12 @@
-import { Body, Controller, Post, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common'
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Crud, CrudRequestInterceptor } from '@nestjsx/crud'
+import {
+  Crud,
+  CrudRequest,
+  CrudRequestInterceptor,
+  GetManyDefaultResponse,
+  ParsedRequest
+} from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
@@ -10,6 +16,7 @@ import { ProductProxy } from '../models/product.proxy'
 
 import { ProductService } from '../services/product.service'
 
+import { mapCrud } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -65,5 +72,34 @@ export class ProductController {
       createProductPaylaod
     )
     return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user access the "/products/:id"
+   * route with "GET" method
+   * @param productId stores the product id
+   * @param crudRequest store the joins, filters, etc
+   * @returns the found entity
+   */
+  @Get(':id')
+  public async get(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<ProductProxy> {
+    const entity = await this.productService.getOne(crudRequest)
+    return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user acces the "/products" route
+   * with "GET" method
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found entities
+   */
+  @Get()
+  public async getMore(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.productService.getMany(crudRequest)
+    return mapCrud(entities)
   }
 }
