@@ -1,8 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { ProductEntity } from '../entities/product.entity'
 
 import { BaseProxy } from 'src/common/base-proxy'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 /**
  * The app's main product proxy class
@@ -31,6 +32,12 @@ export class ProductProxy extends BaseProxy {
   @ApiProperty()
   public stockAmount: number
 
+  @ApiProperty()
+  public userId: number
+
+  @ApiPropertyOptional()
+  public user?: UserProxy
+
   public constructor(productEntity: ProductEntity) {
     super(productEntity)
 
@@ -41,5 +48,8 @@ export class ProductProxy extends BaseProxy {
     this.installmentAmount = productEntity.installmentAmount
     this.discountAmount = productEntity.discountAmount
     this.stockAmount = productEntity.stockAmount
+    this.userId = productEntity.userId
+
+    this.user = productEntity.user?.toProxy()
   }
 }

@@ -28,8 +28,6 @@ import { ApiPropertyGet } from 'src/decorators/get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 
-import { UserEntity } from '../entities/user.entity'
-
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
 import { UserProxy } from '../models/user.proxy'
@@ -49,7 +47,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: UserEntity
+    type: UserProxy
   },
   query: {
     persist: ['id', 'isActive'],
@@ -122,7 +120,9 @@ export class UserController {
    */
   @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
-  @ApiOkResponse({ description: 'Gets all the logged user addresses' })
+  @ApiOkResponse({
+    description: 'Gets all the logged user addresses'
+  })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/addresses')
   public async getMyAddresses(
@@ -165,6 +165,10 @@ export class UserController {
    * @returns all the found data
    */
   @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves all the user addresses' })
+  @ApiOkResponse({
+    description: 'Gets all the user addresses'
+  })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/addresses')
   public async getAddressesByUserId(

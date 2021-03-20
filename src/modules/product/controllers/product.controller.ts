@@ -1,8 +1,18 @@
-import { Controller, UseInterceptors } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common'
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Crud, CrudRequestInterceptor } from '@nestjsx/crud'
 
-import { UserEntity } from 'src/modules/user/entities/user.entity'
+import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
+import { User } from 'src/decorators/user/user.decorator'
+
+import { CreateProductPaylaod } from '../models/create-product.payload'
+import { ProductProxy } from '../models/product.proxy'
+
+import { ProductService } from '../services/product.service'
+
+import { RequestUser } from 'src/utils/type.shared'
+
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main products controller class
@@ -11,7 +21,7 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
  */
 @Crud({
   model: {
-    type: UserEntity
+    type: ProductProxy
   },
   query: {
     persist: ['id', 'isActive'],
@@ -29,4 +39,31 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('products')
 @Controller('products')
-export class ProductController {}
+export class ProductController {
+  public constructor(private readonly productService: ProductService) {}
+
+  /**
+   * Method that is called when the user access the "/products"
+   * route with "POST" method
+   * @param requestUser stores the logged user data
+   * @param createProductPaylaod stores the new product data
+   * @returns the created product data
+   */
+  @ApiOperation({ summary: 'Creates a new ' })
+  @ApiCreatedResponse({
+    description: 'Gets the created product data',
+    type: ProductProxy
+  })
+  @ProtectTo(RolesEnum.Admin, RolesEnum.Seller)
+  @Post()
+  public async create(
+    @User() requestUser: RequestUser,
+    @Body() createProductPaylaod: CreateProductPaylaod
+  ): Promise<ProductProxy> {
+    const entity = await this.productService.create(
+      requestUser,
+      createProductPaylaod
+    )
+    return entity.toProxy()
+  }
+}

@@ -26,8 +26,6 @@ import {
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 
-import { AddressEntity } from '../entities/address.entity'
-
 import { AddressProxy } from '../models/address.proxy'
 import { CreateAddressPayload } from '../models/create-address.payload'
 import { UpdatedAddressPayload } from '../models/update-address.payload'
@@ -46,7 +44,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: AddressEntity
+    type: AddressProxy
   },
   query: {
     persist: ['id', 'isActive'],

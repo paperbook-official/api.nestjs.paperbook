@@ -62,6 +62,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
+   * @throws {NotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    * @returns the found user entity
    */
   public async get(
@@ -100,6 +103,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
+   * @throws {NotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    * @returns all the found elements
    */
   public async getAddressesByUserId(
@@ -133,6 +139,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
+   * @throws {NotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    */
   public async update(
     userId: number,
@@ -160,6 +169,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method can delete some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {NotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    */
   public async delete(userId: number, requestUser: RequestUser): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
@@ -182,6 +194,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method that can disable some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {NotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    */
   public async disable(
     userId: number,
@@ -214,6 +229,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method that can enable some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {NotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    */
   public async enable(userId: number, requestUser: RequestUser): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })

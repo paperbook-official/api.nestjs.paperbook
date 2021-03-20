@@ -1,6 +1,8 @@
-import { Column, Entity } from 'typeorm'
+import { ApiPropertyOptional } from '@nestjs/swagger'
+import { Column, Entity, ManyToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base-entity'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ProductProxy } from '../models/product.proxy'
 import { ToProxy } from 'src/common/to-proxy'
@@ -52,6 +54,23 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
     nullable: false
   })
   public stockAmount: number
+
+  @Column({
+    type: 'integer',
+    nullable: false
+  })
+  public userId: number
+
+  //#region Relations
+
+  @ApiPropertyOptional({ type: () => UserEntity })
+  @ManyToOne(
+    () => UserEntity,
+    user => user.products
+  )
+  public user?: UserEntity
+
+  //#endregion
 
   //#endregion
 

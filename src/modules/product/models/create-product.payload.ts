@@ -64,4 +64,12 @@ export class CreateProductPaylaod {
   )
   @Min(1)
   public stockAmount: number
+
+  @ApiProperty()
+  @IsDefined({ message: 'It is required to send the user id' })
+  @IsNumber(
+    { maxDecimalPlaces: 0 },
+    { message: DefaultValidationMessages.IsNumber }
+  )
+  public userId: number
 }
