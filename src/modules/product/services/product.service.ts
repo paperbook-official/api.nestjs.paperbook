@@ -107,4 +107,56 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
     await ProductEntity.delete({ id: productId })
   }
+
+  /**
+   * Method that can disables some product
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   */
+  public async disable(
+    productId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await ProductEntity.findOne({ id: productId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${productId}" does not exist or is disabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+    }
+
+    await ProductEntity.update({ id: productId }, { isActive: false })
+  }
+
+  /**
+   * Method that can enables some product
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   */
+  public async enable(
+    productId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await ProductEntity.findOne({ id: productId })
+
+    if (!entity || !entity.isActive) {
+      throw new NotFoundException(
+        `The entity identified by "${productId}" does not exist or is disabled`
+      )
+    }
+
+    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException(
+        'You have no permission to access those sources'
+      )
+    }
+
+    await ProductEntity.update({ id: productId }, { isActive: true })
+  }
 }

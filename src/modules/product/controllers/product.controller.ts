@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseInterceptors
 } from '@nestjs/common'
 import {
@@ -156,5 +157,39 @@ export class ProductController {
     @User() requestUser: RequestUser
   ): Promise<void> {
     await this.productService.delete(productId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user access the
+   * "/products/:id/disable" route with the "PUT" method
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Updates a single product' })
+  @ApiOkResponse({ description: 'Updates  user' })
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @Put(':id/disable')
+  public async disable(
+    @Param('id') productId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.productService.disable(productId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user access the
+   * "/products/:id/enable" route with the "PUT" method
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Updates a single product' })
+  @ApiOkResponse({ description: 'Updates  user' })
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @Put(':id/enable')
+  public async enable(
+    @Param('id') productId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.productService.enable(productId, requestUser)
   }
 }
