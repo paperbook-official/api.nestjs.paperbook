@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { ProductEntity } from '../entities/product.entity'
 
+import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
 import { BaseProxy } from 'src/common/base-proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
@@ -52,4 +53,16 @@ export class ProductProxy extends BaseProxy {
 
     this.user = productEntity.user?.toProxy()
   }
+}
+
+/**
+ * The app's main get many product proxy response
+ *
+ * Class that deals with the products return data with pagination
+ */
+export class GetManyProductProxyResponse extends BaseGetManyDefaultResponse<
+  ProductProxy
+> {
+  @ApiProperty({ type: ProductProxy, isArray: true })
+  data: ProductProxy[]
 }
