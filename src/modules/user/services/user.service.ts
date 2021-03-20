@@ -80,7 +80,12 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
     if (crudRequest) {
       crudRequest.parsed.search = {
-        $and: [...crudRequest.parsed.search.$and, { id: userId }]
+        $and: [
+          ...crudRequest.parsed.search.$and,
+          {
+            id: { $eq: userId }
+          }
+        ]
       }
       entity = await super.getOne(crudRequest).catch(() => undefined)
     } else {
@@ -132,10 +137,15 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     crudRequest.parsed.search = {
-      $and: [...crudRequest.parsed.search.$and, { userId }]
+      $and: [
+        ...crudRequest.parsed.search.$and,
+        {
+          userId: {
+            $eq: userId
+          }
+        }
+      ]
     }
-
-    console.log(crudRequest.parsed.search.$and)
 
     return await this.addressService.getMany(crudRequest)
   }
@@ -162,7 +172,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     crudRequest.parsed.search = {
-      $and: [...crudRequest.parsed.search.$and, { userId }]
+      $and: [
+        ...crudRequest.parsed.search.$and,
+        {
+          userId: {
+            $eq: userId
+          }
+        }
+      ]
     }
 
     return await this.productService.getMany(crudRequest)

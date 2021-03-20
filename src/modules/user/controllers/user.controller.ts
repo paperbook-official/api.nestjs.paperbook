@@ -46,6 +46,7 @@ import { mapCrud } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
+import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search.pipe'
 
 /**
  * The app's main user controller class
@@ -209,7 +210,7 @@ export class UserController {
   public async getAddressesByUserId(
     @Param('id') userId: number,
     @User() requestUser: RequestUser,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
     const entities = await this.userService.getAddressesByUserId(
       userId,
@@ -236,7 +237,7 @@ export class UserController {
   @Get(':id/products')
   public async getProductsByUserId(
     @Param('id') userId: number,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.userService.getProductsByUserId(
       userId,
