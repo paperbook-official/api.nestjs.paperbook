@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import { BaseEntity } from './base-entity'
+import { BaseEntity } from './base.entity'
 
 /**
  * The app's main base proxy class

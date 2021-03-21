@@ -1,12 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity, OneToMany } from 'typeorm'
 
-import { BaseEntity } from 'src/common/base-entity'
+import { BaseEntity } from 'src/common/base.entity'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { UserProxy } from '../models/user.proxy'
-import { ToProxy } from 'src/common/to-proxy'
+import { ToProxy } from 'src/common/to-proxy.interface'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 

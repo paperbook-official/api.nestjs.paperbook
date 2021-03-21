@@ -1,11 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity, ManyToOne } from 'typeorm'
 
-import { BaseEntity } from 'src/common/base-entity'
+import { BaseEntity } from 'src/common/base.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ProductProxy } from '../models/product.proxy'
-import { ToProxy } from 'src/common/to-proxy'
+import { ToProxy } from 'src/common/to-proxy.interface'
 
 @Entity('products')
 export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {

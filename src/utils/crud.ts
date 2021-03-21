@@ -1,6 +1,6 @@
 import { GetManyDefaultResponse } from '@nestjsx/crud'
 
-import { ToProxy } from 'src/common/to-proxy'
+import { ToProxy } from 'src/common/to-proxy.interface'
 
 /**
  * Function that can convert all the entities that were being passed through

@@ -145,11 +145,11 @@ export class ProductController {
    * @returns all the found elements
    */
   @ApiOperation({
-    summary: 'Retrieves all the products organized by it "createdAt" field'
+    summary: 'Retrieves all the products organized by "createdAt" field'
   })
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
-    description: 'Gets all the products organized by it "createdAt" field',
+    description: 'Gets all the products organized by "createdAt" field',
     type: GetManyProductProxyResponse
   })
   @Get('recents')

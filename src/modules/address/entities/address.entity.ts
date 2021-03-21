@@ -1,11 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity, ManyToOne } from 'typeorm'
 
-import { BaseEntity } from 'src/common/base-entity'
+import { BaseEntity } from 'src/common/base.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { AddressProxy } from '../models/address.proxy'
-import { ToProxy } from 'src/common/to-proxy'
+import { ToProxy } from 'src/common/to-proxy.interface'
 
 /**
  * The app's main address entity class

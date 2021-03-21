@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ProductEntity } from '../entities/product.entity'
 
 import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
-import { BaseProxy } from 'src/common/base-proxy'
+import { BaseProxy } from 'src/common/base.proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 /**

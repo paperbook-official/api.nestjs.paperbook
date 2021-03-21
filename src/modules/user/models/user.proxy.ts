@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { UserEntity } from '../entities/user.entity'
 
-import { BaseProxy } from 'src/common/base-proxy'
+import { BaseProxy } from 'src/common/base.proxy'
 import { AddressProxy } from 'src/modules/address/models/address.proxy'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
