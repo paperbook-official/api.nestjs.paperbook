@@ -94,6 +94,12 @@ export class ProductController {
     return entity.toProxy()
   }
 
+  /**
+   * Method that is called when the user access the "/products/offers"
+   * route with "GET" method
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found products
+   */
   @ApiOperation({
     summary: 'Retrieves all the products with discount greater than 0'
   })

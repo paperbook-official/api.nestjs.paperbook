@@ -59,6 +59,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     }).save()
   }
 
+  /**
+   * Method that can get some offers
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found products
+   */
   public async getOffers(
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
