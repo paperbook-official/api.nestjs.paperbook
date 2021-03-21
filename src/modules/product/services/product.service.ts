@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { Inject } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
@@ -56,6 +57,20 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       ...createProductPayload,
       user
     }).save()
+  }
+
+  public async getOffers(
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    crudRequest.parsed.search.$and = [
+      ...crudRequest.parsed.search.$and,
+      {
+        discountAmount: {
+          $gt: 0
+        }
+      }
+    ]
+    return this.getMany(crudRequest)
   }
 
   /**

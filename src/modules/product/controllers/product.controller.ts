@@ -23,11 +23,15 @@ import {
   ParsedRequest
 } from '@nestjsx/crud'
 
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/get-many/api-property-get-many.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
-import { ProductProxy } from '../models/product.proxy'
+import {
+  GetManyProductProxyResponse,
+  ProductProxy
+} from '../models/product.proxy'
 import { UpdateProductPayload } from '../models/update-product.payload'
 
 import { ProductService } from '../services/product.service'
@@ -88,6 +92,22 @@ export class ProductController {
       createProductPaylaod
     )
     return entity.toProxy()
+  }
+
+  @ApiOperation({
+    summary: 'Retrieves all the products with discount greater than 0'
+  })
+  @ApiOkResponse({
+    description: 'Gets all the products with discount greater than 0',
+    type: GetManyProductProxyResponse
+  })
+  @ApiPropertyGetManyDefaultResponse()
+  @Get('offers')
+  public async getOffers(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.productService.getOffers(crudRequest)
+    return mapCrud(entities)
   }
 
   /**
