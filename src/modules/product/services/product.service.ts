@@ -79,8 +79,8 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   }
 
   /**
-   * Method that can some free of interests products
-   * @param crudRequest stores the joins, filer, etc
+   * Method that can get some free of interests products
+   * @param crudRequest stores the joins, filers, etc
    * @returns all the found products
    */
   public async getFreeOfInterests(
@@ -92,6 +92,23 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
         installmentPrice: {
           $isnull: true
         }
+      }
+    ]
+    return this.getMany(crudRequest)
+  }
+
+  /**
+   * Method that can get some products added recently
+   * @param crudRequest stores the joins, filters, etc.
+   * @returns all the found elements
+   */
+  public async getRecents(
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    crudRequest.parsed.sort = [
+      {
+        field: 'createdAt',
+        order: 'ASC'
       }
     ]
     return this.getMany(crudRequest)

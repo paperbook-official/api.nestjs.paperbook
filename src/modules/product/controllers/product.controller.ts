@@ -139,6 +139,28 @@ export class ProductController {
   }
 
   /**
+   * Method that is called when the user acces the "products/recents"
+   * foute with "GET" method
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found elements
+   */
+  @ApiOperation({
+    summary: 'Retrieves all the products organized by it "createdAt" field'
+  })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the products organized by it "createdAt" field',
+    type: GetManyProductProxyResponse
+  })
+  @Get('recents')
+  public async getRecents(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.productService.getFreeOfInterests(crudRequest)
+    return mapCrud(entities)
+  }
+
+  /**
    * Method that is called when the user access the "/products/:id"
    * route with "GET" method
    * @param productId stores the product id
