@@ -46,7 +46,7 @@ export class CreateProductPaylaod {
     { maxDecimalPlaces: 0 },
     { message: DefaultValidationMessages.IsNumber }
   )
-  @Min(0)
+  @Min(1)
   public installmentAmount?: number
 
   @ApiPropertyOptional()

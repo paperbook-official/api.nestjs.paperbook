@@ -79,6 +79,25 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   }
 
   /**
+   * Method that can some free of interests products
+   * @param crudRequest stores the joins, filer, etc
+   * @returns all the found products
+   */
+  public async getFreeOfInterests(
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    crudRequest.parsed.search.$and = [
+      ...crudRequest.parsed.search.$and,
+      {
+        installmentPrice: {
+          $isnull: true
+        }
+      }
+    ]
+    return this.getMany(crudRequest)
+  }
+
+  /**
    * Method that can change the data of some product
    * @param productId stores the product id
    * @param requestUser stores the logged user data

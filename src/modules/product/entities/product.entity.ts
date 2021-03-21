@@ -33,21 +33,23 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
 
   @Column({
     type: 'float',
-    nullable: false
+    nullable: true
   })
-  public installmentPrice: number
+  public installmentPrice?: number
 
   @Column({
     type: 'int',
-    nullable: false
+    nullable: true,
+    default: 1
   })
-  public installmentAmount: number
+  public installmentAmount?: number
 
   @Column({
     type: 'float',
-    nullable: false
+    nullable: true,
+    default: 0
   })
-  public discountAmount: number
+  public discountAmount?: number
 
   @Column({
     type: 'int',

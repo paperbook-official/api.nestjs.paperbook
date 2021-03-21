@@ -98,21 +98,43 @@ export class ProductController {
    * Method that is called when the user access the "/products/offers"
    * route with "GET" method
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found products
+   * @returns all the found products
    */
   @ApiOperation({
     summary: 'Retrieves all the products with discount greater than 0'
   })
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with discount greater than 0',
     type: GetManyProductProxyResponse
   })
-  @ApiPropertyGetManyDefaultResponse()
   @Get('offers')
   public async getOffers(
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getOffers(crudRequest)
+    return mapCrud(entities)
+  }
+
+  /**
+   * Method that is called when the user access the "/products/free-of-interests"
+   * route with "GET" method
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found products
+   */
+  @ApiOperation({
+    summary: 'Retrieves all the products with no installment price'
+  })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the products with no installment price',
+    type: GetManyProductProxyResponse
+  })
+  @Get('free-of-interests')
+  public async getFreeOfInterests(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.productService.getFreeOfInterests(crudRequest)
     return mapCrud(entities)
   }
 
