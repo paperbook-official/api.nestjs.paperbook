@@ -126,8 +126,8 @@ export class UserController {
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found data
    */
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user addresses',
     type: GetManyAddressProxyResponse
@@ -153,8 +153,8 @@ export class UserController {
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found data
    */
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({ summary: 'Retrieves all the logged user products' })
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user products',
     type: GetManyProductProxyResponse
@@ -199,8 +199,8 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found data
    */
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({ summary: 'Retrieves all the user addresses' })
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user addresses',
     type: GetManyAddressProxyResponse
@@ -227,8 +227,8 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found data
    */
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({ summary: 'Retrieves all the user products' })
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user products',
     type: GetManyProductProxyResponse
