@@ -60,9 +60,7 @@ export class ProductProxy extends BaseProxy {
  *
  * Class that deals with the products return data with pagination
  */
-export class GetManyProductProxyResponse extends BaseGetManyDefaultResponse<
-  ProductProxy
-> {
+export class GetManyProductProxyResponse extends BaseGetManyDefaultResponse {
   @ApiProperty({ type: ProductProxy, isArray: true })
   data: ProductProxy[]
 }

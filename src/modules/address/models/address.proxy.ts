@@ -64,9 +64,7 @@ export class AddressProxy extends BaseProxy {
  *
  * Class that deals with the address return data with pagination
  */
-export class GetManyAddressProxyResponse extends BaseGetManyDefaultResponse<
-  AddressProxy
-> {
+export class GetManyAddressProxyResponse extends BaseGetManyDefaultResponse {
   @ApiProperty({ type: AddressProxy, isArray: true })
   public data: AddressProxy[]
 }
