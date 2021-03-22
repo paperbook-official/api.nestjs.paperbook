@@ -6,9 +6,9 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { ProductEntity } from '../entities/product.entity'
-import { EntityAlreadyDisabledException } from 'src/exceptions/entity-already-disabled.exception'
-import { EntityAlreadyEnabledException } from 'src/exceptions/entity-already-enabled.exception'
-import { EntityNotFoundException } from 'src/exceptions/entity-not-found.exception'
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
 import { UpdateProductPayload } from '../models/update-product.payload'
@@ -17,7 +17,7 @@ import { UserService } from 'src/modules/user/services/user.service'
 
 import { RequestUser } from 'src/utils/type.shared'
 
-import { ForbiddenException } from 'src/exceptions/forbidden.exception'
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
 /**
  * The app's main product service class

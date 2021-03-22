@@ -5,9 +5,9 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { UserEntity } from '../entities/user.entity'
-import { EntityAlreadyDisabledException } from 'src/exceptions/entity-already-disabled.exception'
-import { EntityAlreadyEnabledException } from 'src/exceptions/entity-already-enabled.exception'
-import { EntityNotFoundException } from 'src/exceptions/entity-not-found.exception'
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
@@ -21,7 +21,7 @@ import { encryptPassword } from 'src/utils/password'
 import { RequestUser } from 'src/utils/type.shared'
 import { isAdminUser } from 'src/utils/validations'
 
-import { ForbiddenException } from 'src/exceptions/forbidden.exception'
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
