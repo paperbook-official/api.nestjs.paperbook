@@ -34,20 +34,16 @@ export class UserProxy extends BaseProxy {
   @ApiPropertyOptional({ type: () => AddressProxy, isArray: true })
   public addresses?: AddressProxy[]
 
-  public constructor(userEntity: UserEntity) {
-    super(userEntity)
+  public constructor(entity: UserEntity) {
+    super(entity)
 
-    this.id = +userEntity.id
-    this.createdAt = userEntity.createdAt
-    this.updatedAt = userEntity.updatedAt
-    this.isActive = userEntity.isActive
-    this.name = userEntity.name
-    this.lastName = userEntity.lastName
-    this.email = userEntity.email
-    this.cpf = userEntity.cpf
-    this.permissions = userEntity.roles
-    this.phone = userEntity.phone
+    this.name = entity.name
+    this.lastName = entity.lastName
+    this.email = entity.email
+    this.cpf = entity.cpf
+    this.permissions = entity.roles
+    this.phone = entity.phone
 
-    this.addresses = userEntity.addresses?.map(address => address.toProxy())
+    this.addresses = entity.addresses?.map(address => address.toProxy())
   }
 }
