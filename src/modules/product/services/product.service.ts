@@ -1,10 +1,4 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  forwardRef,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common'
+import { forwardRef, Injectable } from '@nestjs/common'
 import { Inject } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
@@ -12,6 +6,9 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { ProductEntity } from '../entities/product.entity'
+import { EntityAlreadyDisabledException } from 'src/exceptions/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/entity-already-enabled.exception'
+import { EntityNotFoundException } from 'src/exceptions/entity-not-found.exception'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
 import { UpdateProductPayload } from '../models/update-product.payload'
@@ -19,6 +16,8 @@ import { UpdateProductPayload } from '../models/update-product.payload'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { RequestUser } from 'src/utils/type.shared'
+
+import { ForbiddenException } from 'src/exceptions/forbidden.exception'
 
 /**
  * The app's main product service class
@@ -128,15 +127,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     const entity = await ProductEntity.findOne({ id: productId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${productId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(productId, ProductEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await ProductEntity.update({ id: productId }, updateProductPayload)
@@ -154,15 +149,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     const entity = await ProductEntity.findOne({ id: productId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${productId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(productId, ProductEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await ProductEntity.delete({ id: productId })
@@ -180,21 +171,15 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     const entity = await ProductEntity.findOne({ id: productId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${productId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(productId, ProductEntity)
     }
 
     if (!entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${productId}" is already disabled`
-      )
+      throw new EntityAlreadyDisabledException(productId, ProductEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await ProductEntity.update({ id: productId }, { isActive: false })
@@ -212,21 +197,15 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     const entity = await ProductEntity.findOne({ id: productId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${productId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(productId, ProductEntity)
     }
 
     if (entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${productId}" is already enabled`
-      )
+      throw new EntityAlreadyEnabledException(productId, ProductEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await ProductEntity.update({ id: productId }, { isActive: true })

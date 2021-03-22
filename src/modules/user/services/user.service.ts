@@ -1,17 +1,13 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { UserEntity } from '../entities/user.entity'
+import { EntityAlreadyDisabledException } from 'src/exceptions/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/entity-already-enabled.exception'
+import { EntityNotFoundException } from 'src/exceptions/entity-not-found.exception'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
@@ -25,6 +21,7 @@ import { encryptPassword } from 'src/utils/password'
 import { RequestUser } from 'src/utils/type.shared'
 import { isAdminUser } from 'src/utils/validations'
 
+import { ForbiddenException } from 'src/exceptions/forbidden.exception'
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
@@ -93,15 +90,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     return entity
@@ -125,15 +118,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId, UserEntity)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     crudRequest.parsed.search = {
@@ -166,9 +155,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     const entity = await UserEntity.findOne({ id: userId })
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     crudRequest.parsed.search = {
@@ -202,15 +189,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await UserEntity.update({ id: userId }, updatedUserPayload)
@@ -228,15 +211,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
     await UserEntity.delete({ id: userId })
   }
@@ -256,21 +235,15 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (!entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${userId}" is already disabled`
-      )
+      throw new EntityAlreadyDisabledException(userId, UserEntity)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await UserEntity.update({ id: userId }, { isActive: false })
@@ -288,21 +261,15 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${userId}" is already enabled`
-      )
+      throw new EntityAlreadyEnabledException(userId, UserEntity)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await UserEntity.update({ id: userId }, { isActive: true })
