@@ -4,21 +4,21 @@ import { BaseEntity } from 'src/common/base.entity'
 
 /**
  * *
- * Instantiate a EntityNotFoundException Exception.
+ * Instantiate a EntityAlreadyDisabledException Exception.
  *
  * @example
- * `throw new EntityNotFoundException()`
+ * `throw new EntityAlreadyDisabledException()`
  *
  * @param identifier stores the entity id or unique identifier value
  * @param type stores the entity type
  */
-export class EntityNotFoundException extends HttpException {
+export class EntityAlreadyDisabledException extends HttpException {
   public constructor(identifier: number | string, type?: Type<BaseEntity>) {
     super(
       `The entity identified by "${identifier}"${
         type ? ` of type "${type.name}"` : ''
-      } does not exists or is disabled`,
-      HttpStatus.NOT_FOUND
+      } is already disabled`,
+      HttpStatus.CONFLICT
     )
   }
 }
