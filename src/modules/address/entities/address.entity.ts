@@ -12,7 +12,7 @@ import { ToProxy } from 'src/common/to-proxy.interface'
  *
  * Class that represents the entity that deals with addresses
  */
-@Entity('addresses')
+@Entity('address')
 export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
   //#region Columns
 

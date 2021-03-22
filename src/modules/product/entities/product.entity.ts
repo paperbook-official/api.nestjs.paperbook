@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne } from 'typeorm'
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
+import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ProductProxy } from '../models/product.proxy'
@@ -12,7 +13,7 @@ import { ToProxy } from 'src/common/to-proxy.interface'
  *
  * Class that represents the entity that deals with products
  */
-@Entity('products')
+@Entity('product')
 export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
   //#region Columns
 
@@ -84,6 +85,13 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
     user => user.products
   )
   public user?: UserEntity
+
+  @ApiPropertyOptional()
+  @OneToMany(
+    () => OrderEntity,
+    order => order.product
+  )
+  public orders?: OrderEntity[]
 
   //#endregion
 
