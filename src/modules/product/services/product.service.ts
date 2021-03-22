@@ -63,7 +63,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found products
    */
-  public async getOffers(
+  public async getOnSale(
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.search.$and = [

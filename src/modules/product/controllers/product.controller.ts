@@ -108,11 +108,11 @@ export class ProductController {
     description: 'Gets all the products with discount greater than 0',
     type: GetManyProductProxyResponse
   })
-  @Get('offers')
-  public async getOffers(
+  @Get('on-sale')
+  public async getOnSale(
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
-    const entities = await this.productService.getOffers(crudRequest)
+    const entities = await this.productService.getOnSale(crudRequest)
     return mapCrud(entities)
   }
 
