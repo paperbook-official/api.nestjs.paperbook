@@ -46,7 +46,7 @@ import { mapCrud } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
-import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search.pipe'
+import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 /**
  * The app's main user controller class
