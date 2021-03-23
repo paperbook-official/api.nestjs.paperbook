@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { CrudRequest } from '@nestjsx/crud'
+import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
@@ -12,6 +12,7 @@ import { CreateOrderPayload } from '../models/create-order.payload'
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
+import { some } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
@@ -85,5 +86,29 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     }
 
     return entity
+  }
+
+  /**
+   * Method that can get some orders entities
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found elements
+   */
+  public async getMore(
+    requestUser: RequestUser,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
+    const entities = await super.getMany(crudRequest)
+
+    if (
+      some(
+        entities,
+        entity => !this.userService.hasPermissions(entity.userId, requestUser)
+      )
+    ) {
+      throw new ForbiddenException()
+    }
+
+    return entities
   }
 }

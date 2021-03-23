@@ -5,6 +5,7 @@ import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
+  GetManyDefaultResponse,
   ParsedRequest
 } from '@nestjsx/crud'
 
@@ -16,6 +17,7 @@ import { OrderProxy } from '../models/order.proxy'
 
 import { OrderService } from '../services/order.service'
 
+import { map } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -94,5 +96,22 @@ export class OrderController {
       crudRequest
     )
     return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user access the "orders" route
+   * with "GET" method
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found orders
+   */
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get()
+  public async getMore(
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
+    const entities = await this.orderService.getMore(requestUser, crudRequest)
+    return map(entities, entity => entity.toProxy())
   }
 }
