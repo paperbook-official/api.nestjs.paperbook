@@ -39,7 +39,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * Method that can save some entity in the database
    * @param requestUser stores the logged user data
    * @param createProductPayload stores the new product data
-   * @throws {NotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no permissions
    * to execute this action
    * @returns the created product
@@ -56,6 +56,32 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       ...createProductPayload,
       user
     }).save()
+  }
+
+  /**
+   * Method that can get only product entity from the database
+   * @param productId stores the product id
+   * @param crudRequest stores the joins, filter, etc
+   * @throws {EntityNotFoundException} if the product was not found
+   * @returns the found entity
+   */
+  public async get(
+    productId: number,
+    crudRequest?: CrudRequest
+  ): Promise<ProductEntity> {
+    let entity: ProductEntity
+
+    if (crudRequest) {
+      entity = await super.getOne(crudRequest).catch(() => undefined)
+    } else {
+      entity = await ProductEntity.findOne({ id: productId })
+    }
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(productId)
+    }
+
+    return entity
   }
 
   /**

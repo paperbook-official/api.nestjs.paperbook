@@ -169,9 +169,10 @@ export class ProductController {
    */
   @Get(':id')
   public async get(
+    @Param('id') productId: number,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<ProductProxy> {
-    const entity = await this.productService.getOne(crudRequest)
+    const entity = await this.productService.get(productId, crudRequest)
     return entity.toProxy()
   }
 
