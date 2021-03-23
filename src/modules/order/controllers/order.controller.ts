@@ -1,6 +1,12 @@
-import { Body, Controller, Post, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Param, Post, UseInterceptors } from '@nestjs/common'
+import { Get } from '@nestjs/common'
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Crud, CrudRequestInterceptor } from '@nestjsx/crud'
+import {
+  Crud,
+  CrudRequest,
+  CrudRequestInterceptor,
+  ParsedRequest
+} from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
@@ -63,6 +69,29 @@ export class OrderController {
     const entity = await this.orderService.create(
       requestUser,
       createOrderPayload
+    )
+    return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user access the "orders/:id"
+   * route with "GET" method
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found order
+   */
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get(':id')
+  public async get(
+    @Param('id') orderId: number,
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<OrderProxy> {
+    const entity = await this.orderService.get(
+      orderId,
+      requestUser,
+      crudRequest
     )
     return entity.toProxy()
   }

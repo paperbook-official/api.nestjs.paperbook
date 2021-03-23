@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { OrderEntity } from '../entities/order.entity'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateOrderPayload } from '../models/create-order.payload'
 
@@ -11,6 +13,8 @@ import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { RequestUser } from 'src/utils/type.shared'
+
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
 /**
  * The app's main order service class
@@ -50,5 +54,36 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     })
 
     return await entity.save()
+  }
+
+  /**
+   * Method that can get only on order entity
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found entity
+   */
+  public async get(
+    orderId: number,
+    requestUser: RequestUser,
+    crudRequest?: CrudRequest
+  ): Promise<OrderEntity> {
+    let entity: OrderEntity
+
+    if (crudRequest) {
+      entity = await super.getOne(crudRequest).catch(() => undefined)
+    } else {
+      entity = await OrderEntity.findOne({ id: orderId })
+    }
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(orderId, OrderEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    return entity
   }
 }
