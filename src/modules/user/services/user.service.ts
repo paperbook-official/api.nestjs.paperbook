@@ -63,7 +63,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @throws {NotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    * @returns the found user entity
@@ -76,14 +76,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     let entity: UserEntity
 
     if (crudRequest) {
-      crudRequest.parsed.search = {
-        $and: [
-          ...crudRequest.parsed.search.$and,
-          {
-            id: { $eq: userId }
-          }
-        ]
-      }
       entity = await super.getOne(crudRequest).catch(() => undefined)
     } else {
       entity = await UserEntity.findOne({ id: userId })
@@ -105,7 +97,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @throws {NotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    * @returns all the found elements
@@ -144,7 +136,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @throws {NotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    * @returns all the found elements
@@ -177,7 +169,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
-   * @throws {NotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    */
@@ -203,7 +195,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method can delete some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
-   * @throws {NotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    */
@@ -224,7 +216,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method that can disable some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
-   * @throws {NotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    */
@@ -253,7 +245,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method that can enable some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
-   * @throws {NotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    */
