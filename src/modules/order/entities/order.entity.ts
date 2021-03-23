@@ -63,7 +63,7 @@ export class OrderEntity extends BaseEntity implements ToProxy<OrderProxy> {
     () => ProductEntity,
     product => product.orders
   )
-  public product?: UserEntity
+  public product?: ProductEntity
 
   //#endregion
 
