@@ -5,7 +5,8 @@ import {
   IsNumber,
   IsNumberString,
   IsString,
-  Length
+  Length,
+  Min
 } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
@@ -58,5 +59,6 @@ export class CreateAddressPayload {
     { maxDecimalPlaces: 0 },
     { message: DefaultValidationMessages.IsNumber }
   )
+  @Min(1)
   public userId: number
 }
