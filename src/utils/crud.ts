@@ -1,26 +1,60 @@
 import { GetManyDefaultResponse } from '@nestjsx/crud'
 
-import { ToProxy } from 'src/common/to-proxy.interface'
-
-/**
- * Function that can convert all the entities that were being passed through
- * the "GetManyDefaultResponse" class instance in it respective proxy
- * @param getManyDefaultResponse stores the complete data that is returned
- * from the service class
- * @param params stores the default params that, if exists, will be passed
- * in the "ToProxy" method params parameter
- */
-export function mapCrud<TProxy, TEntity extends ToProxy<TProxy>>(
-  getManyDefaultResponse: GetManyDefaultResponse<TEntity> | TEntity[],
-  ...params: Parameters<TEntity['toProxy']>
-): GetManyDefaultResponse<TProxy> | TProxy[] {
-  if (Array.isArray(getManyDefaultResponse))
-    return getManyDefaultResponse.map(entity => entity.toProxy(...params))
-
-  return {
-    ...getManyDefaultResponse,
-    data: getManyDefaultResponse.data.map(entity => entity.toProxy(...params))
+export function forEach<T>(
+  getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
+  callback: (value: T) => void
+): void {
+  if (isGetMany(getManyDefaultResponse)) {
+    getManyDefaultResponse.data.forEach(callback)
+    return
   }
+  getManyDefaultResponse.forEach(callback)
+}
+
+export function map<T, R>(
+  getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
+  callback: (value: T) => R
+): GetManyDefaultResponse<R> | R[] {
+  if (isGetMany(getManyDefaultResponse)) {
+    return {
+      ...getManyDefaultResponse,
+      data: getManyDefaultResponse.data.map(callback)
+    }
+  }
+  return getManyDefaultResponse.map(callback)
+}
+
+export function filter<T>(
+  getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
+  callback: (value: T) => boolean
+): GetManyDefaultResponse<T> | T[] {
+  if (isGetMany(getManyDefaultResponse)) {
+    return {
+      ...getManyDefaultResponse,
+      data: getManyDefaultResponse.data.filter(callback)
+    }
+  }
+  return getManyDefaultResponse.filter(callback)
+}
+
+export function some<T>(
+  getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
+  callback: (value: T) => boolean
+): boolean {
+  if (isGetMany(getManyDefaultResponse)) {
+    return getManyDefaultResponse.data.some(callback)
+  }
+  return getManyDefaultResponse.some(callback)
+}
+
+export function every<T>(
+  getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
+  callback: (value: T) => boolean
+): boolean {
+  if (isGetMany(getManyDefaultResponse)) {
+    return getManyDefaultResponse.data.every(callback)
+  }
+  return getManyDefaultResponse.every(callback)
 }
 
 /**
