@@ -36,7 +36,7 @@ import { UpdateProductPayload } from '../models/update-product.payload'
 
 import { ProductService } from '../services/product.service'
 
-import { mapCrud } from 'src/utils/crud'
+import { map } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -113,7 +113,7 @@ export class ProductController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getOnSale(crudRequest)
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -135,7 +135,7 @@ export class ProductController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getFreeOfInterests(crudRequest)
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -157,7 +157,7 @@ export class ProductController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getFreeOfInterests(crudRequest)
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -187,7 +187,7 @@ export class ProductController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getMany(crudRequest)
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
