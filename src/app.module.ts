@@ -6,10 +6,11 @@ import { TypeOrmConfigService } from './modules/typeorm-config/services/typeorm-
 
 import { AddressModule } from './modules/address/address.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { MediaModule } from './modules/media/media.module'
 import { OrderModule } from './modules/order/order.module'
 import { ProductModule } from './modules/product/product.module'
-import { TypeOrmConfigModule } from './modules/typeorm/typeorm-config.module'
-import { UserModule } from './modules./modules/typeorm-config/typeorm-config.module
+import { TypeOrmConfigModule } from './modules/typeorm-config/typeorm-config.module'
+import { UserModule } from './modules/user/user.module'
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserModule } from './modules./modules/typeorm-config/typeorm-config.mod
     AddressModule,
     ProductModule,
     OrderModule,
+    MediaModule,
     TypeOrmModule.forRootAsync({
       imports: [TypeOrmConfigModule],
       inject: [TypeOrmConfigService],
