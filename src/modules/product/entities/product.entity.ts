@@ -13,7 +13,7 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
 
   @Column({
     type: 'varchar',
-    length: 30,
+    length: 100,
     nullable: false,
     unique: true
   })
