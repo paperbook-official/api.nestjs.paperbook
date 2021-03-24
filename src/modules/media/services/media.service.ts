@@ -19,7 +19,7 @@ export class MediaService {
    * @returns the file url
    */
   public upload(file: Express.Multer.File): string {
-    console.log(file.path)
+    console.log(file)
     console.log(this.configService.get<string>('API_BASE_PATH'))
 
     return join(
