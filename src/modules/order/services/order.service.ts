@@ -8,6 +8,7 @@ import { OrderEntity } from '../entities/order.entity'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateOrderPayload } from '../models/create-order.payload'
+import { UpdateOrderPayload } from '../models/update-order.payload'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
@@ -16,7 +17,6 @@ import { some } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
-import { UpdateOrderPayload } from '../models/update-order.payload'
 
 /**
  * The app's main order service class
