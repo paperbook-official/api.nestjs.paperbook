@@ -36,7 +36,7 @@ import { UpdateProductPayload } from '../models/update-product.payload'
 
 import { ProductService } from '../services/product.service'
 
-import { mapCrud } from 'src/utils/crud'
+import { map } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -52,7 +52,11 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
   },
   query: {
     persist: ['id', 'isActive'],
-    filter: [{ field: 'isActive', operator: '$eq', value: true }]
+    filter: [{ field: 'isActive', operator: '$eq', value: true }],
+    join: {
+      user: {},
+      orders: {}
+    }
   },
   routes: {
     exclude: [
@@ -108,12 +112,12 @@ export class ProductController {
     description: 'Gets all the products with discount greater than 0',
     type: GetManyProductProxyResponse
   })
-  @Get('offers')
-  public async getOffers(
+  @Get('on-sale')
+  public async getOnSale(
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
-    const entities = await this.productService.getOffers(crudRequest)
-    return mapCrud(entities)
+    const entities = await this.productService.getOnSale(crudRequest)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -135,7 +139,7 @@ export class ProductController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getFreeOfInterests(crudRequest)
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -157,7 +161,7 @@ export class ProductController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getFreeOfInterests(crudRequest)
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -169,9 +173,10 @@ export class ProductController {
    */
   @Get(':id')
   public async get(
+    @Param('id') productId: number,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<ProductProxy> {
-    const entity = await this.productService.getOne(crudRequest)
+    const entity = await this.productService.get(productId, crudRequest)
     return entity.toProxy()
   }
 
@@ -186,7 +191,7 @@ export class ProductController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getMany(crudRequest)
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -197,7 +202,7 @@ export class ProductController {
    * @param updateProductPayload stores the new product data
    */
   @ApiOperation({ summary: 'Updates a single product' })
-  @ApiOkResponse({ description: 'Updates  user' })
+  @ApiOkResponse({ description: 'Updates a single user' })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(

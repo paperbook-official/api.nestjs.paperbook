@@ -42,7 +42,7 @@ import {
 
 import { UserService } from '../services/user.service'
 
-import { mapCrud } from 'src/utils/crud'
+import { map } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -59,7 +59,12 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
   },
   query: {
     persist: ['id', 'isActive'],
-    filter: [{ field: 'isActive', operator: '$eq', value: true }]
+    filter: [{ field: 'isActive', operator: '$eq', value: true }],
+    join: {
+      addresses: {},
+      products: {},
+      orders: {}
+    }
   },
   routes: {
     exclude: [
@@ -136,14 +141,14 @@ export class UserController {
   @Get('me/addresses')
   public async getMyAddresses(
     @User() requestUser: RequestUser,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
     const entities = await this.userService.getAddressesByUserId(
       requestUser.id,
       requestUser,
       crudRequest
     )
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -169,7 +174,7 @@ export class UserController {
       requestUser.id,
       crudRequest
     )
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -217,7 +222,7 @@ export class UserController {
       requestUser,
       crudRequest
     )
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -243,7 +248,7 @@ export class UserController {
       userId,
       crudRequest
     )
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**
@@ -258,7 +263,7 @@ export class UserController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<UserProxy> | UserProxy[]> {
     const getManyDefaultResponse = await this.userService.getMany(crudRequest)
-    return mapCrud(getManyDefaultResponse)
+    return map(getManyDefaultResponse, entity => entity.toProxy())
   }
 
   /**
