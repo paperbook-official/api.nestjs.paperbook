@@ -18,7 +18,8 @@ export class MulterConfigService implements MulterOptionsFactory {
    */
   public createMulterOptions(): MulterOptions {
     return {
-      dest: this.configService.get<string>('MULTER_DEST')
+      dest: this.configService.get<string>('MULTER_DEST'),
+      preservePath: this.configService.get<boolean>('MULTER_PRESERVE_PATH')
     }
   }
 }
