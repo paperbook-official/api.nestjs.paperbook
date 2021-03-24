@@ -16,6 +16,7 @@ import { some } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
+import { UpdateOrderPayload } from '../models/update-order.payload'
 
 /**
  * The app's main order service class
@@ -110,5 +111,29 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     }
 
     return entities
+  }
+
+  /**
+   * Method that can change some data of some entity
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user data
+   * @param updateOrderPayload stores the new order data
+   */
+  public async update(
+    orderId: number,
+    requestUser: RequestUser,
+    updateOrderPayload: UpdateOrderPayload
+  ): Promise<void> {
+    const entity = await OrderEntity.findOne({ id: orderId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(orderId)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    await OrderEntity.update({ id: orderId }, updateOrderPayload)
   }
 }

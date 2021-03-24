@@ -198,7 +198,7 @@ export class ProductController {
    * @param updateProductPayload stores the new product data
    */
   @ApiOperation({ summary: 'Updates a single product' })
-  @ApiOkResponse({ description: 'Updates  user' })
+  @ApiOkResponse({ description: 'Updates a single user' })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(

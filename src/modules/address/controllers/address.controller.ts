@@ -32,7 +32,7 @@ import { UpdatedAddressPayload } from '../models/update-address.payload'
 
 import { AddressService } from '../services/address.service'
 
-import { mapCrud } from 'src/utils/crud'
+import { map } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -127,7 +127,7 @@ export class AddressController {
     @ParsedRequest() crudRequest: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
     const entities = await this.addressService.getMore(requestUser, crudRequest)
-    return mapCrud(entities)
+    return map(entities, entity => entity.toProxy())
   }
 
   /**

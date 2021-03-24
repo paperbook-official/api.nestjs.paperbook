@@ -1,6 +1,18 @@
-import { Body, Controller, Param, Post, UseInterceptors } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors
+} from '@nestjs/common'
 import { Get } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -14,6 +26,7 @@ import { User } from 'src/decorators/user/user.decorator'
 
 import { CreateOrderPayload } from '../models/create-order.payload'
 import { OrderProxy } from '../models/order.proxy'
+import { UpdateOrderPayload } from '../models/update-order.payload'
 
 import { OrderService } from '../services/order.service'
 
@@ -113,5 +126,24 @@ export class OrderController {
   ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
     const entities = await this.orderService.getMore(requestUser, crudRequest)
     return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "orders/:id"
+   * route with "PATCH" method
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user data
+   * @param updateOrderPayload stores the new order data
+   */
+  @ApiOperation({ summary: 'Updates a single product' })
+  @ApiOkResponse({ description: 'Updates a single order' })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Patch(':id')
+  public async update(
+    @Param('id') orderId: number,
+    @User() requestUser: RequestUser,
+    @Body() updateOrderPayload: UpdateOrderPayload
+  ): Promise<void> {
+    await this.orderService.update(orderId, requestUser, updateOrderPayload)
   }
 }
