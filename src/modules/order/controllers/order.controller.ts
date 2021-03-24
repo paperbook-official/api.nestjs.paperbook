@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
   Patch,
   Post,
@@ -145,5 +146,20 @@ export class OrderController {
     @Body() updateOrderPayload: UpdateOrderPayload
   ): Promise<void> {
     await this.orderService.update(orderId, requestUser, updateOrderPayload)
+  }
+
+  /**
+   * Method that is called when the user access the "orders/:id"
+   * route with "DELETE" method
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user data
+   */
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Delete(':id')
+  public async delete(
+    @Param('id') orderId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.orderService.delete(orderId, requestUser)
   }
 }

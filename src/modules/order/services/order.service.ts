@@ -127,7 +127,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     const entity = await OrderEntity.findOne({ id: orderId })
 
     if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(orderId)
+      throw new EntityNotFoundException(orderId, OrderEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
@@ -135,5 +135,27 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     }
 
     await OrderEntity.update({ id: orderId }, updateOrderPayload)
+  }
+
+  /**
+   * Method that removes some order entity
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user data
+   */
+  public async delete(
+    orderId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await OrderEntity.findOne({ id: orderId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(orderId, OrderEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    await OrderEntity.delete({ id: orderId })
   }
 }
