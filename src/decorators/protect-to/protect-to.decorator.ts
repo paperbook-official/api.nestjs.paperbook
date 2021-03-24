@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { applyDecorators, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth } from '@nestjs/swagger'
 
 import { Roles } from '../roles/roles.decorator'
 
@@ -20,5 +21,9 @@ export function ProtectTo(
   propertyKey?: string | symbol,
   descriptor?: TypedPropertyDescriptor<Y>
 ) => void {
-  return applyDecorators(Roles(...roles), UseGuards(JwtGuard, RolesGuard))
+  return applyDecorators(
+    ApiBearerAuth(),
+    Roles(...roles),
+    UseGuards(JwtGuard, RolesGuard)
+  )
 }
