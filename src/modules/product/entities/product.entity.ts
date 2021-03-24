@@ -86,7 +86,7 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
   )
   public user?: UserEntity
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: OrderEntity, isArray: true })
   @OneToMany(
     () => OrderEntity,
     order => order.product

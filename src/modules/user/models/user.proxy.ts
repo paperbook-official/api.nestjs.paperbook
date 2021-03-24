@@ -4,6 +4,8 @@ import { UserEntity } from '../entities/user.entity'
 
 import { BaseProxy } from 'src/common/base.proxy'
 import { AddressProxy } from 'src/modules/address/models/address.proxy'
+import { OrderProxy } from 'src/modules/order/models/order.proxy'
+import { ProductProxy } from 'src/modules/product/models/product.proxy'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -34,6 +36,12 @@ export class UserProxy extends BaseProxy {
   @ApiPropertyOptional({ type: () => AddressProxy, isArray: true })
   public addresses?: AddressProxy[]
 
+  @ApiPropertyOptional({ type: () => ProductProxy, isArray: true })
+  public products?: ProductProxy[]
+
+  @ApiPropertyOptional({ type: () => OrderProxy, isArray: true })
+  public orders?: OrderProxy[]
+
   public constructor(entity: UserEntity) {
     super(entity)
 
@@ -45,5 +53,7 @@ export class UserProxy extends BaseProxy {
     this.phone = entity.phone
 
     this.addresses = entity.addresses?.map(address => address.toProxy())
+    this.products = entity.products?.map(product => product.toProxy())
+    this.orders = entity.orders?.map(order => order.toProxy())
   }
 }

@@ -78,7 +78,7 @@ export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
 
   //#region Relations
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => UserEntity })
   @ManyToOne(
     () => UserEntity,
     user => user.addresses,

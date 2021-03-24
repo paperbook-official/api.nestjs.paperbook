@@ -51,14 +51,14 @@ export class OrderEntity extends BaseEntity implements ToProxy<OrderProxy> {
 
   //#region Relations
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => UserEntity })
   @ManyToOne(
     () => UserEntity,
     user => user.orders
   )
   public user?: UserEntity
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => ProductEntity })
   @ManyToOne(
     () => ProductEntity,
     product => product.orders

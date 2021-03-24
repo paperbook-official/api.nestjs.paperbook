@@ -4,6 +4,7 @@ import { ProductEntity } from '../entities/product.entity'
 
 import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
 import { BaseProxy } from 'src/common/base.proxy'
+import { OrderProxy } from 'src/modules/order/models/order.proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 /**
@@ -36,22 +37,26 @@ export class ProductProxy extends BaseProxy {
   @ApiProperty()
   public userId: number
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => UserProxy })
   public user?: UserProxy
 
-  public constructor(productEntity: ProductEntity) {
-    super(productEntity)
+  @ApiPropertyOptional({ type: () => OrderProxy, isArray: true })
+  public orders?: OrderProxy[]
 
-    this.name = productEntity.name
-    this.description = productEntity.description
-    this.fullPrice = productEntity.fullPrice
-    this.installmentPrice = productEntity.installmentPrice
-    this.installmentAmount = productEntity.installmentAmount
-    this.discountAmount = productEntity.discountAmount
-    this.stockAmount = productEntity.stockAmount
-    this.userId = productEntity.userId
+  public constructor(entity: ProductEntity) {
+    super(entity)
 
-    this.user = productEntity.user?.toProxy()
+    this.name = entity.name
+    this.description = entity.description
+    this.fullPrice = entity.fullPrice
+    this.installmentPrice = entity.installmentPrice
+    this.installmentAmount = entity.installmentAmount
+    this.discountAmount = entity.discountAmount
+    this.stockAmount = entity.stockAmount
+    this.userId = entity.userId
+
+    this.user = entity.user?.toProxy()
+    this.orders = entity.orders?.map(order => order.toProxy())
   }
 }
 

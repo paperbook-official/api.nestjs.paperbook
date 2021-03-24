@@ -79,21 +79,21 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
 
   //#region Relations
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => AddressEntity, isArray: true })
   @OneToMany(
     () => AddressEntity,
     address => address.user
   )
   public addresses?: AddressEntity[]
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => ProductEntity, isArray: true })
   @OneToMany(
     () => ProductEntity,
     product => product.user
   )
   public products?: ProductEntity[]
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => OrderEntity, isArray: true })
   @OneToMany(
     () => OrderEntity,
     order => order.user

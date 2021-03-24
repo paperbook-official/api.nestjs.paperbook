@@ -26,10 +26,10 @@ export class OrderProxy extends BaseProxy {
   @ApiProperty()
   public productId: number
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => UserProxy })
   public user?: UserProxy
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => ProductProxy })
   public product?: ProductProxy
 
   public constructor(entity: OrderEntity) {
