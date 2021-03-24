@@ -36,6 +36,10 @@ import {
   GetManyAddressProxyResponse
 } from 'src/modules/address/models/address.proxy'
 import {
+  GetManyOrderProxyResponse,
+  OrderProxy
+} from 'src/modules/order/models/order.proxy'
+import {
   GetManyProductProxyResponse,
   ProductProxy
 } from 'src/modules/product/models/product.proxy'
@@ -178,6 +182,33 @@ export class UserController {
   }
 
   /**
+   * Method that is called when the user access the "/user/me/orders" route
+   * with the "GET" method
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found data
+   */
+  @ApiOperation({ summary: 'Retrieves all the logged user orders' })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the logged user orders',
+    type: GetManyOrderProxyResponse
+  })
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @Get('me/orders')
+  public async getMyOrders(
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
+    const entities = await this.userService.getOrdersByUserId(
+      requestUser.id,
+      requestUser,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
    * Method that is called when the user access the "/users/:id"
    * route with "GET" method
    * @param userId stores the target user id
@@ -246,6 +277,35 @@ export class UserController {
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.userService.getProductsByUserId(
       userId,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "users/:id/orders"
+   * route with "GET" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found data
+   */
+  @ApiOperation({ summary: 'Retrieves all the user orders' })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the user orders',
+    type: GetManyOrderProxyResponse
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get(':id/orders')
+  public async getOrdersByUserId(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser,
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
+    const entities = await this.userService.getOrdersByUserId(
+      userId,
+      requestUser,
       crudRequest
     )
     return map(entities, entity => entity.toProxy())
