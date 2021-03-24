@@ -158,4 +158,48 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
     await OrderEntity.delete({ id: orderId })
   }
+
+  /**
+   * Method that can disable some entity
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user data
+   */
+  public async disable(
+    orderId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await OrderEntity.findOne({ id: orderId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(orderId, OrderEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    await OrderEntity.update({ id: orderId }, { isActive: false })
+  }
+
+  /**
+   * Method that can enable some entity
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user
+   */
+  public async enable(
+    orderId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await OrderEntity.findOne({ id: orderId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(orderId, OrderEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    await OrderEntity.update({ id: orderId }, { isActive: true })
+  }
 }

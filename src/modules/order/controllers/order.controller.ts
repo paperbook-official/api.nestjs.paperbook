@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseInterceptors
 } from '@nestjs/common'
 import { Get } from '@nestjs/common'
@@ -161,5 +162,39 @@ export class OrderController {
     @User() requestUser: RequestUser
   ): Promise<void> {
     await this.orderService.delete(orderId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user access the "orders/:id"
+   * route with "PUT" method
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user
+   */
+  @ApiOperation({ summary: 'Disables a single order' })
+  @ApiOkResponse({ description: 'Disables a single order' })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Put(':id/disable')
+  public async disable(
+    @Param('id') orderId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.orderService.disable(orderId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user access the "orders/:id"
+   * route with "PUT" method
+   * @param orderId stores the order id
+   * @param requestUser stores the logged user
+   */
+  @ApiOperation({ summary: 'Enables a single order' })
+  @ApiOkResponse({ description: 'Enables a single order' })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Put(':id/enable')
+  public async enable(
+    @Param('id') orderId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.orderService.enable(orderId, requestUser)
   }
 }
