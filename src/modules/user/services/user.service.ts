@@ -76,6 +76,16 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     let entity: UserEntity
 
     if (crudRequest) {
+      crudRequest.parsed.search = {
+        $and: [
+          ...crudRequest.parsed.search.$and,
+          {
+            id: {
+              $eq: userId
+            }
+          }
+        ]
+      }
       entity = await super.getOne(crudRequest).catch(() => undefined)
     } else {
       entity = await UserEntity.findOne({ id: userId })

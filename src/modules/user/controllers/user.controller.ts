@@ -136,7 +136,7 @@ export class UserController {
   @Get('me/addresses')
   public async getMyAddresses(
     @User() requestUser: RequestUser,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
     const entities = await this.userService.getAddressesByUserId(
       requestUser.id,

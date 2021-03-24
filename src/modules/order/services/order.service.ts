@@ -5,6 +5,8 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { OrderEntity } from '../entities/order.entity'
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateOrderPayload } from '../models/create-order.payload'
@@ -82,7 +84,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
       throw new EntityNotFoundException(orderId, OrderEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.id, requestUser)) {
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -99,6 +101,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     requestUser: RequestUser,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
+    console.log(crudRequest.parsed)
     const entities = await super.getMany(crudRequest)
 
     if (
@@ -170,8 +173,12 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
   ): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
 
-    if (!entity || !entity.isActive) {
+    if (!entity) {
       throw new EntityNotFoundException(orderId, OrderEntity)
+    }
+
+    if (!entity.isActive) {
+      throw new EntityAlreadyDisabledException(orderId, OrderEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
@@ -192,8 +199,12 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
   ): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
 
-    if (!entity || !entity.isActive) {
+    if (!entity) {
       throw new EntityNotFoundException(orderId, OrderEntity)
+    }
+
+    if (entity.isActive) {
+      throw new EntityAlreadyEnabledException(orderId, OrderEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
