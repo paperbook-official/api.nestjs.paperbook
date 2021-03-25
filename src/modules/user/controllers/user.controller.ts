@@ -23,8 +23,8 @@ import {
   ParsedRequest
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/get-many/api-property-get-many.decorator'
-import { ApiPropertyGet } from 'src/decorators/get/api-property-get.decorator'
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
+import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 

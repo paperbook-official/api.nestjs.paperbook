@@ -23,7 +23,7 @@ import {
   ParsedRequest
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/get-many/api-property-get-many.decorator'
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 
