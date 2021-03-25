@@ -2,6 +2,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { AddressEntity } from '../entities/address.entity'
 
+import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
+import { BaseProxy } from 'src/common/base.proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 /**
@@ -9,19 +11,7 @@ import { UserProxy } from 'src/modules/user/models/user.proxy'
  *
  * Class that deals with the address return data
  */
-export class AddressProxy {
-  @ApiProperty()
-  public id: number
-
-  @ApiProperty()
-  public createdAt: Date
-
-  @ApiProperty()
-  public updatedAt: Date
-
-  @ApiProperty()
-  public isActive: boolean
-
+export class AddressProxy extends BaseProxy {
   @ApiProperty()
   public cep: string
 
@@ -50,6 +40,8 @@ export class AddressProxy {
   public user?: UserProxy
 
   public constructor(addressEntity: AddressEntity) {
+    super(addressEntity)
+
     this.id = +addressEntity.id
     this.createdAt = addressEntity.createdAt
     this.updatedAt = addressEntity.updatedAt
@@ -65,4 +57,14 @@ export class AddressProxy {
 
     this.user = addressEntity.user?.toProxy()
   }
+}
+
+/**
+ * The app's main get many address proxy response
+ *
+ * Class that deals with the address return data with pagination
+ */
+export class GetManyAddressProxyResponse extends BaseGetManyDefaultResponse {
+  @ApiProperty({ type: AddressProxy, isArray: true })
+  public data: AddressProxy[]
 }

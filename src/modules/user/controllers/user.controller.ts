@@ -1,6 +1,5 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,14 +7,12 @@ import {
   Patch,
   Post,
   Put,
-  UseGuards,
   UseInterceptors
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags
 } from '@nestjs/swagger'
 import {
@@ -26,24 +23,34 @@ import {
   ParsedRequest
 } from '@nestjsx/crud'
 
-import { Roles } from 'src/decorators/roles/roles.decorator'
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
+import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
+import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
-
-import { JwtGuard } from 'src/guards/jwt/jwt.guard'
-import { RolesGuard } from 'src/guards/roles/roles.guard'
-
-import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
 import { UserProxy } from '../models/user.proxy'
+import {
+  AddressProxy,
+  GetManyAddressProxyResponse
+} from 'src/modules/address/models/address.proxy'
+import {
+  GetManyOrderProxyResponse,
+  OrderProxy
+} from 'src/modules/order/models/order.proxy'
+import {
+  GetManyProductProxyResponse,
+  ProductProxy
+} from 'src/modules/product/models/product.proxy'
 
 import { UserService } from '../services/user.service'
 
-import { mapCrud } from 'src/utils/crud'
+import { map } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
+import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 /**
  * The app's main user controller class
@@ -52,11 +59,16 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: UserEntity
+    type: UserProxy
   },
   query: {
     persist: ['id', 'isActive'],
-    filter: [{ field: 'isActive', operator: '$eq', value: true }]
+    filter: [{ field: 'isActive', operator: '$eq', value: true }],
+    join: {
+      addresses: {},
+      products: {},
+      orders: {}
+    }
   },
   routes: {
     exclude: [
@@ -75,7 +87,7 @@ export class UserController {
 
   /**
    * Method that is called when the user access the "/users" route with
-   * the "POST"
+   * the "POST" method
    * @param createdUserPayload stores the new user data
    * @returns the created user data
    */
@@ -99,31 +111,10 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the logged user data
    */
-  @ApiQuery({
-    required: false,
-    name: 'cache',
-    type: 'integer',
-    description: 'Reset cache (if was enabled).'
-  })
-  @ApiQuery({
-    required: false,
-    name: 'fields',
-    type: 'string',
-    isArray: true,
-    description: 'Selects resource fields.'
-  })
-  @ApiQuery({
-    required: false,
-    name: 'join',
-    type: 'string',
-    isArray: true,
-    description: 'Adds relational resources.'
-  })
+  @ApiPropertyGet()
   @ApiOperation({ summary: 'Gets the logged user' })
   @ApiOkResponse({ description: 'Gets the logged user data', type: UserProxy })
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me')
   public async getMe(
     @User() requestUser: RequestUser,
@@ -138,15 +129,94 @@ export class UserController {
   }
 
   /**
-   * Method that is called when the user access the "/users/:userId"
+   * Method that is called when the user access the "/user/me/addresses" route
+   * with the "GET" method
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found data
+   */
+  @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the logged user addresses',
+    type: GetManyAddressProxyResponse
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get('me/addresses')
+  public async getMyAddresses(
+    @User() requestUser: RequestUser,
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+    const entities = await this.userService.getAddressesByUserId(
+      requestUser.id,
+      requestUser,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "/user/me/products" route
+   * with the "GET" method
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found data
+   */
+  @ApiOperation({ summary: 'Retrieves all the logged user products' })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the logged user products',
+    type: GetManyProductProxyResponse
+  })
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @Get('me/products')
+  public async getMyProducts(
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.userService.getProductsByUserId(
+      requestUser.id,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "/user/me/orders" route
+   * with the "GET" method
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found data
+   */
+  @ApiOperation({ summary: 'Retrieves all the logged user orders' })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the logged user orders',
+    type: GetManyOrderProxyResponse
+  })
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @Get('me/orders')
+  public async getMyOrders(
+    @User() requestUser: RequestUser,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
+    const entities = await this.userService.getOrdersByUserId(
+      requestUser.id,
+      requestUser,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "/users/:id"
    * route with "GET" method
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') userId: number,
@@ -158,19 +228,102 @@ export class UserController {
   }
 
   /**
+   * Method that is called when the user access the "users/:id/addresses"
+   * route with "GET" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found data
+   */
+  @ApiOperation({ summary: 'Retrieves all the user addresses' })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the user addresses',
+    type: GetManyAddressProxyResponse
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get(':id/addresses')
+  public async getAddressesByUserId(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser,
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+    const entities = await this.userService.getAddressesByUserId(
+      userId,
+      requestUser,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "users/:id/products"
+   * route with "GET" method
+   * @param userId stores the user id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found data
+   */
+  @ApiOperation({ summary: 'Retrieves all the user products' })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the user products',
+    type: GetManyProductProxyResponse
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get(':id/products')
+  public async getProductsByUserId(
+    @Param('id') userId: number,
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.userService.getProductsByUserId(
+      userId,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "users/:id/orders"
+   * route with "GET" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found data
+   */
+  @ApiOperation({ summary: 'Retrieves all the user orders' })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the user orders',
+    type: GetManyOrderProxyResponse
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get(':id/orders')
+  public async getOrdersByUserId(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser,
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
+    const entities = await this.userService.getOrdersByUserId(
+      userId,
+      requestUser,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
    * Method that is called when the user access the "/users" route with
    * "GET" method
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<UserProxy> | UserProxy[]> {
     const getManyDefaultResponse = await this.userService.getMany(crudRequest)
-    return mapCrud(getManyDefaultResponse)
+    return map(getManyDefaultResponse, entity => entity.toProxy())
   }
 
   /**
@@ -182,8 +335,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Updates a single user' })
   @ApiOkResponse({ description: 'Updates user' })
-  @Roles(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
     @Param('id') userId: number,
@@ -199,8 +351,7 @@ export class UserController {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Delete(':id')
   public async delete(
     @Param('id') userId: number,
@@ -217,8 +368,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Disables a single user' })
   @ApiOkResponse({ description: 'Disables a single user' })
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Put(':id/disable')
   public async disable(
     @Param('id') userId: number,
@@ -235,8 +385,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Enables a single user' })
   @ApiOkResponse({ description: 'Enables a single user' })
-  @Roles(RolesEnum.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
+  @ProtectTo(RolesEnum.Admin)
   @Put(':id/enable')
   public async enable(
     @Param('id') userId: number,

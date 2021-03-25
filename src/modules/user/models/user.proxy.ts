@@ -2,7 +2,10 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { UserEntity } from '../entities/user.entity'
 
+import { BaseProxy } from 'src/common/base.proxy'
 import { AddressProxy } from 'src/modules/address/models/address.proxy'
+import { OrderProxy } from 'src/modules/order/models/order.proxy'
+import { ProductProxy } from 'src/modules/product/models/product.proxy'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -11,19 +14,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  *
  * Class that deals with the user return data
  */
-export class UserProxy {
-  @ApiProperty()
-  public id: number
-
-  @ApiProperty()
-  public createdAt: Date
-
-  @ApiProperty()
-  public updatedAt: Date
-
-  @ApiProperty()
-  public isActive: boolean
-
+export class UserProxy extends BaseProxy {
   @ApiProperty()
   public name: string
 
@@ -45,18 +36,24 @@ export class UserProxy {
   @ApiPropertyOptional({ type: () => AddressProxy, isArray: true })
   public addresses?: AddressProxy[]
 
-  public constructor(userEntity: UserEntity) {
-    this.id = +userEntity.id
-    this.createdAt = userEntity.createdAt
-    this.updatedAt = userEntity.updatedAt
-    this.isActive = userEntity.isActive
-    this.name = userEntity.name
-    this.lastName = userEntity.lastName
-    this.email = userEntity.email
-    this.cpf = userEntity.cpf
-    this.permissions = userEntity.roles
-    this.phone = userEntity.phone
+  @ApiPropertyOptional({ type: () => ProductProxy, isArray: true })
+  public products?: ProductProxy[]
 
-    this.addresses = userEntity.addresses?.map(address => address.toProxy())
+  @ApiPropertyOptional({ type: () => OrderProxy, isArray: true })
+  public orders?: OrderProxy[]
+
+  public constructor(entity: UserEntity) {
+    super(entity)
+
+    this.name = entity.name
+    this.lastName = entity.lastName
+    this.email = entity.email
+    this.cpf = entity.cpf
+    this.permissions = entity.roles
+    this.phone = entity.phone
+
+    this.addresses = entity.addresses?.map(address => address.toProxy())
+    this.products = entity.products?.map(product => product.toProxy())
+    this.orders = entity.orders?.map(order => order.toProxy())
   }
 }

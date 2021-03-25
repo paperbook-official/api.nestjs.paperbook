@@ -1,18 +1,18 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity, ManyToOne } from 'typeorm'
 
-import { BaseEntity } from 'src/common/base-entity'
+import { BaseEntity } from 'src/common/base.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { AddressProxy } from '../models/address.proxy'
-import { ToProxy } from 'src/common/to-proxy'
+import { ToProxy } from 'src/common/to-proxy.interface'
 
 /**
  * The app's main address entity class
  *
  * Class that represents the entity that deals with addresses
  */
-@Entity('addresses')
+@Entity('address')
 export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
   //#region Columns
 
@@ -78,10 +78,13 @@ export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
 
   //#region Relations
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => UserEntity })
   @ManyToOne(
     () => UserEntity,
-    user => user.addresses
+    user => user.addresses,
+    {
+      onDelete: 'CASCADE'
+    }
   )
   public user?: UserEntity
 

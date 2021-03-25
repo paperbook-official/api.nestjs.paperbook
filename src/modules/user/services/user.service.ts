@@ -1,23 +1,29 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { CrudRequest } from '@nestjsx/crud'
+import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { UserEntity } from '../entities/user.entity'
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+import { AddressEntity } from 'src/modules/address/entities/address.entity'
+import { OrderEntity } from 'src/modules/order/entities/order.entity'
+import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
+
+import { AddressService } from 'src/modules/address/services/address.service'
+import { OrderService } from 'src/modules/order/services/order.service'
+import { ProductService } from 'src/modules/product/services/product.service'
 
 import { encryptPassword } from 'src/utils/password'
 import { RequestUser } from 'src/utils/type.shared'
 import { isAdminUser } from 'src/utils/validations'
 
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
@@ -29,7 +35,12 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
 export class UserService extends TypeOrmCrudService<UserEntity> {
   public constructor(
     @InjectRepository(UserEntity)
-    private readonly repository: Repository<UserEntity>
+    private readonly repository: Repository<UserEntity>,
+    @Inject(forwardRef(() => AddressService))
+    private readonly addressService: AddressService,
+    @Inject(forwardRef(() => ProductService))
+    private readonly productService: ProductService,
+    private readonly orderService: OrderService
   ) {
     super(repository)
   }
@@ -55,6 +66,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    * @returns the found user entity
    */
   public async get(
@@ -62,23 +76,145 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     requestUser: RequestUser,
     crudRequest?: CrudRequest
   ): Promise<UserEntity> {
-    const entity: UserEntity = crudRequest
-      ? await super.getOne(crudRequest).catch(() => undefined)
-      : await UserEntity.findOne({ id: userId })
+    let entity: UserEntity
+
+    if (crudRequest) {
+      crudRequest.parsed.search = {
+        $and: [
+          ...crudRequest.parsed.search.$and,
+          {
+            id: {
+              $eq: userId
+            }
+          }
+        ]
+      }
+      entity = await super.getOne(crudRequest).catch(() => undefined)
+    } else {
+      entity = await UserEntity.findOne({ id: userId })
+    }
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     return entity
+  }
+
+  /**
+   * Method that gets all the addresses of some user
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
+   * @returns all the found elements
+   */
+  public async getAddressesByUserId(
+    userId: number,
+    requestUser: RequestUser,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(userId, UserEntity)
+    }
+
+    if (!this.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    crudRequest.parsed.search = {
+      $and: [
+        ...crudRequest.parsed.search.$and,
+        {
+          userId: {
+            $eq: userId
+          }
+        }
+      ]
+    }
+
+    return await this.addressService.getMany(crudRequest)
+  }
+
+  /**
+   * Method that gets all the products of some user
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
+   * @returns all the found elements
+   */
+  public async getProductsByUserId(
+    userId: number,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(userId, UserEntity)
+    }
+
+    crudRequest.parsed.search = {
+      $and: [
+        ...crudRequest.parsed.search.$and,
+        {
+          userId: {
+            $eq: userId
+          }
+        }
+      ]
+    }
+
+    return await this.productService.getMany(crudRequest)
+  }
+
+  /**
+   * Method that gets all the orders of some user
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
+   * @returns all the found elements
+   */
+  public async getOrdersByUserId(
+    userId: number,
+    requestUser: RequestUser,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(userId, UserEntity)
+    }
+
+    if (!this.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    crudRequest.parsed.search = {
+      $and: [
+        ...crudRequest.parsed.search.$and,
+        {
+          userId: {
+            $eq: userId
+          }
+        }
+      ]
+    }
+
+    return await this.orderService.getMany(crudRequest)
   }
 
   /**
@@ -86,6 +222,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    */
   public async update(
     userId: number,
@@ -95,16 +234,13 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
+
     await UserEntity.update({ id: userId }, updatedUserPayload)
   }
 
@@ -112,20 +248,19 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method can delete some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    */
   public async delete(userId: number, requestUser: RequestUser): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
     await UserEntity.delete({ id: userId })
   }
@@ -134,6 +269,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method that can disable some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    */
   public async disable(
     userId: number,
@@ -142,21 +280,15 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (!entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${userId}" is already disabled`
-      )
+      throw new EntityAlreadyDisabledException(userId, UserEntity)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await UserEntity.update({ id: userId }, { isActive: false })
@@ -166,26 +298,23 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * Method that can enable some user
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
    */
   public async enable(userId: number, requestUser: RequestUser): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(userId)
     }
 
     if (entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${userId}" is already enabled`
-      )
+      throw new EntityAlreadyEnabledException(userId, UserEntity)
     }
 
     if (!this.hasPermissions(entity.id, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await UserEntity.update({ id: userId }, { isActive: true })

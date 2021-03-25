@@ -1,11 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity, OneToMany } from 'typeorm'
 
-import { BaseEntity } from 'src/common/base-entity'
+import { BaseEntity } from 'src/common/base.entity'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
+import { OrderEntity } from 'src/modules/order/entities/order.entity'
+import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { UserProxy } from '../models/user.proxy'
-import { ToProxy } from 'src/common/to-proxy'
+import { ToProxy } from 'src/common/to-proxy.interface'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -77,12 +79,26 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
 
   //#region Relations
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: () => AddressEntity, isArray: true })
   @OneToMany(
     () => AddressEntity,
     address => address.user
   )
   public addresses?: AddressEntity[]
+
+  @ApiPropertyOptional({ type: () => ProductEntity, isArray: true })
+  @OneToMany(
+    () => ProductEntity,
+    product => product.user
+  )
+  public products?: ProductEntity[]
+
+  @ApiPropertyOptional({ type: () => OrderEntity, isArray: true })
+  @OneToMany(
+    () => OrderEntity,
+    order => order.user
+  )
+  public orders?: OrderEntity[]
 
   //#endregion
 

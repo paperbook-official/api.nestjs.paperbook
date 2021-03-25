@@ -1,14 +1,12 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable
-} from '@nestjs/common'
-import { NotFoundException } from '@nestjs/common'
+import { Injectable, forwardRef, Inject } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 
 import { UpdatedAddressPayload } from '../models/update-address.payload'
@@ -18,6 +16,8 @@ import { UserService } from 'src/modules/user/services/user.service'
 
 import { isGetMany } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
+
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
 /**
  * The app's main address service class
@@ -29,6 +29,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   public constructor(
     @InjectRepository(AddressEntity)
     private readonly repository: Repository<AddressEntity>,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService
   ) {
     super(repository)
@@ -46,17 +47,11 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   ): Promise<AddressEntity> {
     const { userId } = createAddressPayload
 
-    const userEntity = await this.userService.get(userId, requestUser)
-
-    if (!userEntity || !userEntity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${userId}" does not exist or is disabled`
-      )
-    }
+    const user = await this.userService.get(userId, requestUser)
 
     const entity = new AddressEntity({
       ...createAddressPayload,
-      user: userEntity
+      user
     })
 
     return await entity.save()
@@ -79,15 +74,11 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
       : await AddressEntity.findOne({ id: addressId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${addressId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(addressId, AddressEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     return entity
@@ -110,9 +101,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
         entity => !this.userService.hasPermissions(entity.userId, requestUser)
       )
     ) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     return entities
@@ -132,15 +121,11 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${addressId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(addressId, AddressEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await AddressEntity.update({ id: addressId }, updateAddressPayload)
@@ -158,15 +143,11 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${addressId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(addressId, AddressEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await AddressEntity.delete({ id: addressId })
@@ -184,21 +165,15 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${addressId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(addressId, AddressEntity)
     }
 
     if (!entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${addressId}" is already disabled`
-      )
+      throw new EntityAlreadyDisabledException(addressId, AddressEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await AddressEntity.update({ id: addressId }, { isActive: false })
@@ -216,21 +191,15 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${addressId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(addressId, AddressEntity)
     }
 
     if (entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${addressId}" is already enabled`
-      )
+      throw new EntityAlreadyEnabledException(addressId, AddressEntity)
     }
 
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException(
-        'You have no permission to access those sources'
-      )
+      throw new ForbiddenException()
     }
 
     await AddressEntity.update({ id: addressId }, { isActive: true })

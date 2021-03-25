@@ -43,6 +43,7 @@ function setupSwagger(
     .setDescription(configService.get<string>('SWAGGER_DESCRIPTION'))
     .setVersion(configService.get<string>('SWAGGER_VERSION'))
     .addTag(configService.get<string>('SWAGGER_TAG'))
+    .addBearerAuth()
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
