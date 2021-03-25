@@ -20,6 +20,12 @@ export class UpdateProductPayload {
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
   @IsNotEmpty({ message: DefaultValidationMessages.IsString })
+  public imageUrl: string
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString({ message: DefaultValidationMessages.IsString })
+  @IsNotEmpty({ message: DefaultValidationMessages.IsString })
   public name: string
 
   @ApiPropertyOptional()

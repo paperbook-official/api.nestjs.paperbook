@@ -18,6 +18,12 @@ import { DefaultValidationMessages } from 'src/models/enums/default-validation-m
  */
 export class CreateProductPaylaod {
   @ApiProperty()
+  @IsDefined({ message: 'It is required to send the image url' })
+  @IsString({ message: DefaultValidationMessages.IsString })
+  @IsNotEmpty({ message: DefaultValidationMessages.IsString })
+  public imageUrl: string
+
+  @ApiProperty()
   @IsDefined({ message: 'It is required to send the name' })
   @IsString({ message: DefaultValidationMessages.IsString })
   @IsNotEmpty({ message: DefaultValidationMessages.IsString })
