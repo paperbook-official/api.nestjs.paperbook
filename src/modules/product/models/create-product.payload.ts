@@ -20,13 +20,13 @@ export class CreateProductPaylaod {
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the image url' })
   @IsString({ message: DefaultValidationMessages.IsString })
-  @IsNotEmpty({ message: DefaultValidationMessages.IsString })
+  @IsNotEmpty({ message: DefaultValidationMessages.IsNotEmpty })
   public imageUrl: string
 
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the name' })
   @IsString({ message: DefaultValidationMessages.IsString })
-  @IsNotEmpty({ message: DefaultValidationMessages.IsString })
+  @IsNotEmpty({ message: DefaultValidationMessages.IsNotEmpty })
   public name: string
 
   @ApiProperty()
