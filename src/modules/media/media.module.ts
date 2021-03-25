@@ -1,21 +1,24 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { MulterModule } from '@nestjs/platform-express'
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
 
-import { MulterConfigService } from '../multer-config/services/multer-config.service'
 import { MediaService } from './services/media.service'
 
 import { MediaController } from './controllers/media.controller'
-
-import { MulterConfigModule } from '../multer-config/multer-config.module'
 
 @Module({
   imports: [
     ConfigModule,
     MulterModule.registerAsync({
-      imports: [MulterConfigModule],
-      inject: [MulterConfigService],
-      useExisting: MulterConfigService
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService): MulterOptions => {
+        return {
+          dest: configService.get<string>('MULTER_DEST'),
+          preservePath: configService.get<boolean>('MULTER_PRESERVE_PATH')
+        }
+      }
     })
   ],
   controllers: [MediaController],

@@ -4,15 +4,18 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Put,
+  Query,
   UseInterceptors
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags
 } from '@nestjs/swagger'
 import {
@@ -23,7 +26,7 @@ import {
   ParsedRequest
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/get-many/api-property-get-many.decorator'
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { User } from 'src/decorators/user/user.decorator'
 
@@ -96,6 +99,40 @@ export class ProductController {
       createProductPaylaod
     )
     return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user access the "/products/less-than"
+   * route with "GET" method passing the "maxPrice" query
+   * @param maxPrice stores the max price value
+   * @param crudRequest stores the filters, joins, etc
+   * @returns all the found elements
+   */
+  @ApiOperation({
+    summary: 'Retrieves all the products with price less than "maxPrice" value'
+  })
+  @ApiQuery({
+    required: true,
+    name: 'maxPrice',
+    type: 'string',
+    description:
+      'Selects products with fullPrice parameter less than this value.'
+  })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the products with price less than "maxPrice" value',
+    type: GetManyProductProxyResponse
+  })
+  @Get('less-than')
+  public async getLessThan(
+    @Query('maxPrice', ParseIntPipe) maxPrice: number,
+    @ParsedRequest() crudRequest: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.productService.getLessThan(
+      maxPrice,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
   }
 
   /**

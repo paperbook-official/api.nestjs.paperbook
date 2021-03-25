@@ -21,6 +21,14 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
   @Column({
     type: 'varchar',
     length: 100,
+    nullable: true
+  })
+  public imageUrl: string
+
+  @ApiProperty()
+  @Column({
+    type: 'varchar',
+    length: 100,
     nullable: false,
     unique: true
   })

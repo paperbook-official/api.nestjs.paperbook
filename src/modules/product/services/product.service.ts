@@ -84,6 +84,21 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     return entity
   }
 
+  public async getLessThan(
+    maxPrice: number,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    const { parsed, options } = crudRequest
+    const builder = await this.createBuilder(parsed, options)
+
+    const entities = await this.doGetMany(
+      builder.andWhere(`fullPrice * (1 - discountAmount) <= ${maxPrice}`),
+      parsed,
+      options
+    )
+    return entities
+  }
+
   /**
    * Method that can get some offers
    * @param crudRequest stores the joins, filter, etc
