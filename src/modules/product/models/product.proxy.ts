@@ -14,6 +14,9 @@ import { UserProxy } from 'src/modules/user/models/user.proxy'
  */
 export class ProductProxy extends BaseProxy {
   @ApiProperty()
+  public imageUrl: string
+
+  @ApiProperty()
   public name: string
 
   @ApiProperty()
@@ -46,6 +49,7 @@ export class ProductProxy extends BaseProxy {
   public constructor(entity: ProductEntity) {
     super(entity)
 
+    this.imageUrl = entity.imageUrl
     this.name = entity.name
     this.description = entity.description
     this.fullPrice = entity.fullPrice
