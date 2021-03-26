@@ -3,6 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
+import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ProductProxy } from '../models/product.proxy'
@@ -94,12 +95,19 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
   )
   public user?: UserEntity
 
-  @ApiPropertyOptional({ type: OrderEntity, isArray: true })
+  @ApiPropertyOptional({ type: () => OrderEntity, isArray: true })
   @OneToMany(
     () => OrderEntity,
     order => order.product
   )
   public orders?: OrderEntity[]
+
+  @ApiPropertyOptional({ type: () => ProductCategoryEntity, isArray: true })
+  @ManyToOne(
+    () => ProductCategoryEntity,
+    productCategory => productCategory.product
+  )
+  public productsCategories?: ProductCategoryEntity[]
 
   //#endregion
 
