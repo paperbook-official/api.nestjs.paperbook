@@ -46,7 +46,7 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
     type: 'float',
     nullable: false
   })
-  public fullPrice: number
+  public price: number
 
   @ApiPropertyOptional()
   @Column({
@@ -69,7 +69,7 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
     nullable: true,
     default: 0
   })
-  public discountAmount?: number
+  public discount?: number
 
   @ApiProperty()
   @Column({

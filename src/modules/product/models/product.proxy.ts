@@ -23,7 +23,7 @@ export class ProductProxy extends BaseProxy {
   public description: string
 
   @ApiProperty()
-  public fullPrice: number
+  public price: number
 
   @ApiProperty()
   public installmentPrice: number
@@ -32,7 +32,7 @@ export class ProductProxy extends BaseProxy {
   public installmentAmount: number
 
   @ApiProperty()
-  public discountAmount: number
+  public discount: number
 
   @ApiProperty()
   public stockAmount: number
@@ -52,10 +52,10 @@ export class ProductProxy extends BaseProxy {
     this.imageUrl = entity.imageUrl
     this.name = entity.name
     this.description = entity.description
-    this.fullPrice = entity.fullPrice
+    this.price = entity.price
     this.installmentPrice = entity.installmentPrice
     this.installmentAmount = entity.installmentAmount
-    this.discountAmount = entity.discountAmount
+    this.discount = entity.discount
     this.stockAmount = entity.stockAmount
     this.userId = entity.userId
 

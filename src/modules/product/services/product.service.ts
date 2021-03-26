@@ -84,6 +84,13 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     return entity
   }
 
+  /**
+   * Method that can products with price less than the current price with
+   * discount
+   * @param maxPrice stores the max price
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found products
+   */
   public async getLessThan(
     maxPrice: number,
     crudRequest?: CrudRequest
@@ -92,7 +99,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     const builder = await this.createBuilder(parsed, options)
 
     const entities = await this.doGetMany(
-      builder.andWhere(`fullPrice * (1 - discountAmount) <= ${maxPrice}`),
+      builder.andWhere(`price * (1 - discount) <= ${maxPrice}`),
       parsed,
       options
     )
@@ -110,7 +117,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     crudRequest.parsed.search.$and = [
       ...crudRequest.parsed.search.$and,
       {
-        discountAmount: {
+        discount: {
           $gt: 0
         }
       }
