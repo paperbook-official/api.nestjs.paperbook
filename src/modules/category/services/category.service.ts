@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable
-} from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
@@ -15,9 +11,6 @@ import { UpdatedCategoryPayload } from '../models/update-category.payload'
 import { CreateCategoryPayload } from 'src/modules/category/models/create-category.payload'
 
 import { UserService } from 'src/modules/user/services/user.service'
-
-import { isGetMany } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 /**
  * The app's main category service class
@@ -43,9 +36,8 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   public async create(
     createCategoryPayload: CreateCategoryPayload
   ): Promise<CategoryEntity> {
-
     const entity = new CategoryEntity({
-      ...createCategoryPayload,
+      ...createCategoryPayload
     })
 
     return await entity.save()
@@ -111,9 +103,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * Method that can delete some category
    * @param categoryId stores the category id
    */
-  public async delete(
-    categoryId: number,
-  ): Promise<void> {
+  public async delete(categoryId: number): Promise<void> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 
     if (!entity || !entity.isActive) {
@@ -122,7 +112,6 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
       )
     }
 
-
     await CategoryEntity.delete({ id: categoryId })
   }
 
@@ -130,9 +119,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * Method that can disable some category
    * @param categoryId stores the category id
    */
-  public async disable(
-    categoryId: number,
-  ): Promise<void> {
+  public async disable(categoryId: number): Promise<void> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 
     if (!entity) {
@@ -154,9 +141,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * Method that can enable some category
    * @param categoryId stores the category id
    */
-  public async enable(
-    categoryId: number,
-  ): Promise<void> {
+  public async enable(categoryId: number): Promise<void> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 
     if (!entity) {

@@ -1,11 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne } from 'typeorm'
+import { ApiProperty } from '@nestjs/swagger'
+import { Entity, Column } from 'typeorm'
 
-import { BaseEntity } from 'src/common/base-entity'
-import { UserEntity } from 'src/modules/user/entities/user.entity'
+import { BaseEntity } from 'src/common/base.entity'
 
 import { CategoryProxy } from '../models/category.proxy'
-import { ToProxy } from 'src/common/to-proxy'
+import { ToProxy } from 'src/common/to-proxy.interface'
 
 /**
  * The app's main Category entity class
@@ -13,7 +12,8 @@ import { ToProxy } from 'src/common/to-proxy'
  * Class that represents the entity that deals with Category
  */
 @Entity('category')
-export class CategoryEntity extends BaseEntity implements ToProxy<CategoryProxy> {
+export class CategoryEntity extends BaseEntity
+  implements ToProxy<CategoryProxy> {
   //#region Columns
 
   @ApiProperty()

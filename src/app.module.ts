@@ -7,12 +7,12 @@ import { TypeOrmConfigService } from './modules/typeorm-config/services/typeorm-
 
 import { AddressModule } from './modules/address/address.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { CategoryModule } from './modules/category/category.module'
 import { MediaModule } from './modules/media/media.module'
 import { OrderModule } from './modules/order/order.module'
 import { ProductModule } from './modules/product/product.module'
 import { TypeOrmConfigModule } from './modules/typeorm-config/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
-import { CategoryModule } from './modules/category/category.module'
 import { join } from 'path'
 
 @Module({

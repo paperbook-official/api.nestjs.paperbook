@@ -30,7 +30,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Authenticates the user' })
   @ApiOkResponse({ description: 'Gets the token value', type: TokenProxy })
   @UseGuards(LocalGuard)
-  @Post('/local')
+  @Post('local')
   public async signIn(
     @Body() _loginPayload: LoginPayload, // must be here to apply in swagger
     @User() requestUser: RequestUser
