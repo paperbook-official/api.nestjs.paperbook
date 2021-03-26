@@ -14,6 +14,7 @@ import { ProductModule } from './modules/product/product.module'
 import { TypeOrmConfigModule } from './modules/typeorm-config/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
 import { join } from 'path'
+import { ProductCategoryModule } from './modules/product-category/product-category.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { join } from 'path'
       imports: [TypeOrmConfigModule],
       inject: [TypeOrmConfigService],
       useExisting: TypeOrmConfigService
-    })
+    }),
+    ProductCategoryModule
   ]
 })
 export class AppModule {}
