@@ -1,13 +1,35 @@
-import { Body, Controller, Post, UseInterceptors } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Crud, CrudRequestInterceptor } from '@nestjsx/crud'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors
+} from '@nestjs/common'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
+import {
+  Crud,
+  CrudRequest,
+  CrudRequestInterceptor,
+  GetManyDefaultResponse,
+  ParsedRequest
+} from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
 import { CreateProductCategoryPayload } from '../models/create-product-category.payload'
 import { ProductCategoryProxy } from '../models/product-category.proxy'
+import { UpdateProductCategoryPayload } from '../models/update-product-category.payload'
 
 import { ProductCategoryService } from '../services/product-category.service'
+
+import { map } from 'src/utils/crud'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -43,7 +65,7 @@ export class ProductCategoryController {
   ) {}
 
   /**
-   * Method that is called when the user access the "/product-category"
+   * Method that is called when the user access the "/products-categories"
    * route with the "POST" method
    * @param createProductCategoryPayload stores the product-category new data
    * @returns the created product-category entity proxy
@@ -62,5 +84,66 @@ export class ProductCategoryController {
       createProductCategoryPayload
     )
     return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user acces the "/products-categories/:id"
+   * route with the "GET" method
+   * @param productCategoryId stores the product-category id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found entity proxy
+   */
+  @ApiOperation({ summary: 'Gets the product-category' })
+  @ApiOkResponse({
+    description: 'Gets the created product-category data',
+    type: ProductCategoryProxy
+  })
+  @ProtectTo(RolesEnum.Admin)
+  @Get(':id')
+  public async get(
+    @Param('id') productCategoryId: number,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<ProductCategoryProxy> {
+    const entity = await this.productCategoryService.get(
+      productCategoryId,
+      crudRequest
+    )
+    return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user access the "/products-categories"
+   * route with the "GET" method
+   * @returns all the found product-category entity proxy
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Get()
+  public async getMore(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<
+    GetManyDefaultResponse<ProductCategoryProxy> | ProductCategoryProxy[]
+  > {
+    const entities = await this.productCategoryService.getMany(crudRequest)
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user acces the "/products-categories/:id"
+   * route with the "PATCH" method
+   * @param productCategoryId stores the product-category id
+   * @param updateProductCategoryPayload stores the product-category entity new data
+   */
+  @ApiOperation({ summary: 'Updates a single product-category' })
+  @ApiOkResponse({ description: 'Updates a single product-category' })
+  @ProtectTo(RolesEnum.Admin)
+  @Patch(':id')
+  public async update(
+    @Param('id') productCategoryId: number,
+    @Body() updateProductCategoryPayload: UpdateProductCategoryPayload
+  ): Promise<void> {
+    await this.productCategoryService.update(
+      productCategoryId,
+      updateProductCategoryPayload
+    )
   }
 }
