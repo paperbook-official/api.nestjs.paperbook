@@ -83,7 +83,7 @@ export class ProductController {
    * @param createProductPaylaod stores the new product data
    * @returns the created product data
    */
-  @ApiOperation({ summary: 'Creates a new ' })
+  @ApiOperation({ summary: 'Creates a new product' })
   @ApiCreatedResponse({
     description: 'Gets the created product data',
     type: ProductProxy
