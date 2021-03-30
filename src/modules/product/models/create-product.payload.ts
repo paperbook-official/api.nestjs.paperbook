@@ -35,7 +35,7 @@ export class CreateProductPaylaod {
   public description: string
 
   @ApiProperty()
-  @IsDefined({ message: 'It is required to send the full price' })
+  @IsDefined({ message: 'It is required to send the price' })
   @IsNumber({}, { message: DefaultValidationMessages.IsNumber })
   @Min(0)
   public price: number

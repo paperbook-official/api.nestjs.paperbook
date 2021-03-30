@@ -40,6 +40,8 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
       ...createCategoryPayload
     })
 
+    console.log(entity.name)
+
     return await entity.save()
   }
 

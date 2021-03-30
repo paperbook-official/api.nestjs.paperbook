@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { Entity, Column } from 'typeorm'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { Entity, Column, ManyToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
+import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
 
 import { CategoryProxy } from '../models/category.proxy'
 import { ToProxy } from 'src/common/to-proxy.interface'
@@ -23,6 +24,17 @@ export class CategoryEntity extends BaseEntity
     nullable: false
   })
   public name: string
+
+  //#region
+
+  @ApiPropertyOptional({ type: () => ProductCategoryEntity, isArray: true })
+  @ManyToOne(
+    () => ProductCategoryEntity,
+    productCategory => productCategory.category
+  )
+  public productsCategories?: ProductCategoryEntity[]
+
+  //#endregion
 
   //#endregion
 
