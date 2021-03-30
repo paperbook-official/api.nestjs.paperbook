@@ -127,4 +127,48 @@ export class ProductCategoryService extends TypeOrmCrudService<
 
     await ProductCategoryEntity.delete({ id: productCategoryId })
   }
+
+  /**
+   * Method that can disable some product-category entity
+   * @param productCategoryId stores the product-category id
+   */
+  public async disable(productCategoryId: number): Promise<void> {
+    const entity = await ProductCategoryEntity.findOne({
+      id: productCategoryId
+    })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(
+        productCategoryId,
+        ProductCategoryEntity
+      )
+    }
+
+    await ProductCategoryEntity.update(
+      { id: productCategoryId },
+      { isActive: false }
+    )
+  }
+
+  /**
+   * Method that can enable some product-category entity
+   * @param productCategoryId stores the product-category id
+   */
+  public async enable(productCategoryId: number): Promise<void> {
+    const entity = await ProductCategoryEntity.findOne({
+      id: productCategoryId
+    })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(
+        productCategoryId,
+        ProductCategoryEntity
+      )
+    }
+
+    await ProductCategoryEntity.update(
+      { id: productCategoryId },
+      { isActive: true }
+    )
+  }
 }

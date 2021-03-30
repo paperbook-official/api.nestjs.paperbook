@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseInterceptors
 } from '@nestjs/common'
 import {
@@ -149,13 +150,39 @@ export class ProductCategoryController {
   }
 
   /**
-   * Method that is called when the user access the "/products-categories"
+   * Method that is called when the user access the "/products-categories/:id"
    * route with the "DELETE" method
-   * @param productCategoryId
+   * @param productCategoryId stores the product-category id
    */
   @ProtectTo(RolesEnum.Admin)
   @Delete(':id')
   public async delete(@Param('id') productCategoryId: number): Promise<void> {
     await this.productCategoryService.delete(productCategoryId)
+  }
+
+  /**
+   * Method that is called when the user access the "/products-category/:id/disable"
+   * route with the "PUT" method
+   * @param productCategoryId stores the product-category id
+   */
+  @ApiOperation({ summary: 'Disables a single product-category' })
+  @ApiOkResponse({ description: 'Disables a single product-category' })
+  @ProtectTo(RolesEnum.Admin)
+  @Put(':id/disable')
+  public async disable(@Param('id') productCategoryId: number): Promise<void> {
+    await this.productCategoryService.disable(productCategoryId)
+  }
+
+  /**
+   * Method that is called when the user access the "/products-category/:id/enable"
+   * route with the "PUT" method
+   * @param productCategoryId stores the product-category id
+   */
+  @ApiOperation({ summary: 'Enables a single product-category' })
+  @ApiOkResponse({ description: 'Enables a single product-category' })
+  @ProtectTo(RolesEnum.Admin)
+  @Put(':id/enable')
+  public async enable(@Param('id') productCategoryId: number): Promise<void> {
+    await this.productCategoryService.enable(productCategoryId)
   }
 }
