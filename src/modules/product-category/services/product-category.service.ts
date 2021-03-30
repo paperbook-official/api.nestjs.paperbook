@@ -5,7 +5,10 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { ProductCategoryEntity } from '../entities/product-category.entity'
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { CreateProductCategoryPayload } from '../models/create-product-category.payload'
 import { UpdateProductCategoryPayload } from '../models/update-product-category.payload'
@@ -137,11 +140,15 @@ export class ProductCategoryService extends TypeOrmCrudService<
       id: productCategoryId
     })
 
-    if (!entity || !entity.isActive) {
+    if (!entity) {
       throw new EntityNotFoundException(
         productCategoryId,
         ProductCategoryEntity
       )
+    }
+
+    if (!entity.isActive) {
+      throw new EntityAlreadyDisabledException(productCategoryId, ProductEntity)
     }
 
     await ProductCategoryEntity.update(
@@ -159,11 +166,15 @@ export class ProductCategoryService extends TypeOrmCrudService<
       id: productCategoryId
     })
 
-    if (!entity || !entity.isActive) {
+    if (!entity) {
       throw new EntityNotFoundException(
         productCategoryId,
         ProductCategoryEntity
       )
+    }
+
+    if (entity.isActive) {
+      throw new EntityAlreadyEnabledException(productCategoryId, ProductEntity)
     }
 
     await ProductCategoryEntity.update(
