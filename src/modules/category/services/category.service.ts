@@ -10,7 +10,9 @@ import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
+import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { UpdatedCategoryPayload } from '../models/update-category.payload'
 import { CreateCategoryPayload } from 'src/modules/category/models/create-category.payload'
@@ -85,6 +87,41 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
     const entities = await super.getMany(crudRequest)
     return entities
+  }
+
+  /**
+   * Method that can get all the products related to some category
+   * @param categoryId store the category id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found products
+   */
+  public async getProductsByCategoryId(
+    categoryId: number,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    const entity = await CategoryEntity.findOne({ id: categoryId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(categoryId, CategoryEntity)
+    }
+
+    // crudRequest.parsed.join = [
+    //   ...crudRequest.parsed.join,
+    //   {
+    //     field: 'productsCategories',
+    //     select: ['categoryId']
+    //   }
+    // ]
+    // crudRequest.parsed.filter = [
+    //   ...crudRequest.parsed.filter,
+    //   {
+    //     field: 'productsCategories.categoryId',
+    //     operator: '$eq',
+    //     value: categoryId
+    //   }
+    // ]
+
+    return await this.productService.getMany(crudRequest)
   }
 
   /**

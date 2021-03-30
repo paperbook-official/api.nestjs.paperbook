@@ -175,9 +175,9 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     productId: number,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
-    const product = await ProductEntity.findOne({ id: productId })
+    const entity = await ProductEntity.findOne({ id: productId })
 
-    if (!product || !product.isActive) {
+    if (!entity || !entity.isActive) {
       throw new EntityNotFoundException(productId, ProductEntity)
     }
 
