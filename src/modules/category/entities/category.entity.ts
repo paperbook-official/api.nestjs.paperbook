@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Entity, Column, ManyToOne } from 'typeorm'
+import { Entity, Column, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
 import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
@@ -28,7 +28,7 @@ export class CategoryEntity extends BaseEntity
   //#region
 
   @ApiPropertyOptional({ type: () => ProductCategoryEntity, isArray: true })
-  @ManyToOne(
+  @OneToMany(
     () => ProductCategoryEntity,
     productCategory => productCategory.category
   )
