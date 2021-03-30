@@ -28,7 +28,7 @@ export class ProductCategoryProxy extends BaseProxy {
     super(entity)
 
     this.productId = entity.productId
-    this.categoryId = entity.productId
+    this.categoryId = entity.categoryId
 
     // relations
     this.product = entity.product?.toProxy()
