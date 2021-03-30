@@ -103,7 +103,6 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     requestUser: RequestUser,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
-    console.log(crudRequest.parsed)
     const entities = await super.getMany(crudRequest)
 
     if (

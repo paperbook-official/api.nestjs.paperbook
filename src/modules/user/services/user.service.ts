@@ -40,6 +40,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     private readonly addressService: AddressService,
     @Inject(forwardRef(() => ProductService))
     private readonly productService: ProductService,
+    @Inject(forwardRef(() => OrderService))
     private readonly orderService: OrderService
   ) {
     super(repository)
