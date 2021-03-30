@@ -7,17 +7,20 @@ import { TypeOrmConfigService } from './modules/typeorm-config/services/typeorm-
 
 import { AddressModule } from './modules/address/address.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { CategoryModule } from './modules/category/category.module'
 import { MediaModule } from './modules/media/media.module'
 import { OrderModule } from './modules/order/order.module'
 import { ProductModule } from './modules/product/product.module'
 import { TypeOrmConfigModule } from './modules/typeorm-config/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
 import { join } from 'path'
+import { ProductCategoryModule } from './modules/product-category/product-category.module';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+    CategoryModule,
     AddressModule,
     ProductModule,
     OrderModule,
@@ -32,7 +35,8 @@ import { join } from 'path'
       imports: [TypeOrmConfigModule],
       inject: [TypeOrmConfigService],
       useExisting: TypeOrmConfigService
-    })
+    }),
+    ProductCategoryModule
   ]
 })
 export class AppModule {}

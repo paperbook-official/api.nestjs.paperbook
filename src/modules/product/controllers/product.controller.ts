@@ -83,7 +83,7 @@ export class ProductController {
    * @param createProductPaylaod stores the new product data
    * @returns the created product data
    */
-  @ApiOperation({ summary: 'Creates a new ' })
+  @ApiOperation({ summary: 'Creates a new product' })
   @ApiCreatedResponse({
     description: 'Gets the created product data',
     type: ProductProxy
@@ -239,7 +239,7 @@ export class ProductController {
    * @param updateProductPayload stores the new product data
    */
   @ApiOperation({ summary: 'Updates a single product' })
-  @ApiOkResponse({ description: 'Updates a single user' })
+  @ApiOkResponse({ description: 'Updates a single product' })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(

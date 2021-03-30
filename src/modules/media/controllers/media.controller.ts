@@ -28,8 +28,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  *
  * Class that deals with the media routes
  */
-@ApiTags('media')
-@Controller('media')
+@ApiTags('medias')
+@Controller('medias')
 export class MediaController {
   public constructor(private readonly mediaService: MediaService) {}
 
