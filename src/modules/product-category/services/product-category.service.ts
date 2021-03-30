@@ -108,4 +108,23 @@ export class ProductCategoryService extends TypeOrmCrudService<
       updateProductCategoryPayload
     )
   }
+
+  /**
+   * Method that can remove some product category entity
+   * @param productCategoryId stores the product-category id
+   */
+  public async delete(productCategoryId: number): Promise<void> {
+    const entity = await ProductCategoryEntity.findOne({
+      id: productCategoryId
+    })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(
+        productCategoryId,
+        ProductCategoryEntity
+      )
+    }
+
+    await ProductCategoryEntity.delete({ id: productCategoryId })
+  }
 }

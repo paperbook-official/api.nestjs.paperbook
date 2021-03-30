@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -128,7 +129,7 @@ export class ProductCategoryController {
   }
 
   /**
-   * Method that is called when the user acces the "/products-categories/:id"
+   * Method that is called when the user access the "/products-categories/:id"
    * route with the "PATCH" method
    * @param productCategoryId stores the product-category id
    * @param updateProductCategoryPayload stores the product-category entity new data
@@ -145,5 +146,16 @@ export class ProductCategoryController {
       productCategoryId,
       updateProductCategoryPayload
     )
+  }
+
+  /**
+   * Method that is called when the user access the "/products-categories"
+   * route with the "DELETE" method
+   * @param productCategoryId
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Delete(':id')
+  public async delete(@Param('id') productCategoryId: number): Promise<void> {
+    await this.productCategoryService.delete(productCategoryId)
   }
 }
