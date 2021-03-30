@@ -36,6 +36,10 @@ import {
   ProductProxy
 } from '../models/product.proxy'
 import { UpdateProductPayload } from '../models/update-product.payload'
+import {
+  GetManyCategoryProxyResponse,
+  CategoryProxy
+} from 'src/modules/category/models/category.proxy'
 
 import { ProductService } from '../services/product.service'
 
@@ -43,6 +47,7 @@ import { map } from 'src/utils/crud'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
+import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 /**
  * The app's main products controller class
@@ -58,7 +63,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
       user: {},
-      orders: {}
+      orders: {},
+      productsCategories: {}
     }
   },
   routes: {
@@ -228,6 +234,32 @@ export class ProductController {
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.productService.getMany(crudRequest)
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /** Method that is called when the user access the "/products/:id/categories"
+   * route with "GET" method
+   * @param productId stores the product id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found product entities
+   */
+  @ApiOperation({
+    summary: 'Retrieves all the categories of a single product'
+  })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the categories of a single product',
+    type: GetManyCategoryProxyResponse
+  })
+  @Get(':id/categories')
+  public async getMoreCategories(
+    @Param('id') productId: number,
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<CategoryProxy> | CategoryProxy[]> {
+    const entities = await this.productService.getCategoriesByProductId(
+      productId,
+      crudRequest
+    )
     return map(entities, entity => entity.toProxy())
   }
 
