@@ -23,17 +23,23 @@ import {
   ParsedRequest
 } from '@nestjsx/crud'
 
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
 import { CategoryProxy } from '../models/category.proxy'
 import { CreateCategoryPayload } from '../models/create-category.payload'
 import { UpdatedCategoryPayload } from '../models/update-category.payload'
+import {
+  GetManyProductProxyResponse,
+  ProductProxy
+} from 'src/modules/product/models/product.proxy'
 
 import { CategoryService } from '../services/category.service'
 
 import { map } from 'src/utils/crud'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
+import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 /**
  * The app's main category controller class
@@ -46,7 +52,10 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
   },
   query: {
     persist: ['id', 'isActive'],
-    filter: [{ field: 'isActive', operator: '$eq', value: true }]
+    filter: [{ field: 'isActive', operator: '$eq', value: true }],
+    join: {
+      productsCategories: {}
+    }
   },
   routes: {
     exclude: [
@@ -111,6 +120,32 @@ export class CategoryController {
     @ParsedRequest() crudRequest: CrudRequest
   ): Promise<GetManyDefaultResponse<CategoryProxy> | CategoryProxy[]> {
     const entities = await this.categoryService.getMore(crudRequest)
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /** Method that is called when the user access the "/categories/:id/products"
+   * route with "GET" method
+   * @param categoryId stores the category id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found product entities
+   */
+  @ApiOperation({
+    summary: 'Retrieves all the products of a single category'
+  })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the products of a single category',
+    type: GetManyProductProxyResponse
+  })
+  @Get(':id/products')
+  public async getProductsByCategoryId(
+    @Param('id') categoryId: number,
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+    const entities = await this.categoryService.getProductsByCategoryId(
+      categoryId,
+      crudRequest
+    )
     return map(entities, entity => entity.toProxy())
   }
 
