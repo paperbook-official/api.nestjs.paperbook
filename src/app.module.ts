@@ -10,11 +10,11 @@ import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
 import { MediaModule } from './modules/media/media.module'
 import { OrderModule } from './modules/order/order.module'
+import { ProductCategoryModule } from './modules/product-category/product-category.module'
 import { ProductModule } from './modules/product/product.module'
 import { TypeOrmConfigModule } from './modules/typeorm-config/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
 import { join } from 'path'
-import { ProductCategoryModule } from './modules/product-category/product-category.module';
 
 @Module({
   imports: [
@@ -25,6 +25,7 @@ import { ProductCategoryModule } from './modules/product-category/product-catego
     ProductModule,
     OrderModule,
     MediaModule,
+    ProductCategoryModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.local']
     }),
@@ -35,8 +36,7 @@ import { ProductCategoryModule } from './modules/product-category/product-catego
       imports: [TypeOrmConfigModule],
       inject: [TypeOrmConfigService],
       useExisting: TypeOrmConfigService
-    }),
-    ProductCategoryModule
+    })
   ]
 })
 export class AppModule {}
