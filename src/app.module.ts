@@ -12,6 +12,7 @@ import { MediaModule } from './modules/media/media.module'
 import { OrderModule } from './modules/order/order.module'
 import { ProductCategoryModule } from './modules/product-category/product-category.module'
 import { ProductModule } from './modules/product/product.module'
+import { RatingModule } from './modules/rating/rating.module'
 import { TypeOrmConfigModule } from './modules/typeorm-config/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
 import { join } from 'path'
@@ -26,6 +27,7 @@ import { join } from 'path'
     OrderModule,
     MediaModule,
     ProductCategoryModule,
+    RatingModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.local']
     }),
