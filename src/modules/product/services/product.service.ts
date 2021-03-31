@@ -34,7 +34,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     @Inject(forwardRef(() => CategoryService))
-    private readonly categoryServcie: CategoryService
+    private readonly categoryService: CategoryService
   ) {
     super(repository)
   }
@@ -181,23 +181,17 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       throw new EntityNotFoundException(productId, ProductEntity)
     }
 
+    crudRequest.parsed.paramsFilter = []
     crudRequest.parsed.join = [
       ...crudRequest.parsed.join,
-      {
-        field: 'productsCategories',
-        select: ['productId']
-      }
+      { field: 'productsCategories' }
     ]
-    crudRequest.parsed.filter = [
-      ...crudRequest.parsed.filter,
-      {
-        field: 'productsCategories.productId',
-        operator: '$eq',
-        value: productId
-      }
+    crudRequest.parsed.search.$and = [
+      ...crudRequest.parsed.search.$and,
+      { 'productsCategories.productId': { $eq: productId } }
     ]
 
-    return await this.categoryServcie.getMany(crudRequest)
+    return await this.categoryService.getMany(crudRequest)
   }
 
   /**

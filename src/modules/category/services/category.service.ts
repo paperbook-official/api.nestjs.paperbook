@@ -105,21 +105,15 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
       throw new EntityNotFoundException(categoryId, CategoryEntity)
     }
 
-    // crudRequest.parsed.join = [
-    //   ...crudRequest.parsed.join,
-    //   {
-    //     field: 'productsCategories',
-    //     select: ['categoryId']
-    //   }
-    // ]
-    // crudRequest.parsed.filter = [
-    //   ...crudRequest.parsed.filter,
-    //   {
-    //     field: 'productsCategories.categoryId',
-    //     operator: '$eq',
-    //     value: categoryId
-    //   }
-    // ]
+    crudRequest.parsed.paramsFilter = []
+    crudRequest.parsed.join = [
+      ...crudRequest.parsed.join,
+      { field: 'productsCategories' }
+    ]
+    crudRequest.parsed.search.$and = [
+      ...crudRequest.parsed.search.$and,
+      { 'productsCategories.categoryId': { $eq: categoryId } }
+    ]
 
     return await this.productService.getMany(crudRequest)
   }
