@@ -1,5 +1,13 @@
 import { GetManyDefaultResponse } from '@nestjsx/crud'
 
+/**
+ * CPerforms the specified action for each element in an array or a
+ * "GetManyDefaultReponse" class instance
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * class instance
+ * @param callback stores an action that will be called for each element of the
+ * array
+ */
 export function forEach<T>(
   getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
   callback: (value: T) => void
@@ -11,6 +19,16 @@ export function forEach<T>(
   getManyDefaultResponse.forEach(callback)
 }
 
+/**
+ * Calls a defined callback function on each element of an array,
+ * and returns an array or a "GetManyDefaultReponse" class instance
+ * that contains the results
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * class instance
+ * @param callback stores an action that will be called for each element of the
+ * array
+ * @returns the array or "GetManyDefaultReponse" class instance with the new data
+ */
 export function map<T, R>(
   getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
   callback: (value: T) => R
@@ -24,6 +42,15 @@ export function map<T, R>(
   return getManyDefaultResponse.map(callback)
 }
 
+/**
+ * Returns the elements of an array or "GetManyDefaultReponse" class instance that
+ * meet the condition specified in a callback function.
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * class instance
+ * @param callback stores an action that will be called for each element of the
+ * array
+ * @returns all the elements that were validated
+ */
 export function filter<T>(
   getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
   callback: (value: T) => boolean
@@ -37,6 +64,15 @@ export function filter<T>(
   return getManyDefaultResponse.filter(callback)
 }
 
+/**
+ * Determines whether the specified callback function returns true for any element
+ * of an array or "GetManyDefaultReponse" class instance
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * class instance
+ * @param callback stores an action that will be called for each element of the
+ * array
+ * @returns if any element of the array or "GetManyDefaultReponse" class instance
+ */
 export function some<T>(
   getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
   callback: (value: T) => boolean
@@ -47,6 +83,15 @@ export function some<T>(
   return getManyDefaultResponse.some(callback)
 }
 
+/**
+ * Determines whether all the members of an array or "GetManyDefaultReponse" class
+ *  instance satisfy the specified test.
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * class instance
+ * @param callback stores an action that will be called for each element of the
+ * array
+ * @returns if every element of the array or a "GetManyDefaultReponse" class instance
+ */
 export function every<T>(
   getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
   callback: (value: T) => boolean
