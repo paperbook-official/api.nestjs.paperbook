@@ -5,6 +5,7 @@ import { UserEntity } from './entities/user.entity'
 
 import { UserService } from './services/user.service'
 
+import { UserRalationsController } from './controllers/user-relations.controller'
 import { UserController } from './controllers/user.controller'
 
 import { AddressModule } from '../address/address.module'
@@ -18,7 +19,7 @@ import { ProductModule } from '../product/product.module'
     forwardRef(() => OrderModule),
     TypeOrmModule.forFeature([UserEntity])
   ],
-  controllers: [UserController],
+  controllers: [UserController, UserRalationsController],
   providers: [UserService],
   exports: [UserService]
 })
