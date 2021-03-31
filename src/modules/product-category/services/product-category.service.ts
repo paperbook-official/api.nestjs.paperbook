@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
@@ -28,7 +28,9 @@ export class ProductCategoryService extends TypeOrmCrudService<
   public constructor(
     @InjectRepository(ProductCategoryEntity)
     private readonly repository: Repository<ProductCategoryEntity>,
+    @Inject(forwardRef(() => ProductService))
     private readonly productService: ProductService,
+    @Inject(forwardRef(() => CategoryService))
     private readonly categoryService: CategoryService
   ) {
     super(repository)

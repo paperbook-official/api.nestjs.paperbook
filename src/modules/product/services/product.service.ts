@@ -9,10 +9,12 @@ import { ProductEntity } from '../entities/product.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
 import { UpdateProductPayload } from '../models/update-product.payload'
 
+import { CategoryService } from 'src/modules/category/services/category.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { RequestUser } from 'src/utils/type.shared'
@@ -30,7 +32,9 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     @InjectRepository(ProductEntity)
     private readonly repository: Repository<ProductEntity>,
     @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    @Inject(forwardRef(() => CategoryService))
+    private readonly categoryService: CategoryService
   ) {
     super(repository)
   }
@@ -159,6 +163,35 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       }
     ]
     return this.getMany(crudRequest)
+  }
+
+  /**
+   * Method that can get all the categories of some product
+   * @param productId stores the product id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found categories
+   */
+  public async getCategoriesByProductId(
+    productId: number,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
+    const entity = await ProductEntity.findOne({ id: productId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(productId, ProductEntity)
+    }
+
+    crudRequest.parsed.paramsFilter = []
+    crudRequest.parsed.join = [
+      ...crudRequest.parsed.join,
+      { field: 'productsCategories' }
+    ]
+    crudRequest.parsed.search.$and = [
+      ...crudRequest.parsed.search.$and,
+      { 'productsCategories.productId': { $eq: productId } }
+    ]
+
+    return await this.categoryService.getMany(crudRequest)
   }
 
   /**

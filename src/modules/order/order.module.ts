@@ -12,7 +12,7 @@ import { UserModule } from '../user/user.module'
 
 @Module({
   imports: [
-    ProductModule,
+    forwardRef(() => ProductModule),
     forwardRef(() => UserModule),
     TypeOrmModule.forFeature([OrderEntity])
   ],

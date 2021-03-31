@@ -45,7 +45,7 @@ export class ProductCategoryEntity extends BaseEntity
   @ApiPropertyOptional({ type: () => CategoryEntity })
   @ManyToOne(
     () => CategoryEntity,
-    product => product.productsCategories
+    category => category.productsCategories
   )
   public category?: CategoryEntity
 
