@@ -1,8 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { CategoryEntity } from '../entities/category.entity'
 
 import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
+import { ProductCategoryProxy } from 'src/modules/product-category/models/product-category.proxy'
 
 /**
  * The app's main category proxy class
@@ -22,11 +23,19 @@ export class CategoryProxy {
   @ApiProperty()
   public name: string
 
-  public constructor(categoryEntity: CategoryEntity) {
-    this.id = categoryEntity.id
-    this.createdAt = categoryEntity.createdAt
-    this.updatedAt = categoryEntity.updatedAt
-    this.name = categoryEntity.name
+  @ApiPropertyOptional({ type: () => ProductCategoryProxy, isArray: true })
+  public productsCategories?: ProductCategoryProxy[]
+
+  public constructor(entity: CategoryEntity) {
+    this.id = entity.id
+    this.createdAt = entity.createdAt
+    this.updatedAt = entity.updatedAt
+    this.name = entity.name
+
+    // relations
+    this.productsCategories = entity.productsCategories?.map(productCategory =>
+      productCategory.toProxy()
+    )
   }
 }
 

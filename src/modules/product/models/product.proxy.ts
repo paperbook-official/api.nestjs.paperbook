@@ -5,6 +5,7 @@ import { ProductEntity } from '../entities/product.entity'
 import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
 import { BaseProxy } from 'src/common/base.proxy'
 import { OrderProxy } from 'src/modules/order/models/order.proxy'
+import { ProductCategoryProxy } from 'src/modules/product-category/models/product-category.proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 /**
@@ -46,6 +47,9 @@ export class ProductProxy extends BaseProxy {
   @ApiPropertyOptional({ type: () => OrderProxy, isArray: true })
   public orders?: OrderProxy[]
 
+  @ApiPropertyOptional({ type: () => ProductCategoryProxy, isArray: true })
+  public productsCategories?: ProductCategoryProxy[]
+
   public constructor(entity: ProductEntity) {
     super(entity)
 
@@ -59,8 +63,12 @@ export class ProductProxy extends BaseProxy {
     this.stockAmount = entity.stockAmount
     this.userId = entity.userId
 
+    // relations
     this.user = entity.user?.toProxy()
     this.orders = entity.orders?.map(order => order.toProxy())
+    this.productsCategories = entity.productsCategories?.map(productCategory =>
+      productCategory.toProxy()
+    )
   }
 }
 
