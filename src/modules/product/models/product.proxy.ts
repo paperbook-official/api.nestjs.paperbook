@@ -6,6 +6,7 @@ import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-res
 import { BaseProxy } from 'src/common/base.proxy'
 import { OrderProxy } from 'src/modules/order/models/order.proxy'
 import { ProductCategoryProxy } from 'src/modules/product-category/models/product-category.proxy'
+import { RatingProxy } from 'src/modules/rating/models/rating.proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 /**
@@ -50,6 +51,9 @@ export class ProductProxy extends BaseProxy {
   @ApiPropertyOptional({ type: () => ProductCategoryProxy, isArray: true })
   public productsCategories?: ProductCategoryProxy[]
 
+  @ApiPropertyOptional({ type: () => RatingProxy, isArray: true })
+  public ratings?: RatingProxy[]
+
   public constructor(entity: ProductEntity) {
     super(entity)
 
@@ -69,6 +73,7 @@ export class ProductProxy extends BaseProxy {
     this.productsCategories = entity.productsCategories?.map(productCategory =>
       productCategory.toProxy()
     )
+    this.ratings = entity.ratings?.map(rating => rating.toProxy())
   }
 }
 

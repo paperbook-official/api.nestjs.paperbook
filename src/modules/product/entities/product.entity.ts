@@ -4,6 +4,7 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
 import { BaseEntity } from 'src/common/base.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
+import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ProductProxy } from '../models/product.proxy'
@@ -108,6 +109,13 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
     productCategory => productCategory.product
   )
   public productsCategories?: ProductCategoryEntity[]
+
+  @ApiPropertyOptional({ type: () => RatingEntity, isArray: true })
+  @OneToMany(
+    () => RatingEntity,
+    rating => rating.product
+  )
+  public ratings?: RatingEntity[]
 
   //#endregion
 
