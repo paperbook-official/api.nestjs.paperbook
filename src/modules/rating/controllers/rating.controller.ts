@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -130,5 +131,16 @@ export class RatingController {
     @Body() updateRatingPayload: UpdateRatingPayload
   ): Promise<void> {
     await this.ratingService.update(ratingId, updateRatingPayload)
+  }
+
+  /**
+   * Method that is called when the user access the "/ratings/:id"
+   * route with the "DELETE" method
+   * @param ratingId stores the rating id
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Delete(':id')
+  public async delete(@Param('id') ratingId: number): Promise<void> {
+    await this.ratingService.delete(ratingId)
   }
 }

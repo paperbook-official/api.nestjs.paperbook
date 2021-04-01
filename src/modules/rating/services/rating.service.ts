@@ -89,4 +89,18 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
     await RatingEntity.update({ id: ratingId }, updateRatingPayload)
   }
+
+  /**
+   * Method that can remove some rating entity from the database
+   * @param ratingId stores the rating entity id
+   */
+  public async delete(ratingId: number): Promise<void> {
+    const entity = await RatingEntity.findOne({ id: ratingId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(ratingId, RatingEntity)
+    }
+
+    await RatingEntity.delete({ id: ratingId })
+  }
 }
