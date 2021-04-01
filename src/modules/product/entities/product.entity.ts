@@ -1,9 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
+import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
+import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ProductProxy } from '../models/product.proxy'
@@ -88,6 +89,14 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
 
   //#region Relations
 
+  @ApiPropertyOptional({ type: () => RatingEntity })
+  @OneToOne(
+    () => RatingEntity,
+    rating => rating.product,
+    { nullable: true }
+  )
+  public rating?: RatingEntity
+
   @ApiPropertyOptional({ type: () => UserEntity })
   @ManyToOne(
     () => UserEntity,
@@ -113,9 +122,9 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
 
   //#endregion
 
-  public constructor(partialEntity: Partial<ProductEntity>) {
+  public constructor(partial: Partial<ProductEntity>) {
     super()
-    Object.assign(this, partialEntity)
+    Object.assign(this, partial)
   }
 
   /**

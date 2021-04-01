@@ -8,9 +8,9 @@ import { CategoryProxy } from '../models/category.proxy'
 import { ToProxy } from 'src/common/to-proxy.interface'
 
 /**
- * The app's main Category entity class
+ * The app's main category entity class
  *
- * Class that represents the entity that deals with Category
+ * Class that represents the entity that deals with rating
  */
 @Entity('category')
 export class CategoryEntity extends BaseEntity
@@ -44,7 +44,7 @@ export class CategoryEntity extends BaseEntity
   }
 
   /**
-   * Method that converts the entity to you proxy
+   * Method that converts the entity to your proxy
    * @returns the proxy data
    */
   public toProxy(): CategoryProxy {

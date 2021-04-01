@@ -5,6 +5,7 @@ import { CategoryEntity } from './entities/category.entity'
 
 import { CategoryService } from './services/category.service'
 
+import { CategoryRelationsController } from './controllers/category-relations.controller'
 import { CategoryController } from './controllers/category.controller'
 
 import { ProductModule } from '../product/product.module'
@@ -16,7 +17,7 @@ import { UserModule } from '../user/user.module'
     forwardRef(() => UserModule),
     TypeOrmModule.forFeature([CategoryEntity])
   ],
-  controllers: [CategoryController],
+  controllers: [CategoryController, CategoryRelationsController],
   providers: [CategoryService],
   exports: [CategoryService]
 })
