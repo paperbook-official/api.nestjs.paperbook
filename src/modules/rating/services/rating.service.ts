@@ -43,7 +43,6 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
     const product = await this.productService.get(productId)
 
     return await new RatingEntity({
-      ...createRatingPayload,
       productId,
       product
     }).save()
@@ -135,7 +134,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
       throw new EntityNotFoundException(ratingId, RatingEntity)
     }
 
-    if (!entity.isActive) {
+    if (entity.isActive) {
       throw new EntityAlreadyEnabledException(ratingId, RatingEntity)
     }
 
