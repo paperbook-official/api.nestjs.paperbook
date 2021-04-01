@@ -79,7 +79,7 @@ export class ProductController {
 
   /**
    * Method that is called when the user access the "/products"
-   * route with "POST" method
+   * route with the "POST" method
    * @param requestUser stores the logged user data
    * @param createProductPaylaod stores the new product data
    * @returns the created product data

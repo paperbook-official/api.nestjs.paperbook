@@ -20,49 +20,55 @@ export class RatingEntity extends BaseEntity implements ToProxy<RatingProxy> {
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: true
+    nullable: true,
+    default: 0
   })
   public five?: number
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: true
+    nullable: true,
+    default: 0
   })
   public four?: number
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: true
+    nullable: true,
+    default: 0
   })
   public three?: number
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: true
+    nullable: true,
+    default: 0
   })
   public two?: number
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: true
+    nullable: true,
+    default: 0
   })
   public one?: number
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: true
+    nullable: true,
+    default: 0
   })
   public zero?: number
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: true
+    nullable: false
   })
   public productId: number
 
