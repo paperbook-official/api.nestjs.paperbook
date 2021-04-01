@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { RatingEntity } from '../entities/rating.entity'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateRatingPayload } from '../models/create-rating.payload'
 
@@ -42,5 +44,30 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
       productId,
       product
     }).save()
+  }
+
+  /**
+   * Method that can only one rating entity
+   * @param ratingId stores the rating id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found rating entity
+   */
+  public async get(
+    ratingId: number,
+    crudRequest?: CrudRequest
+  ): Promise<RatingEntity> {
+    let entity: RatingEntity
+
+    if (crudRequest) {
+      entity = await super.getOne(crudRequest).catch(() => undefined)
+    } else {
+      entity = await RatingEntity.findOne({ id: ratingId })
+    }
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(ratingId)
+    }
+
+    return entity
   }
 }

@@ -204,7 +204,7 @@ export class ProductController {
 
   /**
    * Method that is called when the user access the "/products/:id"
-   * route with "GET" method
+   * route with the "GET" method
    * @param productId stores the product id
    * @param crudRequest store the joins, filters, etc
    * @returns the found entity

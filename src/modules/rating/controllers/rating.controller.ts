@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Crud } from '@nestjsx/crud'
+import { Crud, CrudRequest, ParsedRequest } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
@@ -22,7 +22,10 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
   },
   query: {
     persist: ['id', 'isActive'],
-    filter: [{ field: 'isActive', operator: '$eq', value: true }]
+    filter: [{ field: 'isActive', operator: '$eq', value: true }],
+    join: {
+      product: {}
+    }
   },
   routes: {
     exclude: [
@@ -55,6 +58,23 @@ export class RatingController {
     @Body() createRatingPayload: CreateRatingPayload
   ): Promise<RatingProxy> {
     const entity = await this.ratingService.create(createRatingPayload)
+    return entity.toProxy()
+  }
+
+  /**
+   * Method that is called when the user access the "/ratings/:id"
+   * route with the "GET" method
+   * @param ratingId stores the rating id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found rating entity proxy
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Get(':id')
+  public async get(
+    @Param('id') ratingId: number,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<RatingProxy> {
+    const entity = await this.ratingService.get(ratingId, crudRequest)
     return entity.toProxy()
   }
 }
