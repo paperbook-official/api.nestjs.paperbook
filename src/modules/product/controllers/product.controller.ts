@@ -261,8 +261,6 @@ export class ProductController {
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */
-  @ApiOperation({ summary: 'Updates a single product' })
-  @ApiOkResponse({ description: 'Updates  user' })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Delete(':id')
   public async delete(
@@ -278,8 +276,8 @@ export class ProductController {
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */
-  @ApiOperation({ summary: 'Updates a single product' })
-  @ApiOkResponse({ description: 'Updates  user' })
+  @ApiOperation({ summary: 'Disables a single product entity' })
+  @ApiOkResponse({ description: 'Disables a single product entity' })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/disable')
   public async disable(
@@ -295,8 +293,8 @@ export class ProductController {
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */
-  @ApiOperation({ summary: 'Updates a single product' })
-  @ApiOkResponse({ description: 'Updates  user' })
+  @ApiOperation({ summary: 'Enables a single product entity' })
+  @ApiOkResponse({ description: 'Enables a single product entity' })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/enable')
   public async enable(

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseInterceptors
 } from '@nestjs/common'
 import {
@@ -142,5 +143,33 @@ export class RatingController {
   @Delete(':id')
   public async delete(@Param('id') ratingId: number): Promise<void> {
     await this.ratingService.delete(ratingId)
+  }
+
+  /**
+   * Method that is called when the user access the
+   * "/products/:id/disable" route with the "PUT" method
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Disables a single rating entity' })
+  @ApiOkResponse({ description: 'Disables a single rating entity' })
+  @ProtectTo(RolesEnum.Admin)
+  @Put(':id/disable')
+  public async disable(@Param('id') productId: number): Promise<void> {
+    await this.ratingService.disable(productId)
+  }
+
+  /**
+   * Method that is called when the user access the
+   * "/products/:id/enable" route with the "PUT" method
+   * @param productId stores the product id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Enables a single rating entity' })
+  @ApiOkResponse({ description: 'Enables a single rating entity' })
+  @ProtectTo(RolesEnum.Admin)
+  @Put(':id/enable')
+  public async enable(@Param('id') productId: number): Promise<void> {
+    await this.ratingService.enable(productId)
   }
 }

@@ -5,6 +5,8 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { RatingEntity } from '../entities/rating.entity'
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateRatingPayload } from '../models/create-rating.payload'
@@ -102,5 +104,41 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
     }
 
     await RatingEntity.delete({ id: ratingId })
+  }
+
+  /**
+   * Method that can disables some rating entity
+   * @param ratingId stores the rating entity id
+   */
+  public async disable(ratingId: number): Promise<void> {
+    const entity = await RatingEntity.findOne({ id: ratingId })
+
+    if (!entity) {
+      throw new EntityNotFoundException(ratingId, RatingEntity)
+    }
+
+    if (!entity.isActive) {
+      throw new EntityAlreadyDisabledException(ratingId, RatingEntity)
+    }
+
+    await RatingEntity.update({ id: ratingId }, { isActive: false })
+  }
+
+  /**
+   * Method that can disables some rating entity
+   * @param ratingId stores the rating entity id
+   */
+  public async enable(ratingId: number): Promise<void> {
+    const entity = await RatingEntity.findOne({ id: ratingId })
+
+    if (!entity) {
+      throw new EntityNotFoundException(ratingId, RatingEntity)
+    }
+
+    if (!entity.isActive) {
+      throw new EntityAlreadyEnabledException(ratingId, RatingEntity)
+    }
+
+    await RatingEntity.update({ id: ratingId }, { isActive: true })
   }
 }
