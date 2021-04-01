@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
@@ -75,9 +75,11 @@ export class RatingEntity extends BaseEntity implements ToProxy<RatingProxy> {
   //#region Relations
 
   @ApiPropertyOptional({ type: () => ProductEntity })
-  @ManyToOne(
+  @JoinColumn()
+  @OneToOne(
     () => ProductEntity,
-    user => user.ratings
+    user => user.rating,
+    { onDelete: 'CASCADE' }
   )
   public product?: ProductEntity
 
