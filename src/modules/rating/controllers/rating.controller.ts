@@ -3,10 +3,16 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   UseInterceptors
 } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -19,6 +25,7 @@ import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
 import { CreateRatingPayload } from '../models/create-rating.payload'
 import { RatingProxy } from '../models/rating.proxy'
+import { UpdateRatingPayload } from '../models/update-rating.payload'
 
 import { RatingService } from '../services/rating.service'
 
@@ -95,9 +102,9 @@ export class RatingController {
   }
 
   /**
-   * Method that can get
-   * @param crudRequest
-   * @returns
+   * Method that can get rating entities
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found rating entities
    */
   @ProtectTo(RolesEnum.Admin)
   @Get()
@@ -106,5 +113,22 @@ export class RatingController {
   ): Promise<GetManyDefaultResponse<RatingProxy> | RatingProxy[]> {
     const entities = await this.ratingService.getMany(crudRequest)
     return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "/ratings/:id"
+   * route with the "PATCH" method
+   * @param ratingId stores the rating id
+   * @param updateRatingPayload stores the rating entity new data
+   */
+  @ApiOperation({ summary: 'Updates a single rating entity' })
+  @ApiOkResponse({ description: 'Updates a single rating entity' })
+  @ProtectTo(RolesEnum.Admin)
+  @Patch(':id')
+  public async update(
+    @Param('id') ratingId: number,
+    @Body() updateRatingPayload: UpdateRatingPayload
+  ): Promise<void> {
+    await this.ratingService.update(ratingId, updateRatingPayload)
   }
 }

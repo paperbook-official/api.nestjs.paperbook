@@ -8,6 +8,7 @@ import { RatingEntity } from '../entities/rating.entity'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateRatingPayload } from '../models/create-rating.payload'
+import { UpdateRatingPayload } from '../models/update-rating.payload'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 
@@ -69,5 +70,23 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
     }
 
     return entity
+  }
+
+  /**
+   * Method that can change some entity data
+   * @param ratingId stores the rating entity id
+   * @param updateRatingPayload stores the rating entity new data
+   */
+  public async update(
+    ratingId: number,
+    updateRatingPayload: UpdateRatingPayload
+  ): Promise<void> {
+    const entity = await RatingEntity.findOne({ id: ratingId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(ratingId, RatingEntity)
+    }
+
+    await RatingEntity.update({ id: ratingId }, updateRatingPayload)
   }
 }
