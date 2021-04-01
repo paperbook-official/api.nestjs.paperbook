@@ -1,6 +1,19 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors
+} from '@nestjs/common'
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Crud, CrudRequest, ParsedRequest } from '@nestjsx/crud'
+import {
+  Crud,
+  CrudRequest,
+  CrudRequestInterceptor,
+  GetManyDefaultResponse,
+  ParsedRequest
+} from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
@@ -8,6 +21,8 @@ import { CreateRatingPayload } from '../models/create-rating.payload'
 import { RatingProxy } from '../models/rating.proxy'
 
 import { RatingService } from '../services/rating.service'
+
+import { map } from 'src/utils/crud'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -36,6 +51,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     ]
   }
 })
+@UseInterceptors(CrudRequestInterceptor)
 @ApiTags('ratings')
 @Controller('ratings')
 export class RatingController {
@@ -76,5 +92,19 @@ export class RatingController {
   ): Promise<RatingProxy> {
     const entity = await this.ratingService.get(ratingId, crudRequest)
     return entity.toProxy()
+  }
+
+  /**
+   * Method that can get
+   * @param crudRequest
+   * @returns
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Get()
+  public async getMore(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<RatingProxy> | RatingProxy[]> {
+    const entities = await this.ratingService.getMany(crudRequest)
+    return map(entities, entity => entity.toProxy())
   }
 }
