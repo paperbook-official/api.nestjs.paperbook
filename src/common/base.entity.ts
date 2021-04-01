@@ -8,6 +8,8 @@ import {
 
 /**
  * Abstract class that abstracts some useful properties
+ *
+ * Class that deals with the entity common properties
  */
 export abstract class BaseEntity extends BaseEntityTypeOrm {
   @PrimaryGeneratedColumn()

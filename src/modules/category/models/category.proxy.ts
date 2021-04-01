@@ -8,7 +8,7 @@ import { ProductCategoryProxy } from 'src/modules/product-category/models/produc
 /**
  * The app's main category proxy class
  *
- * Class that deals with the cateogyr return data
+ * Class that deals with the category return data
  */
 export class CategoryProxy {
   @ApiProperty()
