@@ -325,12 +325,12 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that validates if the user can access some source
-   * @param entityId stores the found entity
+   * @param userId stores the found entity
    * @param requestUser stores the logged user
    * @returns true if the user can access some source, otherwise false
    */
-  public hasPermissions(entityId: number, requestUser: RequestUser): boolean {
-    return entityId === requestUser.id || isAdminUser(requestUser)
+  public hasPermissions(userId: number, requestUser: RequestUser): boolean {
+    return userId === requestUser.id || isAdminUser(requestUser)
   }
 
   //#endregion

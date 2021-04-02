@@ -74,7 +74,9 @@ export class RatingEntity extends BaseEntity implements ToProxy<RatingProxy> {
 
   //#region Relations
 
-  @ApiPropertyOptional({ type: () => ProductEntity })
+  @ApiPropertyOptional({
+    type: () => ProductEntity
+  })
   @JoinColumn()
   @OneToOne(
     () => ProductEntity,

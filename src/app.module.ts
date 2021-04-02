@@ -13,6 +13,7 @@ import { OrderModule } from './modules/order/order.module'
 import { ProductCategoryModule } from './modules/product-category/product-category.module'
 import { ProductModule } from './modules/product/product.module'
 import { RatingModule } from './modules/rating/rating.module'
+import { ShoppingCartModule } from './modules/shopping-cart/shopping-cart.module'
 import { TypeOrmConfigModule } from './modules/typeorm-config/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
 import { join } from 'path'
@@ -28,6 +29,7 @@ import { join } from 'path'
     MediaModule,
     ProductCategoryModule,
     RatingModule,
+    ShoppingCartModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.local']
     }),
