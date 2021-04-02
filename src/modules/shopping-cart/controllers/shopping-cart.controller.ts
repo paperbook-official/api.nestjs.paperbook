@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   UseInterceptors
 } from '@nestjs/common'
@@ -20,6 +21,7 @@ import { User } from 'src/decorators/user/user.decorator'
 
 import { CreateShoppingCartPayload } from '../models/create-shopping-cart.payload'
 import { ShoppingCartProxy } from '../models/shopping-cart.proxy'
+import { UpdateShoppingCartPayload } from '../models/update-shopping-cart.payload'
 
 import { ShoppingCartService } from '../services/shopping-cart.service'
 
@@ -129,5 +131,23 @@ export class ShoppingCartController {
       crudRequest
     )
     return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "/shopping-cart/:id"
+   * route with the "PATCH" method
+   * @param shoppingCartId stores the shopping cart id
+   * @param updateShoppingCartPayload stores the shopping cart new data
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Patch(':id')
+  public async update(
+    @Param('id') shoppingCartId: number,
+    @Body() updateShoppingCartPayload: UpdateShoppingCartPayload
+  ): Promise<void> {
+    await this.shoppingCartService.update(
+      shoppingCartId,
+      updateShoppingCartPayload
+    )
   }
 }

@@ -5,8 +5,10 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { ShoppingCartEntity } from '../entities/shopping-cart.entity'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateShoppingCartPayload } from '../models/create-shopping-cart.payload'
+import { UpdateShoppingCartPayload } from '../models/update-shopping-cart.payload'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
@@ -106,5 +108,26 @@ export class ShoppingCartService extends TypeOrmCrudService<
     }
 
     return entities
+  }
+
+  /**
+   * Method that can change data of some shopping cart entity
+   * @param shoppingCartId stores the shopping cart id
+   * @param updateShoppingCartPayload stores the shopping cart new data
+   */
+  public async update(
+    shoppingCartId: number,
+    updateShoppingCartPayload: UpdateShoppingCartPayload
+  ): Promise<void> {
+    const entity = await ShoppingCartEntity.findOne({ id: shoppingCartId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(shoppingCartId, ShoppingCartEntity)
+    }
+
+    await ShoppingCartEntity.update(
+      { id: shoppingCartId },
+      updateShoppingCartPayload
+    )
   }
 }
