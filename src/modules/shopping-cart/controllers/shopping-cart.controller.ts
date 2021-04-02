@@ -1,13 +1,19 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
   UseInterceptors
 } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -139,6 +145,8 @@ export class ShoppingCartController {
    * @param shoppingCartId stores the shopping cart id
    * @param updateShoppingCartPayload stores the shopping cart new data
    */
+  @ApiOperation({ summary: 'Updates a single shopping cart entity' })
+  @ApiOkResponse({ description: 'Updates a single shopping cart entity' })
   @ProtectTo(RolesEnum.Admin)
   @Patch(':id')
   public async update(
@@ -149,5 +157,20 @@ export class ShoppingCartController {
       shoppingCartId,
       updateShoppingCartPayload
     )
+  }
+
+  /**
+   * Method that is called when the user access the "/shopping-cart/:id"
+   * route with the "DELETE" method
+   * @param shoppingCartId stores the shopping cart id
+   * @param requestUser stores the logged user data
+   */
+  @ProtectTo(RolesEnum.Admin, RolesEnum.Seller, RolesEnum.Admin)
+  @Delete(':id')
+  public async delete(
+    @Param('id') shoppingCartId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.shoppingCartService.delete(shoppingCartId, requestUser)
   }
 }

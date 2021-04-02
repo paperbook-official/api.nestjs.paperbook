@@ -130,4 +130,26 @@ export class ShoppingCartService extends TypeOrmCrudService<
       updateShoppingCartPayload
     )
   }
+
+  /**
+   * Method that can delete some shopping cart entity
+   * @param shoppingCartId stores the shopping cart id
+   * @param requestUser stores the logged user data
+   */
+  public async delete(
+    shoppingCartId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
+    const entity = await ShoppingCartEntity.findOne({ id: shoppingCartId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(shoppingCartId, ShoppingCartEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    await ShoppingCartEntity.delete({ id: shoppingCartId })
+  }
 }
