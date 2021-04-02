@@ -5,6 +5,7 @@ import { BaseEntity } from 'src/common/base.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
 import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
+import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ProductProxy } from '../models/product.proxy'
@@ -89,7 +90,9 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
 
   //#region Relations
 
-  @ApiPropertyOptional({ type: () => RatingEntity })
+  @ApiPropertyOptional({
+    type: () => RatingEntity
+  })
   @OneToOne(
     () => RatingEntity,
     rating => rating.product,
@@ -97,26 +100,45 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
   )
   public rating?: RatingEntity
 
-  @ApiPropertyOptional({ type: () => UserEntity })
+  @ApiPropertyOptional({
+    type: () => UserEntity
+  })
   @ManyToOne(
     () => UserEntity,
-    user => user.products
+    user => user.products,
+    { onDelete: 'CASCADE' }
   )
   public user?: UserEntity
 
-  @ApiPropertyOptional({ type: () => OrderEntity, isArray: true })
+  @ApiPropertyOptional({
+    type: () => OrderEntity,
+    isArray: true
+  })
   @OneToMany(
     () => OrderEntity,
     order => order.product
   )
   public orders?: OrderEntity[]
 
-  @ApiPropertyOptional({ type: () => ProductCategoryEntity, isArray: true })
+  @ApiPropertyOptional({
+    type: () => ProductCategoryEntity,
+    isArray: true
+  })
   @OneToMany(
     () => ProductCategoryEntity,
     productCategory => productCategory.product
   )
   public productsCategories?: ProductCategoryEntity[]
+
+  @ApiPropertyOptional({
+    type: () => ShoppingCartEntity,
+    isArray: true
+  })
+  @OneToMany(
+    () => ShoppingCartEntity,
+    shoppingCart => shoppingCart.product
+  )
+  public shoppingCarts?: ShoppingCartEntity[]
 
   //#endregion
 

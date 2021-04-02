@@ -6,6 +6,7 @@ import { BaseProxy } from 'src/common/base.proxy'
 import { AddressProxy } from 'src/modules/address/models/address.proxy'
 import { OrderProxy } from 'src/modules/order/models/order.proxy'
 import { ProductProxy } from 'src/modules/product/models/product.proxy'
+import { ShoppingCartProxy } from 'src/modules/shopping-cart/models/shopping-cart.proxy'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -33,14 +34,29 @@ export class UserProxy extends BaseProxy {
   @ApiPropertyOptional()
   public phone?: string
 
-  @ApiPropertyOptional({ type: () => AddressProxy, isArray: true })
+  @ApiPropertyOptional({
+    type: () => AddressProxy,
+    isArray: true
+  })
   public addresses?: AddressProxy[]
 
-  @ApiPropertyOptional({ type: () => ProductProxy, isArray: true })
+  @ApiPropertyOptional({
+    type: () => ProductProxy,
+    isArray: true
+  })
   public products?: ProductProxy[]
 
-  @ApiPropertyOptional({ type: () => OrderProxy, isArray: true })
+  @ApiPropertyOptional({
+    type: () => OrderProxy,
+    isArray: true
+  })
   public orders?: OrderProxy[]
+
+  @ApiPropertyOptional({
+    type: () => ShoppingCartProxy,
+    isArray: true
+  })
+  public shoppingCarts?: ShoppingCartProxy[]
 
   public constructor(entity: UserEntity) {
     super(entity)
@@ -52,8 +68,12 @@ export class UserProxy extends BaseProxy {
     this.permissions = entity.roles
     this.phone = entity.phone
 
+    // relations
     this.addresses = entity.addresses?.map(address => address.toProxy())
     this.products = entity.products?.map(product => product.toProxy())
     this.orders = entity.orders?.map(order => order.toProxy())
+    this.shoppingCarts = entity.shoppingCarts?.map(shoppingCart =>
+      shoppingCart.toProxy()
+    )
   }
 }
