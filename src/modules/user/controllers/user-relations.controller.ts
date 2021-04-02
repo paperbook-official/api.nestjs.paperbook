@@ -49,7 +49,8 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
     join: {
       addresses: {},
       products: {},
-      orders: {}
+      orders: {},
+      shoppingCarts: {}
     }
   },
   routes: {
