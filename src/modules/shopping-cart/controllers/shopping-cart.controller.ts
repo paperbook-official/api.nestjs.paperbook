@@ -166,7 +166,7 @@ export class ShoppingCartController {
    * @param shoppingCartId stores the shopping cart id
    * @param requestUser stores the logged user data
    */
-  @ProtectTo(RolesEnum.Admin, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Delete(':id')
   public async delete(
     @Param('id') shoppingCartId: number,

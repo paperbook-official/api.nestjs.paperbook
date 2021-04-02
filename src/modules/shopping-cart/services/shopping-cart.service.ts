@@ -80,6 +80,10 @@ export class ShoppingCartService extends TypeOrmCrudService<
       entity = await ShoppingCartEntity.findOne({ id: shoppingCartId })
     }
 
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(shoppingCartId, ShoppingCartEntity)
+    }
+
     if (!this.userService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
