@@ -5,6 +5,8 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { ShoppingCartEntity } from '../entities/shopping-cart.entity'
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CreateShoppingCartPayload } from '../models/create-shopping-cart.payload'
@@ -151,5 +153,47 @@ export class ShoppingCartService extends TypeOrmCrudService<
     }
 
     await ShoppingCartEntity.delete({ id: shoppingCartId })
+  }
+
+  /**
+   * Method that can disables some shopping cart entity
+   * @param shoppingCartId stores the shopping cart entity id
+   */
+  public async disable(shoppingCartId: number): Promise<void> {
+    const entity = await ShoppingCartEntity.findOne({ id: shoppingCartId })
+
+    if (!entity) {
+      throw new EntityNotFoundException(shoppingCartId, ShoppingCartEntity)
+    }
+
+    if (!entity.isActive) {
+      throw new EntityAlreadyDisabledException(
+        shoppingCartId,
+        ShoppingCartEntity
+      )
+    }
+
+    await ShoppingCartEntity.update({ id: shoppingCartId }, { isActive: false })
+  }
+
+  /**
+   * Method that can enables some shopping cart entity
+   * @param shoppingCartId stores the shopping cart entity id
+   */
+  public async enable(shoppingCartId: number): Promise<void> {
+    const entity = await ShoppingCartEntity.findOne({ id: shoppingCartId })
+
+    if (!entity) {
+      throw new EntityNotFoundException(shoppingCartId, ShoppingCartEntity)
+    }
+
+    if (entity.isActive) {
+      throw new EntityAlreadyEnabledException(
+        shoppingCartId,
+        ShoppingCartEntity
+      )
+    }
+
+    await ShoppingCartEntity.update({ id: shoppingCartId }, { isActive: true })
   }
 }

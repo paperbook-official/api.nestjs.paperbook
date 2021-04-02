@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseInterceptors
 } from '@nestjs/common'
 import {
@@ -172,5 +173,33 @@ export class ShoppingCartController {
     @User() requestUser: RequestUser
   ): Promise<void> {
     await this.shoppingCartService.delete(shoppingCartId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user access the
+   * "/shopping-cart/:id/disable" route with the "PUT" method
+   * @param shoppingCartId stores the shopping cart id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Disables a single shopping cart entity' })
+  @ApiOkResponse({ description: 'Disables a single shopping cart entity' })
+  @ProtectTo(RolesEnum.Admin)
+  @Put(':id/disable')
+  public async disable(@Param('id') shoppingCartId: number): Promise<void> {
+    await this.shoppingCartService.disable(shoppingCartId)
+  }
+
+  /**
+   * Method that is called when the user access the
+   * "/shopping-cart/:id/enable" route with the "PUT" method
+   * @param shoppingCartId stores the shopping cart id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Enables a single shopping cart entity' })
+  @ApiOkResponse({ description: 'Enables a single shopping cart entity' })
+  @ProtectTo(RolesEnum.Admin)
+  @Put(':id/enable')
+  public async enable(@Param('id') shoppingCartId: number): Promise<void> {
+    await this.shoppingCartService.enable(shoppingCartId)
   }
 }

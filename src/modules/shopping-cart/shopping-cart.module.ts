@@ -7,8 +7,15 @@ import { ShoppingCartService } from './services/shopping-cart.service'
 
 import { ShoppingCartController } from './controllers/shopping-cart.controller'
 
+import { ProductModule } from '../product/product.module'
+import { UserModule } from '../user/user.module'
+
 @Module({
-  imports: [TypeOrmModule.forFeature([ShoppingCartEntity])],
+  imports: [
+    UserModule,
+    ProductModule,
+    TypeOrmModule.forFeature([ShoppingCartEntity])
+  ],
   controllers: [ShoppingCartController],
   providers: [ShoppingCartService],
   exports: [ShoppingCartService]
