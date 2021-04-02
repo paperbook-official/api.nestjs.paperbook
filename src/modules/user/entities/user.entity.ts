@@ -5,6 +5,7 @@ import { BaseEntity } from 'src/common/base.entity'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
+import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
 import { UserProxy } from '../models/user.proxy'
 import { ToProxy } from 'src/common/to-proxy.interface'
@@ -79,26 +80,45 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
 
   //#region Relations
 
-  @ApiPropertyOptional({ type: () => AddressEntity, isArray: true })
+  @ApiPropertyOptional({
+    type: () => AddressEntity,
+    isArray: true
+  })
   @OneToMany(
     () => AddressEntity,
     address => address.user
   )
   public addresses?: AddressEntity[]
 
-  @ApiPropertyOptional({ type: () => ProductEntity, isArray: true })
+  @ApiPropertyOptional({
+    type: () => ProductEntity,
+    isArray: true
+  })
   @OneToMany(
     () => ProductEntity,
     product => product.user
   )
   public products?: ProductEntity[]
 
-  @ApiPropertyOptional({ type: () => OrderEntity, isArray: true })
+  @ApiPropertyOptional({
+    type: () => OrderEntity,
+    isArray: true
+  })
   @OneToMany(
     () => OrderEntity,
     order => order.user
   )
   public orders?: OrderEntity[]
+
+  @ApiPropertyOptional({
+    type: () => ShoppingCartEntity,
+    isArray: true
+  })
+  @OneToMany(
+    () => ShoppingCartEntity,
+    shoppingCart => shoppingCart.user
+  )
+  public shoppingCarts?: ShoppingCartEntity[]
 
   //#endregion
 

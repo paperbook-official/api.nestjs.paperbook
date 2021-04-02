@@ -7,6 +7,7 @@ import { BaseProxy } from 'src/common/base.proxy'
 import { OrderProxy } from 'src/modules/order/models/order.proxy'
 import { ProductCategoryProxy } from 'src/modules/product-category/models/product-category.proxy'
 import { RatingProxy } from 'src/modules/rating/models/rating.proxy'
+import { ShoppingCartProxy } from 'src/modules/shopping-cart/models/shopping-cart.proxy'
 import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 /**
@@ -42,17 +43,33 @@ export class ProductProxy extends BaseProxy {
   @ApiProperty()
   public userId: number
 
-  @ApiPropertyOptional({ type: () => UserProxy })
+  @ApiPropertyOptional({
+    type: () => UserProxy
+  })
   public user?: UserProxy
 
-  @ApiPropertyOptional({ type: () => OrderProxy, isArray: true })
+  @ApiPropertyOptional({
+    type: () => OrderProxy,
+    isArray: true
+  })
   public orders?: OrderProxy[]
 
-  @ApiPropertyOptional({ type: () => ProductCategoryProxy, isArray: true })
+  @ApiPropertyOptional({
+    type: () => ProductCategoryProxy,
+    isArray: true
+  })
   public productsCategories?: ProductCategoryProxy[]
 
-  @ApiPropertyOptional({ type: () => RatingProxy })
+  @ApiPropertyOptional({
+    type: () => RatingProxy
+  })
   public rating?: RatingProxy
+
+  @ApiPropertyOptional({
+    type: () => ShoppingCartProxy,
+    isArray: true
+  })
+  public shoppingCarts: ShoppingCartProxy[]
 
   public constructor(entity: ProductEntity) {
     super(entity)
@@ -74,6 +91,9 @@ export class ProductProxy extends BaseProxy {
       productCategory.toProxy()
     )
     this.rating = entity.rating?.toProxy()
+    this.shoppingCarts = entity.shoppingCarts?.map(shoppingCart =>
+      shoppingCart.toProxy()
+    )
   }
 }
 

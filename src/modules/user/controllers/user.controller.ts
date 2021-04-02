@@ -53,7 +53,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     join: {
       addresses: {},
       products: {},
-      orders: {}
+      orders: {},
+      shoppingCarts: {}
     }
   },
   routes: {
