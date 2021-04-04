@@ -1,8 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm'
+import { Column, Entity, ManyToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { RatingProxy } from '../models/rating.proxy'
 import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
@@ -23,47 +24,21 @@ export class RatingEntity extends BaseEntity implements ToProxy<RatingProxy> {
     nullable: true,
     default: 0
   })
-  public five?: number
+  public stars?: number
+
+  @ApiPropertyOptional()
+  @Column({
+    type: 'text',
+    nullable: true
+  })
+  public text?: string
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: true,
-    default: 0
+    nullable: false
   })
-  public four?: number
-
-  @ApiProperty()
-  @Column({
-    type: 'int',
-    nullable: true,
-    default: 0
-  })
-  public three?: number
-
-  @ApiProperty()
-  @Column({
-    type: 'int',
-    nullable: true,
-    default: 0
-  })
-  public two?: number
-
-  @ApiProperty()
-  @Column({
-    type: 'int',
-    nullable: true,
-    default: 0
-  })
-  public one?: number
-
-  @ApiProperty()
-  @Column({
-    type: 'int',
-    nullable: true,
-    default: 0
-  })
-  public zero?: number
+  public userId: number
 
   @ApiProperty()
   @Column({
@@ -74,13 +49,19 @@ export class RatingEntity extends BaseEntity implements ToProxy<RatingProxy> {
 
   //#region Relations
 
+  @ManyToOne(
+    () => UserEntity,
+    user => user.ratings,
+    { onDelete: 'CASCADE' }
+  )
+  public user?: UserEntity
+
   @ApiPropertyOptional({
     type: () => ProductEntity
   })
-  @JoinColumn()
-  @OneToOne(
+  @ManyToOne(
     () => ProductEntity,
-    user => user.rating,
+    product => product.ratings,
     { onDelete: 'CASCADE' }
   )
   public product?: ProductEntity
