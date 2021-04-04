@@ -61,9 +61,10 @@ export class ProductProxy extends BaseProxy {
   public productsCategories?: ProductCategoryProxy[]
 
   @ApiPropertyOptional({
-    type: () => RatingProxy
+    type: () => RatingProxy,
+    isArray: true
   })
-  public rating?: RatingProxy
+  public ratings?: RatingProxy[]
 
   @ApiPropertyOptional({
     type: () => ShoppingCartProxy,
@@ -90,7 +91,7 @@ export class ProductProxy extends BaseProxy {
     this.productsCategories = entity.productsCategories?.map(productCategory =>
       productCategory.toProxy()
     )
-    this.rating = entity.rating?.toProxy()
+    this.ratings = entity.ratings?.map(rating => rating.toProxy())
     this.shoppingCarts = entity.shoppingCarts?.map(shoppingCart =>
       shoppingCart.toProxy()
     )

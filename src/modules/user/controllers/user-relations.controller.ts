@@ -50,7 +50,8 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       addresses: {},
       products: {},
       orders: {},
-      shoppingCarts: {}
+      shoppingCarts: {},
+      ratings: {}
     }
   },
   routes: {

@@ -24,6 +24,7 @@ import {
 } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
+import { User } from 'src/decorators/user/user.decorator'
 
 import { CreateRatingPayload } from '../models/create-rating.payload'
 import { RatingProxy } from '../models/rating.proxy'
@@ -32,6 +33,7 @@ import { UpdateRatingPayload } from '../models/update-rating.payload'
 import { RatingService } from '../services/rating.service'
 
 import { map } from 'src/utils/crud'
+import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -48,7 +50,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
-      product: {}
+      product: {},
+      user: {}
     }
   },
   routes: {
@@ -77,12 +80,16 @@ export class RatingController {
     description: 'Gets the created rating data',
     type: RatingProxy
   })
-  @ProtectTo(RolesEnum.Admin)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
+    @User() requestUser: RequestUser,
     @Body() createRatingPayload: CreateRatingPayload
   ): Promise<RatingProxy> {
-    const entity = await this.ratingService.create(createRatingPayload)
+    const entity = await this.ratingService.create(
+      requestUser,
+      createRatingPayload
+    )
     return entity.toProxy()
   }
 
@@ -93,7 +100,6 @@ export class RatingController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found rating entity proxy
    */
-  @ProtectTo(RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') ratingId: number,
@@ -108,7 +114,6 @@ export class RatingController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found rating entities
    */
-  @ProtectTo(RolesEnum.Admin)
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest?: CrudRequest
@@ -125,13 +130,14 @@ export class RatingController {
    */
   @ApiOperation({ summary: 'Updates a single rating entity' })
   @ApiOkResponse({ description: 'Updates a single rating entity' })
-  @ProtectTo(RolesEnum.Admin)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
     @Param('id') ratingId: number,
+    @User() requestUser: RequestUser,
     @Body() updateRatingPayload: UpdateRatingPayload
   ): Promise<void> {
-    await this.ratingService.update(ratingId, updateRatingPayload)
+    await this.ratingService.update(ratingId, requestUser, updateRatingPayload)
   }
 
   /**
@@ -139,37 +145,46 @@ export class RatingController {
    * route with the "DELETE" method
    * @param ratingId stores the rating id
    */
-  @ProtectTo(RolesEnum.Admin)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Delete(':id')
-  public async delete(@Param('id') ratingId: number): Promise<void> {
-    await this.ratingService.delete(ratingId)
+  public async delete(
+    @Param('id') ratingId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.ratingService.delete(ratingId, requestUser)
   }
 
   /**
    * Method that is called when the user access the
    * "/products/:id/disable" route with the "PUT" method
-   * @param productId stores the product id
+   * @param ratingId stores the product id
    * @param requestUser stores the logged user data
    */
   @ApiOperation({ summary: 'Disables a single rating entity' })
   @ApiOkResponse({ description: 'Disables a single rating entity' })
-  @ProtectTo(RolesEnum.Admin)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/disable')
-  public async disable(@Param('id') productId: number): Promise<void> {
-    await this.ratingService.disable(productId)
+  public async disable(
+    @Param('id') ratingId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.ratingService.disable(ratingId, requestUser)
   }
 
   /**
    * Method that is called when the user access the
    * "/products/:id/enable" route with the "PUT" method
-   * @param productId stores the product id
+   * @param ratingId stores the product id
    * @param requestUser stores the logged user data
    */
   @ApiOperation({ summary: 'Enables a single rating entity' })
   @ApiOkResponse({ description: 'Enables a single rating entity' })
-  @ProtectTo(RolesEnum.Admin)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/enable')
-  public async enable(@Param('id') productId: number): Promise<void> {
-    await this.ratingService.enable(productId)
+  public async enable(
+    @Param('id') ratingId: number,
+    @User() requestUser: RequestUser
+  ): Promise<void> {
+    await this.ratingService.enable(ratingId, requestUser)
   }
 }

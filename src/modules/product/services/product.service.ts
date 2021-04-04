@@ -10,11 +10,13 @@ import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-a
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
+import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
 import { UpdateProductPayload } from '../models/update-product.payload'
 
 import { CategoryService } from 'src/modules/category/services/category.service'
+import { RatingService } from 'src/modules/rating/services/rating.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { RequestUser } from 'src/utils/type.shared'
@@ -34,7 +36,9 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     @Inject(forwardRef(() => CategoryService))
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    @Inject(forwardRef(() => RatingService))
+    private readonly ratingService: RatingService
   ) {
     super(repository)
   }
@@ -192,6 +196,36 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     ]
 
     return await this.categoryService.getMany(crudRequest)
+  }
+
+  /**
+   * Method that can get the ratings of some product
+   * @param productId stores the product id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found rating entities
+   */
+  public async getRatingsByProductId(
+    productId: number,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<RatingEntity> | RatingEntity[]> {
+    const entity = await ProductEntity.findOne({ id: productId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(productId, ProductEntity)
+    }
+
+    crudRequest.parsed.search = {
+      $and: [
+        ...crudRequest.parsed.search.$and,
+        {
+          productId: {
+            $eq: productId
+          }
+        }
+      ]
+    }
+
+    return await this.ratingService.getMany(crudRequest)
   }
 
   /**

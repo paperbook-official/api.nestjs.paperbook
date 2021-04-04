@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
@@ -13,6 +13,11 @@ import { CreateRatingPayload } from '../models/create-rating.payload'
 import { UpdateRatingPayload } from '../models/update-rating.payload'
 
 import { ProductService } from 'src/modules/product/services/product.service'
+import { UserService } from 'src/modules/user/services/user.service'
+
+import { RequestUser } from 'src/utils/type.shared'
+
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
 /**
  * The app's main rating service class
@@ -24,26 +29,36 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
   public constructor(
     @InjectRepository(RatingEntity)
     private readonly repository: Repository<RatingEntity>,
-    private readonly productService: ProductService
+    @Inject(forwardRef(() => ProductService))
+    private readonly productService: ProductService,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService
   ) {
     super(repository)
   }
 
   /**
    * Method that can create a new rating entity
+   * @param requestUser stores the logged user data
    * @param createRatingPayload stores the new rating data
    * @returns the created rating entity
    */
   public async create(
+    requestUser: RequestUser,
     createRatingPayload: CreateRatingPayload
   ): Promise<RatingEntity> {
-    const { productId } = createRatingPayload
+    const { userId, productId } = createRatingPayload
 
-    // if there is no product the get method will throw an exception
+    /* If there are no products or users with the passed id those
+    services will throw "EntityNotFoundException", if the request
+    user has no permission the "UserService" will throw "ForbiddenException" */
+
+    const user = await this.userService.get(userId, requestUser)
     const product = await this.productService.get(productId)
 
     return await new RatingEntity({
-      productId,
+      ...createRatingPayload,
+      user,
       product
     }).save()
   }
@@ -80,12 +95,17 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    */
   public async update(
     ratingId: number,
+    requestUser: RequestUser,
     updateRatingPayload: UpdateRatingPayload
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
     if (!entity || !entity.isActive) {
       throw new EntityNotFoundException(ratingId, RatingEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
     }
 
     await RatingEntity.update({ id: ratingId }, updateRatingPayload)
@@ -95,11 +115,18 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    * Method that can remove some rating entity from the database
    * @param ratingId stores the rating entity id
    */
-  public async delete(ratingId: number): Promise<void> {
+  public async delete(
+    ratingId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
     if (!entity || !entity.isActive) {
       throw new EntityNotFoundException(ratingId, RatingEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
     }
 
     await RatingEntity.delete({ id: ratingId })
@@ -109,11 +136,18 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    * Method that can disables some rating entity
    * @param ratingId stores the rating entity id
    */
-  public async disable(ratingId: number): Promise<void> {
+  public async disable(
+    ratingId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
     if (!entity) {
       throw new EntityNotFoundException(ratingId, RatingEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
     }
 
     if (!entity.isActive) {
@@ -127,11 +161,18 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    * Method that can disables some rating entity
    * @param ratingId stores the rating entity id
    */
-  public async enable(ratingId: number): Promise<void> {
+  public async enable(
+    ratingId: number,
+    requestUser: RequestUser
+  ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
     if (!entity) {
       throw new EntityNotFoundException(ratingId, RatingEntity)
+    }
+
+    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+      throw new ForbiddenException()
     }
 
     if (entity.isActive) {

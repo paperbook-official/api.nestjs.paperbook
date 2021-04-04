@@ -5,6 +5,7 @@ import { BaseEntity } from 'src/common/base.entity'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
+import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
 import { UserProxy } from '../models/user.proxy'
@@ -119,6 +120,16 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
     shoppingCart => shoppingCart.user
   )
   public shoppingCarts?: ShoppingCartEntity[]
+
+  @ApiPropertyOptional({
+    type: () => RatingEntity,
+    isArray: true
+  })
+  @OneToMany(
+    () => RatingEntity,
+    rating => rating.user
+  )
+  public ratings?: RatingEntity[]
 
   //#endregion
 
