@@ -1,9 +1,10 @@
-import { ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { RatingEntity } from '../entities/rating.entity'
 
 import { BaseProxy } from 'src/common/base.proxy'
 import { ProductProxy } from 'src/modules/product/models/product.proxy'
+import { UserProxy } from 'src/modules/user/models/user.proxy'
 
 /**
  * The app's main rating proxy class
@@ -12,25 +13,19 @@ import { ProductProxy } from 'src/modules/product/models/product.proxy'
  */
 export class RatingProxy extends BaseProxy {
   @ApiPropertyOptional()
-  public five?: number
+  public stars?: number
 
   @ApiPropertyOptional()
-  public four?: number
+  public text?: string
 
-  @ApiPropertyOptional()
-  public three?: number
+  @ApiProperty()
+  public userId: number
 
-  @ApiPropertyOptional()
-  public two?: number
+  @ApiProperty()
+  public productId: number
 
-  @ApiPropertyOptional()
-  public one?: number
-
-  @ApiPropertyOptional()
-  public zero?: number
-
-  @ApiPropertyOptional()
-  public productId?: number
+  @ApiPropertyOptional({ type: () => UserProxy })
+  public user?: UserProxy
 
   @ApiPropertyOptional({ type: () => ProductProxy })
   public product?: ProductProxy
@@ -38,15 +33,11 @@ export class RatingProxy extends BaseProxy {
   public constructor(entity: RatingEntity) {
     super(entity)
 
-    this.five = entity.five
-    this.four = entity.four
-    this.three = entity.three
-    this.two = entity.two
-    this.one = entity.one
-    this.zero = entity.zero
-    this.productId = entity.productId
+    this.stars = entity.stars
+    this.text = entity.text
 
     // relations
+    this.user = entity.user?.toProxy()
     this.product = entity.product?.toProxy()
   }
 }
