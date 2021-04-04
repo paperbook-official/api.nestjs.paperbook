@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm'
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
@@ -91,16 +91,6 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
   //#region Relations
 
   @ApiPropertyOptional({
-    type: () => RatingEntity
-  })
-  @OneToOne(
-    () => RatingEntity,
-    rating => rating.product,
-    { nullable: true }
-  )
-  public rating?: RatingEntity
-
-  @ApiPropertyOptional({
     type: () => UserEntity
   })
   @ManyToOne(
@@ -139,6 +129,17 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
     shoppingCart => shoppingCart.product
   )
   public shoppingCarts?: ShoppingCartEntity[]
+
+  @ApiPropertyOptional({
+    type: () => RatingEntity,
+    isArray: true
+  })
+  @OneToMany(
+    () => RatingEntity,
+    rating => rating.product,
+    { nullable: true }
+  )
+  public ratings?: RatingEntity[]
 
   //#endregion
 

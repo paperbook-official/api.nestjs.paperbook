@@ -6,6 +6,7 @@ import { BaseProxy } from 'src/common/base.proxy'
 import { AddressProxy } from 'src/modules/address/models/address.proxy'
 import { OrderProxy } from 'src/modules/order/models/order.proxy'
 import { ProductProxy } from 'src/modules/product/models/product.proxy'
+import { RatingProxy } from 'src/modules/rating/models/rating.proxy'
 import { ShoppingCartProxy } from 'src/modules/shopping-cart/models/shopping-cart.proxy'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -58,6 +59,12 @@ export class UserProxy extends BaseProxy {
   })
   public shoppingCarts?: ShoppingCartProxy[]
 
+  @ApiPropertyOptional({
+    type: () => RatingProxy,
+    isArray: true
+  })
+  public ratings?: RatingProxy[]
+
   public constructor(entity: UserEntity) {
     super(entity)
 
@@ -75,5 +82,6 @@ export class UserProxy extends BaseProxy {
     this.shoppingCarts = entity.shoppingCarts?.map(shoppingCart =>
       shoppingCart.toProxy()
     )
+    this.ratings = entity.ratings?.map(rating => rating.toProxy())
   }
 }

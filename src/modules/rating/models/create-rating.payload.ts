@@ -1,6 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsNumber, IsOptional } from 'class-validator'
+import {
+  IsDefined,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min
+} from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
@@ -15,52 +22,28 @@ export class CreateRatingPayload {
     { maxDecimalPlaces: 0 },
     { message: DefaultValidationMessages.IsNumber }
   )
-  public five?: number
+  @Min(0)
+  @Max(5)
+  public stars?: number
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumber(
-    { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
-  )
-  public four?: number
+  @IsString({ message: DefaultValidationMessages.IsString })
+  public text?: string
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber(
-    { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
-  )
-  public three?: number
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber(
-    { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
-  )
-  public two?: number
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber(
-    { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
-  )
-  public one?: number
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsNumber(
-    { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
-  )
-  public zero?: number
   @ApiProperty()
-  @IsOptional()
+  @IsDefined({ message: 'It is required to send the user id' })
   @IsNumber(
     { maxDecimalPlaces: 0 },
     { message: DefaultValidationMessages.IsNumber }
   )
-  public productId: number
+  public userId?: number
+
+  @ApiProperty()
+  @IsDefined({ message: 'It is required to send the product id' })
+  @IsNumber(
+    { maxDecimalPlaces: 0 },
+    { message: DefaultValidationMessages.IsNumber }
+  )
+  public productId?: number
 }

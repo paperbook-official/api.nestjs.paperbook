@@ -9,12 +9,14 @@ import { ProductRelationsController } from './controllers/product-relations.cont
 import { ProductController } from './controllers/product.controller'
 
 import { CategoryModule } from '../category/category.module'
+import { RatingModule } from '../rating/rating.module'
 import { UserModule } from '../user/user.module'
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
     forwardRef(() => CategoryModule),
+    forwardRef(() => RatingModule),
     TypeOrmModule.forFeature([ProductEntity])
   ],
   controllers: [ProductController, ProductRelationsController],
