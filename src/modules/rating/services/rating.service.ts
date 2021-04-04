@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
@@ -29,7 +29,9 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
   public constructor(
     @InjectRepository(RatingEntity)
     private readonly repository: Repository<RatingEntity>,
+    @Inject(forwardRef(() => ProductService))
     private readonly productService: ProductService,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService
   ) {
     super(repository)
@@ -37,6 +39,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
   /**
    * Method that can create a new rating entity
+   * @param requestUser stores the logged user data
    * @param createRatingPayload stores the new rating data
    * @returns the created rating entity
    */
