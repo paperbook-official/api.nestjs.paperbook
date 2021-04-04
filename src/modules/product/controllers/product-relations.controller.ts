@@ -43,7 +43,8 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       orders: {},
       productsCategories: {},
       shoppingCarts: {},
-      ratings: {}
+      ratings: {},
+      product: {}
     }
   },
   routes: {
