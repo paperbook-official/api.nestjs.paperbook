@@ -11,6 +11,7 @@ import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-fou
 
 import { CreateRatingPayload } from '../models/create-rating.payload'
 import { UpdateRatingPayload } from '../models/update-rating.payload'
+import { ProductReviewProxy } from 'src/modules/product/models/product-review.proxy'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
@@ -86,6 +87,46 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
     }
 
     return entity
+  }
+
+  /**
+   * Method that can get a review of the product ratings
+   * @param productId stores the product id
+   * @returns the product review
+   */
+  public async getReviewByProductId(
+    productId: number
+  ): Promise<ProductReviewProxy> {
+    const response: { stars: number; amount: number }[] = await this.repository
+      .createQueryBuilder('rating')
+      .select(['rating.stars as stars', 'count(rating.id) as amount'])
+      .where(`rating.productId = ${productId}`)
+      .groupBy('rating.stars')
+      .getRawMany()
+
+    const filteredArray = response.filter(
+      entity => entity.stars !== undefined && entity.amount !== undefined
+    )
+
+    const amounts = filteredArray.map(entity => entity.amount)
+    const pond = filteredArray.map(entity => entity.amount * entity.stars)
+
+    const total =
+      amounts.length === 0 ? 0 : amounts.reduce((prev, value) => prev + value)
+
+    return {
+      five: response.filter(entity => entity.stars === 5)[0]?.amount,
+      four: response.filter(entity => entity.stars === 4)[0]?.amount,
+      three: response.filter(entity => entity.stars === 3)[0]?.amount,
+      two: response.filter(entity => entity.stars === 2)[0]?.amount,
+      one: response.filter(entity => entity.stars === 1)[0]?.amount,
+      zero: response.filter(entity => entity.stars === 0)[0]?.amount,
+      average:
+        pond.length === 0
+          ? 0
+          : pond.reduce((prev, value) => prev + value) / total,
+      total
+    }
   }
 
   /**

@@ -12,6 +12,7 @@ import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-g
 
 import { GetManyRatingProxyResponse } from 'src/modules/rating/entities/rating.entity'
 
+import { ProductReviewProxy } from '../models/product-review.proxy'
 import { ProductProxy } from '../models/product.proxy'
 import {
   CategoryProxy,
@@ -114,5 +115,27 @@ export class ProductRelationsController {
       crudRequest
     )
     return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "/products/:id/ratings"
+   * route with "GET" method
+   * @param productId stores the product id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found rating entities proxies
+   */
+  @ApiOperation({
+    summary: 'Retrieves rating review of a single product'
+  })
+  @ApiOkResponse({
+    description: 'Gets rating review of a single product',
+    type: ProductReviewProxy
+  })
+  @Get(':id/review')
+  public async getReviewByProductId(
+    @Param('id') productId: number
+  ): Promise<ProductReviewProxy> {
+    const entities = await this.productService.getReviewByProductId(productId)
+    return entities
   }
 }
