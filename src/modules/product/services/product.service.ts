@@ -13,6 +13,7 @@ import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
+import { ProductReviewProxy } from '../models/product-review.proxy'
 import { UpdateProductPayload } from '../models/update-product.payload'
 
 import { CategoryService } from 'src/modules/category/services/category.service'
@@ -64,6 +65,17 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       ...createProductPayload,
       user
     }).save()
+  }
+
+  /**
+   * Method that can get a review of the product ratings
+   * @param productId stores the product id
+   * @returns the product review
+   */
+  public async getReviewByProductId(
+    productId: number
+  ): Promise<ProductReviewProxy> {
+    return await this.ratingService.getReviewByProductId(productId)
   }
 
   /**
