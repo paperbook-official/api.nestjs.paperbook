@@ -63,7 +63,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
       productsCategories: {},
       shoppingCarts: {},
       ratings: {},
-      product: {}
+      product: {},
+      'user.addresses': {}
     }
   },
   routes: {
