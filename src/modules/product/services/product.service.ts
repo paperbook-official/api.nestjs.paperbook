@@ -118,12 +118,80 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     const { parsed, options } = crudRequest
     const builder = await this.createBuilder(parsed, options)
 
-    const entities = await this.doGetMany(
+    return await this.doGetMany(
       builder.andWhere(`price * (1 - discount) <= ${maxPrice}`),
       parsed,
       options
     )
-    return entities
+  }
+
+  public async search(
+    name?: string,
+    categoryId?: number,
+    minPrice?: number,
+    maxPrice?: number,
+    state?: string,
+    freeOfInterests?: string,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    const { parsed, options } = crudRequest
+
+    crudRequest.parsed.paramsFilter = []
+    crudRequest.parsed.join = [
+      ...crudRequest.parsed.join,
+      { field: 'productsCategories', select: ['categoryId'] },
+      { field: 'user' },
+      { field: 'user.addresses', select: ['state'] }
+    ]
+
+    if (categoryId !== undefined) {
+      crudRequest.parsed.search.$and.push({
+        'productsCategories.categoryId': {
+          $eq: categoryId
+        }
+      })
+    }
+
+    if (name !== undefined) {
+      crudRequest.parsed.search.$and.push({
+        name: {
+          $contL: name
+        }
+      })
+    }
+
+    if (freeOfInterests !== undefined) {
+      if (freeOfInterests === 'true') {
+        crudRequest.parsed.search.$and.push({
+          installmentPrice: {
+            $isnull: true
+          }
+        })
+      } else {
+        crudRequest.parsed.search.$and.push({
+          installmentPrice: {
+            $ne: 0
+          }
+        })
+      }
+    }
+
+    if (state !== undefined) {
+      crudRequest.parsed.search.$and.push({
+        'user.addresses.street': {
+          $contL: state
+        }
+      })
+    }
+
+    let builder = await this.createBuilder(parsed, options)
+
+    if (maxPrice !== undefined)
+      builder = builder.andWhere(`price * (1 - discount) <= ${maxPrice}`)
+    if (minPrice !== undefined)
+      builder = builder.andWhere(`price * (1 - discount) > ${minPrice}`)
+
+    return await this.doGetMany(builder, parsed, options)
   }
 
   /**
@@ -157,7 +225,9 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       ...crudRequest.parsed.search.$and,
       {
         installmentPrice: {
-          $isnull: true
+          $or: {
+            $isnull: true
+          }
         }
       }
     ]
