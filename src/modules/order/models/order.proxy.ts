@@ -41,6 +41,7 @@ export class OrderProxy extends BaseProxy {
     this.userId = entity.userId
     this.productId = entity.productId
 
+    // relations
     this.user = entity.user?.toProxy()
     this.product = entity.product?.toProxy()
   }
