@@ -25,8 +25,11 @@ import { map } from 'src/utils/crud'
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
       user: {},
+      orders: {},
       'user.addresses': {},
-      productsCategories: {}
+      productsCategories: {},
+      shoppingCarts: {},
+      ratings: {}
     }
   },
   routes: {
