@@ -125,6 +125,18 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     )
   }
 
+  /**
+   * Method that searches products based on the query values
+   * @param name stores the product name
+   * @param categoryId stores the category id
+   * @param minPrice stores the product min price
+   * @param maxPrice stores the product max price
+   * @param state stores the seller state
+   * @param freeOfInterests stores a value indicating if the products
+   * are free or interests
+   * @param crudRequest stores the joins, filters, etc;
+   * @returns all the found products that match with the queries
+   */
   public async search(
     name?: string,
     categoryId?: number,

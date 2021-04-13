@@ -1,5 +1,5 @@
 import { Controller, Get, Query, UseInterceptors } from '@nestjs/common'
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -10,12 +10,20 @@ import {
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 
-import { ProductProxy } from 'src/modules/product/models/product.proxy'
+import {
+  GetManyProductProxyResponse,
+  ProductProxy
+} from 'src/modules/product/models/product.proxy'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 
 import { map } from 'src/utils/crud'
 
+/**
+ * The app's main search controller class
+ *
+ * Class that deals with the search routes
+ */
 @Crud({
   model: {
     type: ProductProxy
@@ -51,8 +59,63 @@ import { map } from 'src/utils/crud'
 export class SearchController {
   public constructor(private readonly searchService: ProductService) {}
 
+  /**
+   * Method that is called when the user access the "/search" with
+   * the "GET" method
+   * @param name stores the product name
+   * @param categoryId stores the category id
+   * @param minPrice stores the product min price
+   * @param maxPrice stores the product max price
+   * @param state stores the seller state
+   * @param freeOfInterests stores a value indicating if the products
+   * are free or interests
+   * @param crudRequest stores the joins, filters, etc;
+   * @returns all the found products that match with the queries
+   */
+  @ApiOperation({
+    summary: 'Retries all the products that match with the queries'
+  })
+  @ApiQuery({
+    required: false,
+    name: 'name',
+    type: 'string',
+    description: 'Selects products with the name like this query'
+  })
+  @ApiQuery({
+    required: false,
+    name: 'categoryId',
+    type: 'integer',
+    description: 'Selects products with the category id equals this query'
+  })
+  @ApiQuery({
+    required: false,
+    name: 'minPrice',
+    type: 'integer',
+    description: 'Selects products with the full price greater than this query'
+  })
+  @ApiQuery({
+    required: false,
+    name: 'maxPrice',
+    type: 'integer',
+    description: 'Selects products with the full price less than this query'
+  })
+  @ApiQuery({
+    required: false,
+    name: 'state',
+    type: 'string',
+    description: 'Selects products with the user state equals this query'
+  })
+  @ApiQuery({
+    required: false,
+    name: 'freeOfInterests',
+    type: 'boolean',
+    description: 'Selects products with free of interests prices'
+  })
   @ApiPropertyGetManyDefaultResponse()
-  @ApiOkResponse()
+  @ApiOkResponse({
+    description: 'Gets all the products that matches with the queries',
+    type: GetManyProductProxyResponse
+  })
   @Get()
   public async search(
     @Query('name') name?: string,
