@@ -19,6 +19,8 @@ import { ProductService } from 'src/modules/product/services/product.service'
 
 import { map } from 'src/utils/crud'
 
+import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
+
 /**
  * The app's main search controller class
  *
@@ -111,6 +113,13 @@ export class SearchController {
     type: 'boolean',
     description: 'Selects products with free of interests prices'
   })
+  @ApiQuery({
+    required: false,
+    name: 'sortBy',
+    enum: SortBySearchEnum,
+    description:
+      'Sort the values based on the min price or max price of them with discount'
+  })
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products that matches with the queries',
@@ -124,6 +133,7 @@ export class SearchController {
     @Query('maxPrice') maxPrice?: number,
     @Query('state') state?: string,
     @Query('freeOfInterests') freeOfInterests?: string,
+    @Query('sortBy') sortBy?: SortBySearchEnum,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.searchService.search(
@@ -133,6 +143,7 @@ export class SearchController {
       maxPrice,
       state,
       freeOfInterests,
+      sortBy,
       crudRequest
     )
     return map(entities, entity => entity.toProxy())

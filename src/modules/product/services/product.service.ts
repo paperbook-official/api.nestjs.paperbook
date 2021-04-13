@@ -23,6 +23,7 @@ import { UserService } from 'src/modules/user/services/user.service'
 import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
+import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
 
 /**
  * The app's main product service class
@@ -144,6 +145,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     maxPrice?: number,
     state?: string,
     freeOfInterests?: string,
+    sortBy?: SortBySearchEnum,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     const { parsed, options } = crudRequest
@@ -202,6 +204,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       builder = builder.andWhere(`price * (1 - discount) <= ${maxPrice}`)
     if (minPrice !== undefined)
       builder = builder.andWhere(`price * (1 - discount) > ${minPrice}`)
+
+    if (sortBy === 'minPrice')
+      builder = builder.addOrderBy('price * (1 - discount)', 'ASC')
+    else if (sortBy === 'maxPrice')
+      builder = builder.addOrderBy('price * (1 - discount)', 'DESC')
 
     return await this.doGetMany(builder, parsed, options)
   }
