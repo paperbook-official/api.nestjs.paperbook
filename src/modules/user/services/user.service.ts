@@ -11,6 +11,7 @@ import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-fou
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
+import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
@@ -18,6 +19,7 @@ import { UpdateUserPaylaod } from '../models/update-user.payload'
 import { AddressService } from 'src/modules/address/services/address.service'
 import { OrderService } from 'src/modules/order/services/order.service'
 import { ProductService } from 'src/modules/product/services/product.service'
+import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
 
 import { encryptPassword } from 'src/utils/password'
 import { RequestUser } from 'src/utils/type.shared'
@@ -41,7 +43,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     @Inject(forwardRef(() => ProductService))
     private readonly productService: ProductService,
     @Inject(forwardRef(() => OrderService))
-    private readonly orderService: OrderService
+    private readonly orderService: OrderService,
+    @Inject(forwardRef(() => ShoppingCartService))
+    private readonly shoppingCartService: ShoppingCartService
   ) {
     super(repository)
   }
@@ -153,7 +157,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
-   * @returns all the found elements
+   * @returns all the product entities
    */
   public async getProductsByUserId(
     userId: number,
@@ -177,6 +181,47 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     return await this.productService.getMany(crudRequest)
+  }
+
+  /**
+   * Method that gets all the shopping carts related with some user
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no
+   * permission to execute this action
+   * @returns all the found shopping cart entities
+   */
+  public async getShoppingCartsByUserId(
+    userId: number,
+    requestUser: RequestUser,
+    crudRequest?: CrudRequest
+  ): Promise<
+    GetManyDefaultResponse<ShoppingCartEntity> | ShoppingCartEntity[]
+  > {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(userId, UserEntity)
+    }
+
+    if (!this.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    crudRequest.parsed.search = {
+      $and: [
+        ...crudRequest.parsed.search.$and,
+        {
+          userId: {
+            $eq: userId
+          }
+        }
+      ]
+    }
+
+    return await this.shoppingCartService.getMany(crudRequest)
   }
 
   /**

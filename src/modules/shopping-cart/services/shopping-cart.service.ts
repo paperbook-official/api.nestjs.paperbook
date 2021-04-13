@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
@@ -27,6 +27,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
   public constructor(
     @InjectRepository(ShoppingCartEntity)
     private readonly repository: Repository<ShoppingCartEntity>,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly productService: ProductService
   ) {
