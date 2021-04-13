@@ -11,12 +11,14 @@ import { UserController } from './controllers/user.controller'
 import { AddressModule } from '../address/address.module'
 import { OrderModule } from '../order/order.module'
 import { ProductModule } from '../product/product.module'
+import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
 
 @Module({
   imports: [
     forwardRef(() => ProductModule),
     forwardRef(() => AddressModule),
     forwardRef(() => OrderModule),
+    forwardRef(() => ShoppingCartModule),
     TypeOrmModule.forFeature([UserEntity])
   ],
   controllers: [UserController, UserRalationsController],

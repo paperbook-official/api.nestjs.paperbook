@@ -25,6 +25,10 @@ import {
   GetManyProductProxyResponse,
   ProductProxy
 } from 'src/modules/product/models/product.proxy'
+import {
+  GetManyShoppingCartProxyResponse,
+  ShoppingCartProxy
+} from 'src/modules/shopping-cart/models/shopping-cart.proxy'
 
 import { UserService } from '../services/user.service'
 
@@ -51,7 +55,8 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       products: {},
       orders: {},
       shoppingCarts: {},
-      ratings: {}
+      ratings: {},
+      product: {}
     }
   },
   routes: {
@@ -199,6 +204,37 @@ export class UserRalationsController {
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.userService.getProductsByUserId(
       userId,
+      crudRequest
+    )
+    return map(entities, entity => entity.toProxy())
+  }
+
+  /**
+   * Method that is called when the user access the "users/:id/shopping-carts"
+   * route with "GET" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found shopping cart entity proxies
+   */
+  @ApiOperation({
+    summary: 'Retrieves all the user shopping carts'
+  })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the user shopping carts',
+    type: GetManyShoppingCartProxyResponse
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Get(':id/shopping-carts')
+  public async getShoppingCarts(
+    @Param('id') userId: number,
+    @User() requestUser: RequestUser,
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ShoppingCartProxy> | ShoppingCartProxy[]> {
+    const entities = await this.userService.getShoppingCartsByUserId(
+      userId,
+      requestUser,
       crudRequest
     )
     return map(entities, entity => entity.toProxy())

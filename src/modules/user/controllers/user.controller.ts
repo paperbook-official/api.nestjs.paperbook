@@ -54,7 +54,6 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
       addresses: {},
       products: {},
       orders: {},
-      shoppingCarts: {},
       ratings: {}
     }
   },
