@@ -63,7 +63,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
       productsCategories: {},
       shoppingCarts: {},
       ratings: {},
-      product: {}
+      product: {},
+      'user.addresses': {}
     }
   },
   routes: {
@@ -119,9 +120,9 @@ export class ProductController {
   @ApiQuery({
     required: true,
     name: 'maxPrice',
-    type: 'string',
+    type: 'integer',
     description:
-      'Selects products with fullPrice parameter less than this value.'
+      'Selects products with full Price parameter less than this value.'
   })
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({

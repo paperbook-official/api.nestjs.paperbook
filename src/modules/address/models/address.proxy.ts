@@ -55,6 +55,7 @@ export class AddressProxy extends BaseProxy {
     this.state = addressEntity.state
     this.userId = addressEntity.userId
 
+    // relations
     this.user = addressEntity.user?.toProxy()
   }
 }

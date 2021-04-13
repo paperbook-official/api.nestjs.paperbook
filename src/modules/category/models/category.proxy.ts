@@ -3,6 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { CategoryEntity } from '../entities/category.entity'
 
 import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
+import { BaseProxy } from 'src/common/base.proxy'
 import { ProductCategoryProxy } from 'src/modules/product-category/models/product-category.proxy'
 
 /**
@@ -10,16 +11,7 @@ import { ProductCategoryProxy } from 'src/modules/product-category/models/produc
  *
  * Class that deals with the category return data
  */
-export class CategoryProxy {
-  @ApiProperty()
-  public id: number
-
-  @ApiProperty()
-  public createdAt: Date
-
-  @ApiProperty()
-  public updatedAt: Date
-
+export class CategoryProxy extends BaseProxy {
   @ApiProperty()
   public name: string
 
@@ -27,6 +19,8 @@ export class CategoryProxy {
   public productsCategories?: ProductCategoryProxy[]
 
   public constructor(entity: CategoryEntity) {
+    super(entity)
+
     this.id = entity.id
     this.createdAt = entity.createdAt
     this.updatedAt = entity.updatedAt
