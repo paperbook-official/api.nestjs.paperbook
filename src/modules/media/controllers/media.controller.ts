@@ -1,15 +1,8 @@
-import {
-  Controller,
-  Post,
-  Put,
-  UploadedFile,
-  UseInterceptors
-} from '@nestjs/common'
+import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import {
   ApiConsumes,
   ApiCreatedResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiTags
 } from '@nestjs/swagger'
@@ -19,7 +12,7 @@ import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
 import { MediaProxy } from '../models/media.proxy'
 
-import { MediaService } from '../services/media.service'
+import { FirebaseService } from 'src/modules/firebase/services/firebase.service'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -31,7 +24,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
 @ApiTags('medias')
 @Controller('medias')
 export class MediaController {
-  public constructor(private readonly mediaService: MediaService) {}
+  public constructor(private readonly firebaseService: FirebaseService) {}
 
   /**
    * Method that is called when the user access the "media/upload"
@@ -49,24 +42,12 @@ export class MediaController {
   @ProtectTo(RolesEnum.Admin, RolesEnum.Seller)
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload')
-  public upload(@UploadedFile() file: Express.Multer.File): MediaProxy {
+  public async upload(
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<MediaProxy> {
+    const url = await this.firebaseService.upload(file)
     return {
-      url: this.mediaService.upload(file)
+      url
     }
-  }
-
-  /**
-   * Method that is called when the user access the "media/clear"
-   * route with "PUT" method
-   */
-  @ApiOperation({ summary: 'Clears the stored images' })
-  @ApiOkResponse({
-    description: 'All the images were deleted',
-    type: MediaProxy
-  })
-  @ProtectTo(RolesEnum.Admin)
-  @Put('clear')
-  public async clear(): Promise<void> {
-    await this.mediaService.clear()
   }
 }
