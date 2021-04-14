@@ -8,6 +8,7 @@ import { TypeOrmConfigService } from './modules/typeorm-config/services/typeorm-
 import { AddressModule } from './modules/address/address.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/category.module'
+import { FirebaseModule } from './modules/firebase/firebase.module'
 import { MediaModule } from './modules/media/media.module'
 import { OrderModule } from './modules/order/order.module'
 import { ProductCategoryModule } from './modules/product-category/product-category.module'
@@ -32,6 +33,7 @@ import { join } from 'path'
     RatingModule,
     ShoppingCartModule,
     SearchModule,
+    FirebaseModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.local']
     }),
