@@ -20,24 +20,24 @@ export class UpdateProductPayload {
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
   @IsNotEmpty({ message: DefaultValidationMessages.IsString })
-  public imageUrl: string
+  public imageUrl?: string
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
   @IsNotEmpty({ message: DefaultValidationMessages.IsString })
-  public name: string
+  public name?: string
 
   @ApiPropertyOptional()
   @IsOptional({ message: 'It is required to send the description' })
   @IsString({ message: DefaultValidationMessages.IsString })
-  public description: string
+  public description?: string
 
   @ApiPropertyOptional()
   @IsOptional({ message: 'It is required to send the full price' })
   @IsNumber({}, { message: DefaultValidationMessages.IsNumber })
   @Min(0)
-  public price: number
+  public price?: number
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -68,5 +68,5 @@ export class UpdateProductPayload {
     { message: DefaultValidationMessages.IsNumber }
   )
   @Min(1)
-  public stockAmount: number
+  public stockAmount?: number
 }

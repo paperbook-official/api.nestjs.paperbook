@@ -12,17 +12,17 @@ export class UpdateUserPaylaod {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
-  public name: string
+  public name?: string
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
-  public lastName: string
+  public lastName?: string
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
-  public cpf: string
+  public cpf?: string
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -30,5 +30,5 @@ export class UpdateUserPaylaod {
   @IsPhoneNumber('BR', {
     message: 'It is required to send a valid phone number'
   })
-  public phone: string
+  public phone?: string
 }

@@ -70,7 +70,7 @@ export class ProductProxy extends BaseProxy {
     type: () => ShoppingCartProxy,
     isArray: true
   })
-  public shoppingCarts: ShoppingCartProxy[]
+  public shoppingCarts?: ShoppingCartProxy[]
 
   public constructor(entity: ProductEntity) {
     super(entity)

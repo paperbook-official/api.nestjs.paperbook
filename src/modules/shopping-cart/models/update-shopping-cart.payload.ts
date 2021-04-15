@@ -16,7 +16,7 @@ export class UpdateShoppingCartPayload {
     { message: DefaultValidationMessages.IsNumber }
   )
   @Min(0)
-  public productId: number
+  public productId?: number
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -25,5 +25,5 @@ export class UpdateShoppingCartPayload {
     { message: DefaultValidationMessages.IsNumber }
   )
   @Min(0)
-  public userId: number
+  public userId?: number
 }

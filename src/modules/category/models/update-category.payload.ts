@@ -12,5 +12,5 @@ export class UpdatedCategoryPayload {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
-  public name: string
+  public name?: string
 }

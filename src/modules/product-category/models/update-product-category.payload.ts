@@ -15,7 +15,7 @@ export class UpdateProductCategoryPayload {
     { maxDecimalPlaces: 0 },
     { message: DefaultValidationMessages.IsNumber }
   )
-  public productId: number
+  public productId?: number
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -23,5 +23,5 @@ export class UpdateProductCategoryPayload {
     { maxDecimalPlaces: 0 },
     { message: DefaultValidationMessages.IsNumber }
   )
-  public categoryId: number
+  public categoryId?: number
 }

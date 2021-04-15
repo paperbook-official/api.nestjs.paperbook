@@ -15,10 +15,10 @@ export class UpdateOrderPayload {
   @IsEnum(OrderStatus, {
     message: 'It is required to send a valid order number'
   })
-  public status: OrderStatus
+  public status?: OrderStatus
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
-  public trackingCode: string
+  public trackingCode?: string
 }
