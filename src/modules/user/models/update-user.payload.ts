@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsOptional, IsPhoneNumber, IsString } from 'class-validator'
+import { IsOptional, IsPhoneNumber, IsString, Validate } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+import { IsCpfValidator } from 'src/validators/is-cpf/is-cpf.validator'
 
 /**
  * The app's main update user payload class
@@ -22,6 +23,9 @@ export class UpdateUserPaylaod {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })
+  @Validate(IsCpfValidator, {
+    message: 'It is required to send a valid cpf value'
+  })
   public cpf?: string
 
   @ApiPropertyOptional()

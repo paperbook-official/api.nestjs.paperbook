@@ -1,4 +1,7 @@
-import { ValidatorConstraintInterface } from 'class-validator'
+import {
+  ValidatorConstraint,
+  ValidatorConstraintInterface
+} from 'class-validator'
 
 /**
  * The app's main "is cpf" validator class
@@ -6,7 +9,8 @@ import { ValidatorConstraintInterface } from 'class-validator'
  * Class that is used to validate some cpf value passed
  * in some payload using the "class-validator" logic
  */
-export class IsCpf implements ValidatorConstraintInterface {
+@ValidatorConstraint({ name: 'is-cpf', async: false })
+export class IsCpfValidator implements ValidatorConstraintInterface {
   /**
    * Method that validates if the cpf passed is valid or not
    * @param value stores the cpf value
