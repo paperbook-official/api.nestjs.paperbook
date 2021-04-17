@@ -1,11 +1,12 @@
-import { RequestUser } from './type.shared'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
+
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * Function that can test if the request user has the type "ADMIM"
  * @param requestUser stores the user basic data
  */
-export function isAdminUser(requestUser: RequestUser): boolean {
+export function isAdminUser(requestUser: UserEntity): boolean {
   return (
     requestUser &&
     requestUser.roles &&

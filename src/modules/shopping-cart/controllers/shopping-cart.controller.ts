@@ -24,7 +24,9 @@ import {
 } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { User } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
+
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateShoppingCartPayload } from '../models/create-shopping-cart.payload'
 import { ShoppingCartProxy } from '../models/shopping-cart.proxy'
@@ -33,7 +35,6 @@ import { UpdateShoppingCartPayload } from '../models/update-shopping-cart.payloa
 import { ShoppingCartService } from '../services/shopping-cart.service'
 
 import { map } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -87,7 +88,7 @@ export class ShoppingCartController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() createShoppingCartPayload: CreateShoppingCartPayload
   ): Promise<ShoppingCartProxy> {
     const entity = await this.shoppingCartService.create(
@@ -109,7 +110,7 @@ export class ShoppingCartController {
   @Get(':id')
   public async get(
     @Param('id') shoppingCartId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<ShoppingCartProxy> {
     const entity = await this.shoppingCartService.get(
@@ -130,7 +131,7 @@ export class ShoppingCartController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get()
   public async getMore(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ShoppingCartProxy> | ShoppingCartProxy[]> {
     const entities = await this.shoppingCartService.getMore(
@@ -170,7 +171,7 @@ export class ShoppingCartController {
   @Delete(':id')
   public async delete(
     @Param('id') shoppingCartId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.shoppingCartService.delete(shoppingCartId, requestUser)
   }

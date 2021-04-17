@@ -24,7 +24,9 @@ import {
 } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { User } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
+
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { AddressProxy } from '../models/address.proxy'
 import { CreateAddressPayload } from '../models/create-address.payload'
@@ -33,7 +35,6 @@ import { UpdatedAddressPayload } from '../models/update-address.payload'
 import { AddressService } from '../services/address.service'
 
 import { map } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -83,7 +84,7 @@ export class AddressController {
   @ProtectTo(RolesEnum.Admin, RolesEnum.Seller, RolesEnum.User)
   @Post()
   public async create(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() createAddressPayload: CreateAddressPayload
   ): Promise<AddressProxy> {
     const entity = await this.addressService.create(
@@ -105,7 +106,7 @@ export class AddressController {
   @Get(':id')
   public async get(
     @Param('id') addressId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<AddressProxy> {
     const entity = await this.addressService.get(
@@ -126,7 +127,7 @@ export class AddressController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get()
   public async getMore(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
     const entities = await this.addressService.getMore(requestUser, crudRequest)
@@ -146,7 +147,7 @@ export class AddressController {
   @Patch(':id')
   public async update(
     @Param('id') addressId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() updatedAddressPayload: UpdatedAddressPayload
   ): Promise<void> {
     await this.addressService.update(
@@ -166,7 +167,7 @@ export class AddressController {
   @Delete(':id')
   public async delete(
     @Param('id') addressId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.addressService.delete(addressId, requestUser)
   }
@@ -183,7 +184,7 @@ export class AddressController {
   @Put(':id/disable')
   public async disable(
     @Param('id') addressId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.addressService.disable(addressId, requestUser)
   }
@@ -200,7 +201,7 @@ export class AddressController {
   @Put(':id/enable')
   public async enable(
     @Param('id') addressId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.addressService.enable(addressId, requestUser)
   }

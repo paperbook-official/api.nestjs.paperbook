@@ -8,6 +8,7 @@ import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-a
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { UpdatedAddressPayload } from '../models/update-address.payload'
 import { CreateAddressPayload } from 'src/modules/address/models/create-address.payload'
@@ -15,7 +16,6 @@ import { CreateAddressPayload } from 'src/modules/address/models/create-address.
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { isGetMany } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
@@ -42,7 +42,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    * @returns the created address
    */
   public async create(
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     createAddressPayload: CreateAddressPayload
   ): Promise<AddressEntity> {
     const { userId } = createAddressPayload
@@ -66,7 +66,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    */
   public async get(
     addressId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<AddressEntity> {
     const entity: AddressEntity = crudRequest
@@ -91,7 +91,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    * @returns the found addresses entities
    */
   public async getMore(
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
     const entities = await super.getMany(crudRequest)
@@ -115,7 +115,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    */
   public async update(
     addressId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     updateAddressPayload: UpdatedAddressPayload
   ): Promise<void> {
     const entity = await AddressEntity.findOne({ id: addressId })
@@ -138,7 +138,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    */
   public async delete(
     addressId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
@@ -160,7 +160,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    */
   public async disable(
     addressId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
@@ -186,7 +186,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    */
   public async enable(
     addressId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await AddressEntity.findOne({ id: addressId })
 

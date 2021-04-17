@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
-import { RequestUser } from 'src/utils/type.shared'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 /**
  * The app's main roles guard class
@@ -19,7 +19,7 @@ export class RolesGuard implements CanActivate {
 
     if (!roles) return true
 
-    const user: RequestUser = context.switchToHttp().getRequest().user
+    const user: UserEntity = context.switchToHttp().getRequest().user
 
     if (!user)
       throw new UnauthorizedException(

@@ -11,6 +11,7 @@ import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-al
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
 import { ProductReviewProxy } from '../models/product-review.proxy'
@@ -19,8 +20,6 @@ import { UpdateProductPayload } from '../models/update-product.payload'
 import { CategoryService } from 'src/modules/category/services/category.service'
 import { RatingService } from 'src/modules/rating/services/rating.service'
 import { UserService } from 'src/modules/user/services/user.service'
-
-import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
@@ -55,7 +54,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @returns the created product
    */
   public async create(
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     createProductPayload: CreateProductPaylaod
   ): Promise<ProductEntity> {
     const user = await this.userService.get(
@@ -337,7 +336,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    */
   public async update(
     productId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     updateProductPayload: UpdateProductPayload
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
@@ -360,7 +359,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    */
   public async delete(
     productId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 
@@ -382,7 +381,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    */
   public async disable(
     productId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 
@@ -408,7 +407,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    */
   public async enable(
     productId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 

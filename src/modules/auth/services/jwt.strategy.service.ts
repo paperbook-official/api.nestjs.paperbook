@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 
-import { RequestUser } from 'src/utils/type.shared'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
@@ -26,7 +26,7 @@ export class JwtStrategyService extends PassportStrategy(Strategy) {
    * @param user stores the user data
    * @returns the user data
    */
-  public validate(user: RequestUser): RequestUser {
+  public validate(user: UserEntity): UserEntity {
     return user
   }
 }
