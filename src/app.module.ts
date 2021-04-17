@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { ServeStaticModule } from '@nestjs/serve-static'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { TypeOrmConfigService } from './modules/typeorm-config/services/typeorm-config.service'
@@ -18,7 +17,6 @@ import { SearchModule } from './modules/search/search.module'
 import { ShoppingCartModule } from './modules/shopping-cart/shopping-cart.module'
 import { TypeOrmConfigModule } from './modules/typeorm-config/typeorm-config.module'
 import { UserModule } from './modules/user/user.module'
-import { join } from 'path'
 
 @Module({
   imports: [
@@ -36,9 +34,6 @@ import { join } from 'path'
     FirebaseModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.local']
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public')
     }),
     TypeOrmModule.forRootAsync({
       imports: [TypeOrmConfigModule],
