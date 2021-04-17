@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
+import { IsCpf } from 'src/decorators/is-cpf/is-cpf.decorator'
+
 import {
   IsDefined,
   IsEmail,
@@ -13,7 +15,6 @@ import {
 } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 import { RolesEnum } from 'src/models/enums/roles.enum'
-import { IsCpf } from 'src/validators/is-cpf/is-cpf.validator'
 
 /**
  * The app's main create user payload class

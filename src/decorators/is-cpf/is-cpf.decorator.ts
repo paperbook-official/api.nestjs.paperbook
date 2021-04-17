@@ -30,7 +30,7 @@ export function IsCpf(
  * in some payload using the "class-validator" logic
  */
 @ValidatorConstraint({ name: 'is-cpf', async: false })
-export class IsCpfValidatorConstraint implements ValidatorConstraintInterface {
+class IsCpfValidatorConstraint implements ValidatorConstraintInterface {
   /**
    * Method that validates if the cpf passed is valid or not
    * @param value stores the cpf value
