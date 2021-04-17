@@ -10,11 +10,11 @@ import {
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 
-import { CategoryProxy } from '../models/category.proxy'
+import { CategoryDto } from '../models/category.dto'
 import {
-  GetManyProductProxyResponse,
-  ProductProxy
-} from 'src/modules/product/models/product.proxy'
+  GetManyProductDtoResponse,
+  ProductDto
+} from 'src/modules/product/models/product.dto'
 
 import { CategoryService } from '../services/category.service'
 
@@ -29,7 +29,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
  */
 @Crud({
   model: {
-    type: CategoryProxy
+    type: CategoryDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -65,17 +65,17 @@ export class CategoryRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products of a single category',
-    type: GetManyProductProxyResponse
+    type: GetManyProductDtoResponse
   })
   @Get(':id/products')
   public async getProductsByCategoryId(
     @Param('id') categoryId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.categoryService.getProductsByCategoryId(
       categoryId,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 }

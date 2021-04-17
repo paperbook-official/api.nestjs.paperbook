@@ -25,9 +25,9 @@ import {
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
-import { CreateProductCategoryPayload } from '../models/create-product-category.payload'
-import { ProductCategoryProxy } from '../models/product-category.proxy'
-import { UpdateProductCategoryPayload } from '../models/update-product-category.payload'
+import { CreateProductCategoryDto } from '../models/create-product-category.dto'
+import { ProductCategoryDto } from '../models/product-category.dto'
+import { UpdateProductCategoryDto } from '../models/update-product-category.dto'
 
 import { ProductCategoryService } from '../services/product-category.service'
 
@@ -42,7 +42,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: ProductCategoryProxy
+    type: ProductCategoryDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -73,22 +73,22 @@ export class ProductCategoryController {
    * Method that is called when the user access the "/products-categories"
    * route with the "POST" method
    * @param createProductCategoryPayload stores the product-category new data
-   * @returns the created product-category entity proxy
+   * @returns the created product-category entity dto
    */
   @ApiOperation({ summary: 'Creates a new product-category relation' })
   @ApiCreatedResponse({
     description: 'Gets the created product-category data',
-    type: ProductCategoryProxy
+    type: ProductCategoryDto
   })
   @ProtectTo(RolesEnum.Admin)
   @Post()
   public async create(
-    @Body() createProductCategoryPayload: CreateProductCategoryPayload
-  ): Promise<ProductCategoryProxy> {
+    @Body() createProductCategoryPayload: CreateProductCategoryDto
+  ): Promise<ProductCategoryDto> {
     const entity = await this.productCategoryService.create(
       createProductCategoryPayload
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -96,40 +96,40 @@ export class ProductCategoryController {
    * route with the "GET" method
    * @param productCategoryId stores the product-category id
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found entity proxy
+   * @returns the found entity dto
    */
   @ApiOperation({ summary: 'Gets the product-category' })
   @ApiOkResponse({
     description: 'Gets the created product-category data',
-    type: ProductCategoryProxy
+    type: ProductCategoryDto
   })
   @ProtectTo(RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') productCategoryId: number,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<ProductCategoryProxy> {
+  ): Promise<ProductCategoryDto> {
     const entity = await this.productCategoryService.get(
       productCategoryId,
       crudRequest
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
    * Method that is called when the user access the "/products-categories"
    * route with the "GET" method
-   * @returns all the found product-category entity proxy
+   * @returns all the found product-category entity dto
    */
   @ProtectTo(RolesEnum.Admin)
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<
-    GetManyDefaultResponse<ProductCategoryProxy> | ProductCategoryProxy[]
+    GetManyDefaultResponse<ProductCategoryDto> | ProductCategoryDto[]
   > {
     const entities = await this.productCategoryService.getMany(crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -144,7 +144,7 @@ export class ProductCategoryController {
   @Patch(':id')
   public async update(
     @Param('id') productCategoryId: number,
-    @Body() updateProductCategoryPayload: UpdateProductCategoryPayload
+    @Body() updateProductCategoryPayload: UpdateProductCategoryDto
   ): Promise<void> {
     await this.productCategoryService.update(
       productCategoryId,

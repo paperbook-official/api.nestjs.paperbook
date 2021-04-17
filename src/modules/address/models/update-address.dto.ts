@@ -10,11 +10,11 @@ import {
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
- * The app's main update address payload class
+ * The app's main update address dto class
  *
- * Class that handles the payload sent by the user to perform the update
+ * Class that handles the dto sent by the user to perform the update
  */
-export class UpdatedAddressPayload {
+export class UpdatedAddressDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumberString({}, { message: 'It is required to send a numeric string' })

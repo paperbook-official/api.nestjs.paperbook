@@ -10,8 +10,8 @@ import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-al
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { CreateShoppingCartPayload } from '../models/create-shopping-cart.payload'
-import { UpdateShoppingCartPayload } from '../models/update-shopping-cart.payload'
+import { CreateShoppingCartDto } from '../models/create-shopping-cart.dto'
+import { UpdateShoppingCartDto } from '../models/update-shopping-cart.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
@@ -43,7 +43,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
    */
   public async create(
     requestUser: UserEntity,
-    createShoppingCartPayload: CreateShoppingCartPayload
+    createShoppingCartPayload: CreateShoppingCartDto
   ): Promise<ShoppingCartEntity> {
     const { productId, userId } = createShoppingCartPayload
 
@@ -124,7 +124,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
    */
   public async update(
     shoppingCartId: number,
-    updateShoppingCartPayload: UpdateShoppingCartPayload
+    updateShoppingCartPayload: UpdateShoppingCartDto
   ): Promise<void> {
     const entity = await ShoppingCartEntity.findOne({ id: shoppingCartId })
 

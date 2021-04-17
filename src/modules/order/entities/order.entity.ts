@@ -5,8 +5,8 @@ import { BaseEntity } from 'src/common/base.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { OrderProxy } from '../models/order.proxy'
-import { ToProxy } from 'src/common/to-proxy.interface'
+import { OrderDto } from '../models/order.dto'
+import { ToDto } from 'src/common/to-dto.interface'
 
 import { OrderStatus } from 'src/models/enums/order-status.enum'
 
@@ -16,7 +16,7 @@ import { OrderStatus } from 'src/models/enums/order-status.enum'
  * Class that represents the entity that deals with orders
  */
 @Entity('order')
-export class OrderEntity extends BaseEntity implements ToProxy<OrderProxy> {
+export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
   //#region Columns
 
   @ApiProperty()
@@ -77,10 +77,10 @@ export class OrderEntity extends BaseEntity implements ToProxy<OrderProxy> {
   }
 
   /**
-   * Method that converts the entity to your proxy
-   * @returns the proxy data
+   * Method that converts the entity to your dto
+   * @returns the dto data
    */
-  public toProxy(): OrderProxy {
-    return new OrderProxy(this)
+  public toDto(): OrderDto {
+    return new OrderDto(this)
   }
 }

@@ -14,23 +14,23 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from '../entities/user.entity'
 
-import { UserProxy } from '../models/user.proxy'
+import { UserDto } from '../models/user.dto'
 import {
-  GetManyAddressProxyResponse,
-  AddressProxy
-} from 'src/modules/address/models/address.proxy'
+  GetManyAddressDtoResponse,
+  AddressDto
+} from 'src/modules/address/models/address.dto'
 import {
-  GetManyOrderProxyResponse,
-  OrderProxy
-} from 'src/modules/order/models/order.proxy'
+  GetManyOrderDtoResponse,
+  OrderDto
+} from 'src/modules/order/models/order.dto'
 import {
-  GetManyProductProxyResponse,
-  ProductProxy
-} from 'src/modules/product/models/product.proxy'
+  GetManyProductDtoResponse,
+  ProductDto
+} from 'src/modules/product/models/product.dto'
 import {
-  GetManyShoppingCartProxyResponse,
-  ShoppingCartProxy
-} from 'src/modules/shopping-cart/models/shopping-cart.proxy'
+  GetManyShoppingCartDtoResponse,
+  ShoppingCartDto
+} from 'src/modules/shopping-cart/models/shopping-cart.dto'
 
 import { UserService } from '../services/user.service'
 
@@ -46,7 +46,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
  */
 @Crud({
   model: {
-    type: UserProxy
+    type: UserDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -86,20 +86,20 @@ export class UserRalationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user addresses',
-    type: GetManyAddressProxyResponse
+    type: GetManyAddressDtoResponse
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/addresses')
   public async getMyAddresses(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+  ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
     const entities = await this.userService.getAddressesByUserId(
       requestUser.id,
       requestUser,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -113,19 +113,19 @@ export class UserRalationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user products',
-    type: GetManyProductProxyResponse
+    type: GetManyProductDtoResponse
   })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/products')
   public async getMyProducts(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.userService.getProductsByUserId(
       requestUser.id,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -141,20 +141,20 @@ export class UserRalationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user shopping carts',
-    type: GetManyShoppingCartProxyResponse
+    type: GetManyShoppingCartDtoResponse
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/shopping-carts')
   public async getMyShoppingCarts(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ShoppingCartProxy> | ShoppingCartProxy[]> {
+  ): Promise<GetManyDefaultResponse<ShoppingCartDto> | ShoppingCartDto[]> {
     const entities = await this.userService.getShoppingCartsByUserId(
       requestUser.id,
       requestUser,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -168,20 +168,20 @@ export class UserRalationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user orders',
-    type: GetManyOrderProxyResponse
+    type: GetManyOrderDtoResponse
   })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/orders')
   public async getMyOrders(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
+  ): Promise<GetManyDefaultResponse<OrderDto> | OrderDto[]> {
     const entities = await this.userService.getOrdersByUserId(
       requestUser.id,
       requestUser,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -196,7 +196,7 @@ export class UserRalationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user addresses',
-    type: GetManyAddressProxyResponse
+    type: GetManyAddressDtoResponse
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/addresses')
@@ -204,13 +204,13 @@ export class UserRalationsController {
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+  ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
     const entities = await this.userService.getAddressesByUserId(
       userId,
       requestUser,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -224,19 +224,19 @@ export class UserRalationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user products',
-    type: GetManyProductProxyResponse
+    type: GetManyProductDtoResponse
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/products')
   public async getProductsByUserId(
     @Param('id') userId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.userService.getProductsByUserId(
       userId,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -253,7 +253,7 @@ export class UserRalationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user shopping carts',
-    type: GetManyShoppingCartProxyResponse
+    type: GetManyShoppingCartDtoResponse
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/shopping-carts')
@@ -261,13 +261,13 @@ export class UserRalationsController {
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ShoppingCartProxy> | ShoppingCartProxy[]> {
+  ): Promise<GetManyDefaultResponse<ShoppingCartDto> | ShoppingCartDto[]> {
     const entities = await this.userService.getShoppingCartsByUserId(
       userId,
       requestUser,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -282,7 +282,7 @@ export class UserRalationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user orders',
-    type: GetManyOrderProxyResponse
+    type: GetManyOrderDtoResponse
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/orders')
@@ -290,12 +290,12 @@ export class UserRalationsController {
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
+  ): Promise<GetManyDefaultResponse<OrderDto> | OrderDto[]> {
     const entities = await this.userService.getOrdersByUserId(
       userId,
       requestUser,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 }

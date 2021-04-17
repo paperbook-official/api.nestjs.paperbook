@@ -5,8 +5,8 @@ import { BaseEntity } from 'src/common/base.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { ShoppingCartProxy } from '../models/shopping-cart.proxy'
-import { ToProxy } from 'src/common/to-proxy.interface'
+import { ShoppingCartDto } from '../models/shopping-cart.dto'
+import { ToDto } from 'src/common/to-dto.interface'
 
 /**
  * The app's main shopping cart entity class
@@ -15,7 +15,7 @@ import { ToProxy } from 'src/common/to-proxy.interface'
  */
 @Entity('shopping-cart')
 export class ShoppingCartEntity extends BaseEntity
-  implements ToProxy<ShoppingCartProxy> {
+  implements ToDto<ShoppingCartDto> {
   //#region Columns
 
   @Column({
@@ -62,10 +62,10 @@ export class ShoppingCartEntity extends BaseEntity
   }
 
   /**
-   * Method that converts the shopping cart entity to your proxy
-   * @returns the proxy data
+   * Method that converts the shopping cart entity to your dto
+   * @returns the dto data
    */
-  public toProxy(): ShoppingCartProxy {
-    return new ShoppingCartProxy(this)
+  public toDto(): ShoppingCartDto {
+    return new ShoppingCartDto(this)
   }
 }

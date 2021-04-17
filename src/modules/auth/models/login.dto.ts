@@ -4,11 +4,11 @@ import { IsDefined, IsEmail, IsString, MinLength } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
- * The app's main login payload class
+ * The app's main login dto class
  *
- * Class that handles the payload sent by the user to perform the login
+ * Class that handles the dto sent by the user to perform the login
  */
-export class LoginPayload {
+export class LoginDto {
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the email.' })
   @IsString({ message: DefaultValidationMessages.IsString })

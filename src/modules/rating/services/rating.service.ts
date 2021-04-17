@@ -10,9 +10,9 @@ import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-al
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { CreateRatingPayload } from '../models/create-rating.payload'
-import { UpdateRatingPayload } from '../models/update-rating.payload'
-import { ProductReviewProxy } from 'src/modules/product/models/product-review.proxy'
+import { CreateRatingDto } from '../models/create-rating.dto'
+import { UpdateRatingDto } from '../models/update-rating.dto'
+import { ProductReviewDto } from 'src/modules/product/models/product-review.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
@@ -45,7 +45,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    */
   public async create(
     requestUser: UserEntity,
-    createRatingPayload: CreateRatingPayload
+    createRatingPayload: CreateRatingDto
   ): Promise<RatingEntity> {
     const { userId, productId } = createRatingPayload
 
@@ -95,7 +95,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    */
   public async getReviewByProductId(
     productId: number
-  ): Promise<ProductReviewProxy> {
+  ): Promise<ProductReviewDto> {
     const response: { stars: number; amount: number }[] = await this.repository
       .createQueryBuilder('rating')
       .select(['rating.stars as stars', 'count(rating.id) as amount'])
@@ -136,7 +136,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
   public async update(
     ratingId: number,
     requestUser: UserEntity,
-    updateRatingPayload: UpdateRatingPayload
+    updateRatingPayload: UpdateRatingDto
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 

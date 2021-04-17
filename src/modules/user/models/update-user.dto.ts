@@ -6,11 +6,11 @@ import { IsOptional, IsPhoneNumber, IsString } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
- * The app's main update user payload class
+ * The app's main update user dto class
  *
- * Class that handles the payload sent by the user to perform the update
+ * Class that handles the dto sent by the user to perform the update
  */
-export class UpdateUserPaylaod {
+export class UpdateUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })

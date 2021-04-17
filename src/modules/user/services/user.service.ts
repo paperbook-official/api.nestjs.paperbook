@@ -13,8 +13,8 @@ import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
-import { CreateUserPayload } from '../models/create-user.payload'
-import { UpdateUserPaylaod } from '../models/update-user.payload'
+import { CreateUserDto } from '../models/create-user.dto'
+import { UpdateUserDto } from '../models/update-user.dto'
 
 import { AddressService } from 'src/modules/address/services/address.service'
 import { OrderService } from 'src/modules/order/services/order.service'
@@ -53,9 +53,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param createUserPayload stores the new user data
    * @returns the created user entity
    */
-  public async create(
-    createUserPayload: CreateUserPayload
-  ): Promise<UserEntity> {
+  public async create(createUserPayload: CreateUserDto): Promise<UserEntity> {
     const entity = new UserEntity(createUserPayload)
 
     entity.password = await this.passwordService.encryptPassword(
@@ -275,7 +273,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   public async update(
     userId: number,
     requestUser: UserEntity,
-    updatedUserPayload: UpdateUserPaylaod
+    updatedUserPayload: UpdateUserDto
   ): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 

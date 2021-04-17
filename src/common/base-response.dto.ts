@@ -3,11 +3,11 @@ import { ApiProperty } from '@nestjs/swagger'
 import { BaseEntity } from './base.entity'
 
 /**
- * The app's main base proxy class
+ * The app's main base dto class
  *
  * Class that deals with the entity return data
  */
-export abstract class BaseProxy {
+export abstract class BaseResponseDto {
   @ApiProperty()
   public id: number
 

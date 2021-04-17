@@ -10,15 +10,15 @@ import {
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 
-import { GetManyRatingProxyResponse } from 'src/modules/rating/entities/rating.entity'
+import { GetManyRatingDtoResponse } from 'src/modules/rating/entities/rating.entity'
 
-import { ProductReviewProxy } from '../models/product-review.proxy'
-import { ProductProxy } from '../models/product.proxy'
+import { ProductReviewDto } from '../models/product-review.dto'
+import { ProductDto } from '../models/product.dto'
 import {
-  CategoryProxy,
-  GetManyCategoryProxyResponse
-} from 'src/modules/category/models/category.proxy'
-import { RatingProxy } from 'src/modules/rating/models/rating.proxy'
+  CategoryDto,
+  GetManyCategoryDtoResponse
+} from 'src/modules/category/models/category.dto'
+import { RatingDto } from 'src/modules/rating/models/rating.dto'
 
 import { ProductService } from '../services/product.service'
 
@@ -33,7 +33,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
  */
 @Crud({
   model: {
-    type: ProductProxy
+    type: ProductDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -76,18 +76,18 @@ export class ProductRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the categories of a single product',
-    type: GetManyCategoryProxyResponse
+    type: GetManyCategoryDtoResponse
   })
   @Get(':id/categories')
   public async getCategoriesByProductId(
     @Param('id') productId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<CategoryProxy> | CategoryProxy[]> {
+  ): Promise<GetManyDefaultResponse<CategoryDto> | CategoryDto[]> {
     const entities = await this.productService.getCategoriesByProductId(
       productId,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -103,18 +103,18 @@ export class ProductRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the ratings of a single product',
-    type: GetManyRatingProxyResponse
+    type: GetManyRatingDtoResponse
   })
   @Get(':id/ratings')
   public async getRatingsByProductId(
     @Param('id') productId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<RatingProxy> | RatingProxy[]> {
+  ): Promise<GetManyDefaultResponse<RatingDto> | RatingDto[]> {
     const entities = await this.productService.getRatingsByProductId(
       productId,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -129,12 +129,12 @@ export class ProductRelationsController {
   })
   @ApiOkResponse({
     description: 'Gets rating review of a single product',
-    type: ProductReviewProxy
+    type: ProductReviewDto
   })
   @Get(':id/review')
   public async getReviewByProductId(
     @Param('id') productId: number
-  ): Promise<ProductReviewProxy> {
+  ): Promise<ProductReviewDto> {
     const entities = await this.productService.getReviewByProductId(productId)
     return entities
   }

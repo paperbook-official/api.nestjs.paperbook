@@ -2,16 +2,16 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { RatingEntity } from '../entities/rating.entity'
 
-import { BaseProxy } from 'src/common/base.proxy'
-import { ProductProxy } from 'src/modules/product/models/product.proxy'
-import { UserProxy } from 'src/modules/user/models/user.proxy'
+import { BaseResponseDto } from 'src/common/base-response.dto'
+import { ProductDto } from 'src/modules/product/models/product.dto'
+import { UserDto } from 'src/modules/user/models/user.dto'
 
 /**
- * The app's main rating proxy class
+ * The app's main rating dto class
  *
  * Class that deals with the rating return data
  */
-export class RatingProxy extends BaseProxy {
+export class RatingDto extends BaseResponseDto {
   @ApiPropertyOptional()
   public stars?: number
 
@@ -24,11 +24,11 @@ export class RatingProxy extends BaseProxy {
   @ApiProperty()
   public productId: number
 
-  @ApiPropertyOptional({ type: () => UserProxy })
-  public user?: UserProxy
+  @ApiPropertyOptional({ type: () => UserDto })
+  public user?: UserDto
 
-  @ApiPropertyOptional({ type: () => ProductProxy })
-  public product?: ProductProxy
+  @ApiPropertyOptional({ type: () => ProductDto })
+  public product?: ProductDto
 
   public constructor(entity: RatingEntity) {
     super(entity)
@@ -37,7 +37,7 @@ export class RatingProxy extends BaseProxy {
     this.text = entity.text
 
     // relations
-    this.user = entity.user?.toProxy()
-    this.product = entity.product?.toProxy()
+    this.user = entity.user?.toDto()
+    this.product = entity.product?.toDto()
   }
 }

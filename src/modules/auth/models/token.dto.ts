@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 /**
- * The app's main token proxy class
+ * The app's main token dto class
  *
  * Class that deals with the authentication return data
  */
-export class TokenProxy {
+export class TokenDto {
   @ApiProperty()
   public token: string
 

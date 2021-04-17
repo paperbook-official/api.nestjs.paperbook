@@ -4,8 +4,8 @@ import { Entity, Column, OneToMany } from 'typeorm'
 import { BaseEntity } from 'src/common/base.entity'
 import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
 
-import { CategoryProxy } from '../models/category.proxy'
-import { ToProxy } from 'src/common/to-proxy.interface'
+import { CategoryDto } from '../models/category.dto'
+import { ToDto } from 'src/common/to-dto.interface'
 
 /**
  * The app's main category entity class
@@ -13,8 +13,7 @@ import { ToProxy } from 'src/common/to-proxy.interface'
  * Class that represents the entity that deals with rating
  */
 @Entity('category')
-export class CategoryEntity extends BaseEntity
-  implements ToProxy<CategoryProxy> {
+export class CategoryEntity extends BaseEntity implements ToDto<CategoryDto> {
   //#region Columns
 
   @ApiProperty()
@@ -44,10 +43,10 @@ export class CategoryEntity extends BaseEntity
   }
 
   /**
-   * Method that converts the entity to your proxy
-   * @returns the proxy data
+   * Method that converts the entity to your dto
+   * @returns the dto data
    */
-  public toProxy(): CategoryProxy {
-    return new CategoryProxy(this)
+  public toDto(): CategoryDto {
+    return new CategoryDto(this)
   }
 }

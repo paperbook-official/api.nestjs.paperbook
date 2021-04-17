@@ -11,11 +11,11 @@ import {
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
- * The app's main create address payload class
+ * The app's main create address dto class
  *
- * Class that handles the payload sent by the user to perform the create
+ * Class that handles the dto sent by the user to perform the create
  */
-export class CreateAddressPayload {
+export class CreateAddressDto {
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the cep' })
   @IsNumberString({}, { message: 'It is required to send a numeric string' })

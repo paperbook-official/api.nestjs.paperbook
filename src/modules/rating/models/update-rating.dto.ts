@@ -4,11 +4,11 @@ import { IsOptional, IsNumber, IsString, Max, Min } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
- * The app's main update rating payoad class
+ * The app's main update rating dto class
  *
- * Class that handles the payload sent by the user to perform the update
+ * Class that handles the dto sent by the user to perform the update
  */
-export class UpdateRatingPayload {
+export class UpdateRatingDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber(

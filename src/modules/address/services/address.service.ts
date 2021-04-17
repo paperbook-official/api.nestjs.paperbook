@@ -10,8 +10,8 @@ import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-fou
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { UpdatedAddressPayload } from '../models/update-address.payload'
-import { CreateAddressPayload } from 'src/modules/address/models/create-address.payload'
+import { CreateAddressDto } from '../models/create-address.dto'
+import { UpdatedAddressDto } from '../models/update-address.dto'
 
 import { UserService } from 'src/modules/user/services/user.service'
 
@@ -43,7 +43,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    */
   public async create(
     requestUser: UserEntity,
-    createAddressPayload: CreateAddressPayload
+    createAddressPayload: CreateAddressDto
   ): Promise<AddressEntity> {
     const { userId } = createAddressPayload
 
@@ -116,7 +116,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   public async update(
     addressId: number,
     requestUser: UserEntity,
-    updateAddressPayload: UpdatedAddressPayload
+    updateAddressPayload: UpdatedAddressDto
   ): Promise<void> {
     const entity = await AddressEntity.findOne({ id: addressId })
 

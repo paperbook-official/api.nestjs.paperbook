@@ -27,7 +27,7 @@ export function IsCpf(
  * The app's main "is cpf" validator class
  *
  * Class that is used to validate some cpf value passed
- * in some payload using the "class-validator" logic
+ * in some dto using the "class-validator" logic
  */
 @ValidatorConstraint()
 class IsCpfValidatorConstraint implements ValidatorConstraintInterface {

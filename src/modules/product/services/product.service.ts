@@ -13,9 +13,9 @@ import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { CreateProductPaylaod } from '../models/create-product.payload'
-import { ProductReviewProxy } from '../models/product-review.proxy'
-import { UpdateProductPayload } from '../models/update-product.payload'
+import { CreateProductDto } from '../models/create-product.dto'
+import { ProductReviewDto } from '../models/product-review.dto'
+import { UpdateProductDto } from '../models/update-product.dto'
 
 import { CategoryService } from 'src/modules/category/services/category.service'
 import { RatingService } from 'src/modules/rating/services/rating.service'
@@ -55,7 +55,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    */
   public async create(
     requestUser: UserEntity,
-    createProductPayload: CreateProductPaylaod
+    createProductPayload: CreateProductDto
   ): Promise<ProductEntity> {
     const user = await this.userService.get(
       createProductPayload.userId,
@@ -74,7 +74,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    */
   public async getReviewByProductId(
     productId: number
-  ): Promise<ProductReviewProxy> {
+  ): Promise<ProductReviewDto> {
     return await this.ratingService.getReviewByProductId(productId)
   }
 
@@ -337,7 +337,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   public async update(
     productId: number,
     requestUser: UserEntity,
-    updateProductPayload: UpdateProductPayload
+    updateProductPayload: UpdateProductDto
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 

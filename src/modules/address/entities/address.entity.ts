@@ -4,8 +4,8 @@ import { Column, Entity, ManyToOne } from 'typeorm'
 import { BaseEntity } from 'src/common/base.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { AddressProxy } from '../models/address.proxy'
-import { ToProxy } from 'src/common/to-proxy.interface'
+import { AddressDto } from '../models/address.dto'
+import { ToDto } from 'src/common/to-dto.interface'
 
 /**
  * The app's main address entity class
@@ -13,7 +13,7 @@ import { ToProxy } from 'src/common/to-proxy.interface'
  * Class that represents the entity that deals with addresses
  */
 @Entity('address')
-export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
+export class AddressEntity extends BaseEntity implements ToDto<AddressDto> {
   //#region Columns
 
   @ApiProperty()
@@ -98,10 +98,10 @@ export class AddressEntity extends BaseEntity implements ToProxy<AddressProxy> {
   }
 
   /**
-   * Method that converts the entity to you proxy
-   * @returns the proxy data
+   * Method that converts the entity to you dto
+   * @returns the dto data
    */
-  public toProxy(): AddressProxy {
-    return new AddressProxy(this)
+  public toDto(): AddressDto {
+    return new AddressDto(this)
   }
 }

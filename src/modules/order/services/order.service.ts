@@ -11,8 +11,8 @@ import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-al
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { CreateOrderPayload } from '../models/create-order.payload'
-import { UpdateOrderPayload } from '../models/update-order.payload'
+import { CreateOrderDto } from '../models/create-order.dto'
+import { UpdateOrderDto } from '../models/update-order.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
@@ -46,7 +46,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    */
   public async create(
     requestUser: UserEntity,
-    createOrderPayload: CreateOrderPayload
+    createOrderPayload: CreateOrderDto
   ): Promise<OrderEntity> {
     const { userId, productId } = createOrderPayload
 
@@ -126,7 +126,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
   public async update(
     orderId: number,
     requestUser: UserEntity,
-    updateOrderPayload: UpdateOrderPayload
+    updateOrderPayload: UpdateOrderDto
   ): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
 

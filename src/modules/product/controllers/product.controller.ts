@@ -32,12 +32,9 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { CreateProductPaylaod } from '../models/create-product.payload'
-import {
-  GetManyProductProxyResponse,
-  ProductProxy
-} from '../models/product.proxy'
-import { UpdateProductPayload } from '../models/update-product.payload'
+import { CreateProductDto } from '../models/create-product.dto'
+import { GetManyProductDtoResponse, ProductDto } from '../models/product.dto'
+import { UpdateProductDto } from '../models/update-product.dto'
 
 import { ProductService } from '../services/product.service'
 
@@ -52,7 +49,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: ProductProxy
+    type: ProductDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -93,19 +90,19 @@ export class ProductController {
   @ApiOperation({ summary: 'Creates a new product' })
   @ApiCreatedResponse({
     description: 'Gets the created product data',
-    type: ProductProxy
+    type: ProductDto
   })
   @ProtectTo(RolesEnum.Admin, RolesEnum.Seller)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createProductPaylaod: CreateProductPaylaod
-  ): Promise<ProductProxy> {
+    @Body() createProductPaylaod: CreateProductDto
+  ): Promise<ProductDto> {
     const entity = await this.productService.create(
       requestUser,
       createProductPaylaod
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -128,18 +125,18 @@ export class ProductController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with price less than "maxPrice" value',
-    type: GetManyProductProxyResponse
+    type: GetManyProductDtoResponse
   })
   @Get('less-than')
   public async getLessThan(
     @Query('maxPrice', ParseIntPipe) maxPrice: number,
     @ParsedRequest() crudRequest: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getLessThan(
       maxPrice,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -154,14 +151,14 @@ export class ProductController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with discount greater than 0',
-    type: GetManyProductProxyResponse
+    type: GetManyProductDtoResponse
   })
   @Get('on-sale')
   public async getOnSale(
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getOnSale(crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -176,14 +173,14 @@ export class ProductController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with no installment price',
-    type: GetManyProductProxyResponse
+    type: GetManyProductDtoResponse
   })
   @Get('free-of-interests')
   public async getFreeOfInterests(
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getFreeOfInterests(crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -198,14 +195,14 @@ export class ProductController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products organized by "createdAt" field',
-    type: GetManyProductProxyResponse
+    type: GetManyProductDtoResponse
   })
   @Get('recents')
   public async getRecents(
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getFreeOfInterests(crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -219,9 +216,9 @@ export class ProductController {
   public async get(
     @Param('id') productId: number,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<ProductProxy> {
+  ): Promise<ProductDto> {
     const entity = await this.productService.get(productId, crudRequest)
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -233,9 +230,9 @@ export class ProductController {
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getMany(crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -252,7 +249,7 @@ export class ProductController {
   public async update(
     @Param('id') productId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updateProductPayload: UpdateProductPayload
+    @Body() updateProductPayload: UpdateProductDto
   ): Promise<void> {
     await this.productService.update(
       productId,

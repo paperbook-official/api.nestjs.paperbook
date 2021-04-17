@@ -11,11 +11,11 @@ import {
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
- * The app's main create product payload class
+ * The app's main create product dto class
  *
- * Class that handles the payload sent by the user peform the update
+ * Class that handles the dto sent by the user peform the update
  */
-export class UpdateProductPayload {
+export class UpdateProductDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: DefaultValidationMessages.IsString })

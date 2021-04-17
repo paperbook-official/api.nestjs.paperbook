@@ -14,8 +14,8 @@ import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-fou
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
-import { UpdatedCategoryPayload } from '../models/update-category.payload'
-import { CreateCategoryPayload } from 'src/modules/category/models/create-category.payload'
+import { CreateCategoryDto } from '../models/create-category.dto'
+import { UpdatedCategoryDto } from '../models/update-category.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
@@ -45,7 +45,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * @returns the created category
    */
   public async create(
-    createCategoryPayload: CreateCategoryPayload
+    createCategoryPayload: CreateCategoryDto
   ): Promise<CategoryEntity> {
     const entity = new CategoryEntity({
       ...createCategoryPayload
@@ -126,7 +126,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    */
   public async update(
     categoryId: number,
-    updateCategoryPayload: UpdatedCategoryPayload
+    updateCategoryPayload: UpdatedCategoryDto
   ): Promise<void> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 

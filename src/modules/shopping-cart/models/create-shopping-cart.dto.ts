@@ -4,11 +4,11 @@ import { IsDefined, IsNumber, Min } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
- * The app's main create shopping cart payload class
+ * The app's main create shopping cart dto class
  *
- * Class that handles the payload sent by the user to perform the create
+ * Class that handles the dto sent by the user to perform the create
  */
-export class CreateShoppingCartPayload {
+export class CreateShoppingCartDto {
   @ApiProperty()
   @IsDefined({ message: 'It is required to send te product id' })
   @IsNumber(

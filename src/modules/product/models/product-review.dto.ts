@@ -1,6 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
-export class ProductReviewProxy {
+/**
+ * The app's main product review dto class
+ *
+ * Class that deals with the product review return data
+ */
+export class ProductReviewDto {
   @ApiPropertyOptional()
   public five: number
 

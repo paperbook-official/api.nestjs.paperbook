@@ -2,16 +2,16 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { AddressEntity } from '../entities/address.entity'
 
-import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
-import { BaseProxy } from 'src/common/base.proxy'
-import { UserProxy } from 'src/modules/user/models/user.proxy'
+import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
+import { BaseResponseDto } from 'src/common/base-response.dto'
+import { UserDto } from 'src/modules/user/models/user.dto'
 
 /**
- * The app's main address proxy class
+ * The app's main address dto class
  *
  * Class that deals with the address return data
  */
-export class AddressProxy extends BaseProxy {
+export class AddressDto extends BaseResponseDto {
   @ApiProperty()
   public cep: string
 
@@ -36,13 +36,13 @@ export class AddressProxy extends BaseProxy {
   @ApiProperty()
   public userId: number
 
-  @ApiPropertyOptional({ type: () => UserProxy })
-  public user?: UserProxy
+  @ApiPropertyOptional({ type: () => UserDto })
+  public user?: UserDto
 
   public constructor(addressEntity: AddressEntity) {
     super(addressEntity)
 
-    this.id = +addressEntity.id
+    this.id = addressEntity.id
     this.createdAt = addressEntity.createdAt
     this.updatedAt = addressEntity.updatedAt
     this.isActive = addressEntity.isActive
@@ -56,16 +56,16 @@ export class AddressProxy extends BaseProxy {
     this.userId = addressEntity.userId
 
     // relations
-    this.user = addressEntity.user?.toProxy()
+    this.user = addressEntity.user?.toDto()
   }
 }
 
 /**
- * The app's main get many address proxy response
+ * The app's main get many address dto response
  *
  * Class that deals with the address return data with pagination
  */
-export class GetManyAddressProxyResponse extends BaseGetManyDefaultResponse {
-  @ApiProperty({ type: AddressProxy, isArray: true })
-  public data: AddressProxy[]
+export class GetManyAddressDtoResponse extends BaseGetManyDefaultResponseDto {
+  @ApiProperty({ type: AddressDto, isArray: true })
+  public data: AddressDto[]
 }

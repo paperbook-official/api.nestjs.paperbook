@@ -4,8 +4,8 @@ import { JwtService } from '@nestjs/jwt'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { LoginPayload } from '../models/login.payload'
-import { TokenProxy } from '../models/token.proxy'
+import { LoginDto } from '../models/login.dto'
+import { TokenDto } from '../models/token.dto'
 
 import { PasswordService } from 'src/modules/password/services/password.service'
 
@@ -27,7 +27,7 @@ export class AuthService {
    * @param requestUser stores the user data
    * @returns the token
    */
-  public async signIn(requestUser: UserEntity): Promise<TokenProxy> {
+  public async signIn(requestUser: UserEntity): Promise<TokenDto> {
     const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN')
 
     const { id, email, name, roles, cpf, isActive } = requestUser
@@ -45,7 +45,7 @@ export class AuthService {
    * saved
    * @param loginPayload stores the data that will be tested
    */
-  public async authenticate(loginPayload: LoginPayload): Promise<UserEntity> {
+  public async authenticate(loginPayload: LoginDto): Promise<UserEntity> {
     const { email, password } = loginPayload
 
     const entity = await UserEntity.findOne({ email })

@@ -28,9 +28,9 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { AddressProxy } from '../models/address.proxy'
-import { CreateAddressPayload } from '../models/create-address.payload'
-import { UpdatedAddressPayload } from '../models/update-address.payload'
+import { AddressDto } from '../models/address.dto'
+import { CreateAddressDto } from '../models/create-address.dto'
+import { UpdatedAddressDto } from '../models/update-address.dto'
 
 import { AddressService } from '../services/address.service'
 
@@ -45,7 +45,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: AddressProxy
+    type: AddressDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -79,19 +79,19 @@ export class AddressController {
   @ApiOperation({ summary: 'Creates a new address' })
   @ApiCreatedResponse({
     description: 'Gets the created address data',
-    type: AddressProxy
+    type: AddressDto
   })
   @ProtectTo(RolesEnum.Admin, RolesEnum.Seller, RolesEnum.User)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createAddressPayload: CreateAddressPayload
-  ): Promise<AddressProxy> {
+    @Body() createAddressPayload: CreateAddressDto
+  ): Promise<AddressDto> {
     const entity = await this.addressService.create(
       requestUser,
       createAddressPayload
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -108,13 +108,13 @@ export class AddressController {
     @Param('id') addressId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<AddressProxy> {
+  ): Promise<AddressDto> {
     const entity = await this.addressService.get(
       addressId,
       requestUser,
       crudRequest
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -129,9 +129,9 @@ export class AddressController {
   public async getMore(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest: CrudRequest
-  ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
+  ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
     const entities = await this.addressService.getMore(requestUser, crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -148,7 +148,7 @@ export class AddressController {
   public async update(
     @Param('id') addressId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updatedAddressPayload: UpdatedAddressPayload
+    @Body() updatedAddressPayload: UpdatedAddressDto
   ): Promise<void> {
     await this.addressService.update(
       addressId,

@@ -25,14 +25,14 @@ import {
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
-import { CategoryProxy } from '../models/category.proxy'
-import { CreateCategoryPayload } from '../models/create-category.payload'
-import { UpdatedCategoryPayload } from '../models/update-category.payload'
+import { UpdatedCategoryDto } from '../models/update-category.dto'
 
 import { CategoryService } from '../services/category.service'
 
 import { map } from 'src/utils/crud'
 
+import { CategoryDto } from '../models/category.dto'
+import { CreateCategoryDto } from '../models/create-category.dto'
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
@@ -42,7 +42,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: CategoryProxy
+    type: CategoryDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -76,15 +76,15 @@ export class CategoryController {
   @ApiOperation({ summary: 'Creates a new category' })
   @ApiCreatedResponse({
     description: 'Gets the created category data',
-    type: CategoryProxy
+    type: CategoryDto
   })
   @ProtectTo(RolesEnum.Admin)
   @Post()
   public async create(
-    @Body() createCategoryPayload: CreateCategoryPayload
-  ): Promise<CategoryProxy> {
+    @Body() createCategoryPayload: CreateCategoryDto
+  ): Promise<CategoryDto> {
     const entity = await this.categoryService.create(createCategoryPayload)
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -98,9 +98,9 @@ export class CategoryController {
   public async get(
     @Param('id') categoryId: number,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<CategoryProxy> {
+  ): Promise<CategoryDto> {
     const entity = await this.categoryService.get(categoryId, crudRequest)
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -112,9 +112,9 @@ export class CategoryController {
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest: CrudRequest
-  ): Promise<GetManyDefaultResponse<CategoryProxy> | CategoryProxy[]> {
+  ): Promise<GetManyDefaultResponse<CategoryDto> | CategoryDto[]> {
     const entities = await this.categoryService.getMore(crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -130,7 +130,7 @@ export class CategoryController {
   @Patch(':id')
   public async update(
     @Param('id') categoryId: number,
-    @Body() updatedCategoryPayload: UpdatedCategoryPayload
+    @Body() updatedCategoryPayload: UpdatedCategoryDto
   ): Promise<void> {
     await this.categoryService.update(categoryId, updatedCategoryPayload)
   }

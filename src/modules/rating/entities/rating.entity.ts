@@ -5,9 +5,9 @@ import { BaseEntity } from 'src/common/base.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { RatingProxy } from '../models/rating.proxy'
-import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
-import { ToProxy } from 'src/common/to-proxy.interface'
+import { RatingDto } from '../models/rating.dto'
+import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
+import { ToDto } from 'src/common/to-dto.interface'
 
 /**
  * The app's main rating entity class
@@ -15,7 +15,7 @@ import { ToProxy } from 'src/common/to-proxy.interface'
  * Class that represents the entity that deals with rating
  */
 @Entity('rating')
-export class RatingEntity extends BaseEntity implements ToProxy<RatingProxy> {
+export class RatingEntity extends BaseEntity implements ToDto<RatingDto> {
   // #region
 
   @ApiProperty()
@@ -76,20 +76,20 @@ export class RatingEntity extends BaseEntity implements ToProxy<RatingProxy> {
   }
 
   /**
-   * Method that converts the entity to your proxy
-   * @returns the proxy data
+   * Method that converts the entity to your dto
+   * @returns the dto data
    */
-  public toProxy(): RatingProxy {
-    return new RatingProxy(this)
+  public toDto(): RatingDto {
+    return new RatingDto(this)
   }
 }
 
 /**
- * The app's main get many rating proxy response
+ * The app's main get many rating dto response
  *
  * Class that deals with the ratings return data with pagination
  */
-export class GetManyRatingProxyResponse extends BaseGetManyDefaultResponse {
-  @ApiProperty({ type: RatingProxy, isArray: true })
-  data: RatingProxy[]
+export class GetManyRatingDtoResponse extends BaseGetManyDefaultResponseDto {
+  @ApiProperty({ type: RatingDto, isArray: true })
+  data: RatingDto[]
 }

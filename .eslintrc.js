@@ -30,7 +30,7 @@ module.exports = {
           '/.decorator/',
           '/.guard/',
           '/.entity/',
-          '/.proxy|.payload/',
+          '/.dto/',
           '/.service/',
           '/.controller/',
           '/utils/',

@@ -11,11 +11,11 @@ import {
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
- * The app's main create rating payload class
+ * The app's main create rating dto class
  *
- * Class that handles the payload sent by the user to perform the create
+ * Class that handles the dto sent by the user to perform the create
  */
-export class CreateRatingPayload {
+export class CreateRatingDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber(

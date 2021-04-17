@@ -28,9 +28,9 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { CreateRatingPayload } from '../models/create-rating.payload'
-import { RatingProxy } from '../models/rating.proxy'
-import { UpdateRatingPayload } from '../models/update-rating.payload'
+import { CreateRatingDto } from '../models/create-rating.dto'
+import { RatingDto } from '../models/rating.dto'
+import { UpdateRatingDto } from '../models/update-rating.dto'
 
 import { RatingService } from '../services/rating.service'
 
@@ -45,7 +45,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: RatingProxy
+    type: RatingDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -79,19 +79,19 @@ export class RatingController {
   @ApiOperation({ summary: 'Creates a new rating' })
   @ApiCreatedResponse({
     description: 'Gets the created rating data',
-    type: RatingProxy
+    type: RatingDto
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createRatingPayload: CreateRatingPayload
-  ): Promise<RatingProxy> {
+    @Body() createRatingPayload: CreateRatingDto
+  ): Promise<RatingDto> {
     const entity = await this.ratingService.create(
       requestUser,
       createRatingPayload
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -99,15 +99,15 @@ export class RatingController {
    * route with the "GET" method
    * @param ratingId stores the rating id
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found rating entity proxy
+   * @returns the found rating entity dto
    */
   @Get(':id')
   public async get(
     @Param('id') ratingId: number,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<RatingProxy> {
+  ): Promise<RatingDto> {
     const entity = await this.ratingService.get(ratingId, crudRequest)
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -118,9 +118,9 @@ export class RatingController {
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<RatingProxy> | RatingProxy[]> {
+  ): Promise<GetManyDefaultResponse<RatingDto> | RatingDto[]> {
     const entities = await this.ratingService.getMany(crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -136,7 +136,7 @@ export class RatingController {
   public async update(
     @Param('id') ratingId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updateRatingPayload: UpdateRatingPayload
+    @Body() updateRatingPayload: UpdateRatingDto
   ): Promise<void> {
     await this.ratingService.update(ratingId, requestUser, updateRatingPayload)
   }

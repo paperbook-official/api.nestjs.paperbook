@@ -5,11 +5,11 @@ import { DefaultValidationMessages } from 'src/models/enums/default-validation-m
 import { OrderStatus } from 'src/models/enums/order-status.enum'
 
 /**
- * The app's main update order payload class
+ * The app's main update order dto class
  *
- * Class that handles the payload sent by the user to perform the updated
+ * Class that handles the dto sent by the user to perform the updated
  */
-export class UpdateOrderPayload {
+export class UpdateOrderDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsEnum(OrderStatus, {

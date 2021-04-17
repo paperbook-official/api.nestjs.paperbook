@@ -17,11 +17,11 @@ import { DefaultValidationMessages } from 'src/models/enums/default-validation-m
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
- * The app's main create user payload class
+ * The app's main create user dto class
  *
- * Class that handles the payload sent by the user to perform the creation
+ * Class that handles the dto sent by the user to perform the creation
  */
-export class CreateUserPayload {
+export class CreateUserDto {
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the name.' })
   @IsString({ message: DefaultValidationMessages.IsString })

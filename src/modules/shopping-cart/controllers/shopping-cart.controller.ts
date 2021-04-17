@@ -28,9 +28,9 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { CreateShoppingCartPayload } from '../models/create-shopping-cart.payload'
-import { ShoppingCartProxy } from '../models/shopping-cart.proxy'
-import { UpdateShoppingCartPayload } from '../models/update-shopping-cart.payload'
+import { CreateShoppingCartDto } from '../models/create-shopping-cart.dto'
+import { ShoppingCartDto } from '../models/shopping-cart.dto'
+import { UpdateShoppingCartDto } from '../models/update-shopping-cart.dto'
 
 import { ShoppingCartService } from '../services/shopping-cart.service'
 
@@ -45,7 +45,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: ShoppingCartProxy
+    type: ShoppingCartDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -78,24 +78,24 @@ export class ShoppingCartController {
    * @param requestUser stores the logged user data
    * @param createShoppingCartPayload stores the new shopping
    * cart entity data
-   * @returns the created shopping cart entity proxy
+   * @returns the created shopping cart entity dto
    */
   @ApiOperation({ summary: 'Creates a new shopping cart entity' })
   @ApiCreatedResponse({
     description: 'Gets the created shopping cart entity data',
-    type: ShoppingCartProxy
+    type: ShoppingCartDto
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createShoppingCartPayload: CreateShoppingCartPayload
-  ): Promise<ShoppingCartProxy> {
+    @Body() createShoppingCartPayload: CreateShoppingCartDto
+  ): Promise<ShoppingCartDto> {
     const entity = await this.shoppingCartService.create(
       requestUser,
       createShoppingCartPayload
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -104,7 +104,7 @@ export class ShoppingCartController {
    * @param shoppingCartId stores the shopping cart id
    * @param requestUser stores the logged user
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found shopping cart entity proxy
+   * @returns the found shopping cart entity dto
    */
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
@@ -112,13 +112,13 @@ export class ShoppingCartController {
     @Param('id') shoppingCartId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<ShoppingCartProxy> {
+  ): Promise<ShoppingCartDto> {
     const entity = await this.shoppingCartService.get(
       shoppingCartId,
       requestUser,
       crudRequest
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -133,12 +133,12 @@ export class ShoppingCartController {
   public async getMore(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ShoppingCartProxy> | ShoppingCartProxy[]> {
+  ): Promise<GetManyDefaultResponse<ShoppingCartDto> | ShoppingCartDto[]> {
     const entities = await this.shoppingCartService.getMore(
       requestUser,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -153,7 +153,7 @@ export class ShoppingCartController {
   @Patch(':id')
   public async update(
     @Param('id') shoppingCartId: number,
-    @Body() updateShoppingCartPayload: UpdateShoppingCartPayload
+    @Body() updateShoppingCartPayload: UpdateShoppingCartDto
   ): Promise<void> {
     await this.shoppingCartService.update(
       shoppingCartId,

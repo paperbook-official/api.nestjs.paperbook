@@ -10,8 +10,8 @@ import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-al
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
-import { CreateProductCategoryPayload } from '../models/create-product-category.payload'
-import { UpdateProductCategoryPayload } from '../models/update-product-category.payload'
+import { CreateProductCategoryDto } from '../models/create-product-category.dto'
+import { UpdateProductCategoryDto } from '../models/update-product-category.dto'
 
 import { CategoryService } from 'src/modules/category/services/category.service'
 import { ProductService } from 'src/modules/product/services/product.service'
@@ -43,7 +43,7 @@ export class ProductCategoryService extends TypeOrmCrudService<
    * @returns the new product-category entity
    */
   public async create(
-    createProductCategoryPayload: CreateProductCategoryPayload
+    createProductCategoryPayload: CreateProductCategoryDto
   ): Promise<ProductCategoryEntity> {
     const { productId, categoryId } = createProductCategoryPayload
 
@@ -95,7 +95,7 @@ export class ProductCategoryService extends TypeOrmCrudService<
    */
   public async update(
     productCategoryId: number,
-    updateProductCategoryPayload: UpdateProductCategoryPayload
+    updateProductCategoryPayload: UpdateProductCategoryDto
   ): Promise<void> {
     const entity = await ProductCategoryEntity.findOne({
       id: productCategoryId

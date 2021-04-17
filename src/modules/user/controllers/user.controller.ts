@@ -29,9 +29,9 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from '../entities/user.entity'
 
-import { CreateUserPayload } from '../models/create-user.payload'
-import { UpdateUserPaylaod } from '../models/update-user.payload'
-import { UserProxy } from '../models/user.proxy'
+import { CreateUserDto } from '../models/create-user.dto'
+import { UpdateUserDto } from '../models/update-user.dto'
+import { UserDto } from '../models/user.dto'
 
 import { UserService } from '../services/user.service'
 
@@ -46,7 +46,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: UserProxy
+    type: UserDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -82,14 +82,14 @@ export class UserController {
   @ApiOperation({ summary: 'Creates a new user' })
   @ApiCreatedResponse({
     description: 'Gets the created user data',
-    type: UserProxy
+    type: UserDto
   })
   @Post()
   public async create(
-    @Body() createdUserPayload: CreateUserPayload
-  ): Promise<UserProxy> {
+    @Body() createdUserPayload: CreateUserDto
+  ): Promise<UserDto> {
     const entity = await this.userService.create(createdUserPayload)
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -101,19 +101,19 @@ export class UserController {
    */
   @ApiPropertyGet()
   @ApiOperation({ summary: 'Gets the logged user' })
-  @ApiOkResponse({ description: 'Gets the logged user data', type: UserProxy })
+  @ApiOkResponse({ description: 'Gets the logged user data', type: UserDto })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me')
   public async getMe(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<UserProxy> {
+  ): Promise<UserDto> {
     const entity = await this.userService.get(
       requestUser.id,
       requestUser,
       crudRequest
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -130,9 +130,9 @@ export class UserController {
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<UserProxy> {
+  ): Promise<UserDto> {
     const entity = await this.userService.get(userId, requestUser, crudRequest)
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -145,9 +145,9 @@ export class UserController {
   @Get()
   public async getMore(
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<UserProxy> | UserProxy[]> {
+  ): Promise<GetManyDefaultResponse<UserDto> | UserDto[]> {
     const getManyDefaultResponse = await this.userService.getMany(crudRequest)
-    return map(getManyDefaultResponse, entity => entity.toProxy())
+    return map(getManyDefaultResponse, entity => entity.toDto())
   }
 
   /**
@@ -164,7 +164,7 @@ export class UserController {
   public async update(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updatedUserPayload: UpdateUserPaylaod
+    @Body() updatedUserPayload: UpdateUserDto
   ): Promise<void> {
     await this.userService.update(userId, requestUser, updatedUserPayload)
   }

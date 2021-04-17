@@ -2,20 +2,20 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { ProductEntity } from '../entities/product.entity'
 
-import { BaseGetManyDefaultResponse } from 'src/common/base-get-many-default-response.proxy'
-import { BaseProxy } from 'src/common/base.proxy'
-import { OrderProxy } from 'src/modules/order/models/order.proxy'
-import { ProductCategoryProxy } from 'src/modules/product-category/models/product-category.proxy'
-import { RatingProxy } from 'src/modules/rating/models/rating.proxy'
-import { ShoppingCartProxy } from 'src/modules/shopping-cart/models/shopping-cart.proxy'
-import { UserProxy } from 'src/modules/user/models/user.proxy'
+import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
+import { BaseResponseDto } from 'src/common/base-response.dto'
+import { OrderDto } from 'src/modules/order/models/order.dto'
+import { ProductCategoryDto } from 'src/modules/product-category/models/product-category.dto'
+import { RatingDto } from 'src/modules/rating/models/rating.dto'
+import { ShoppingCartDto } from 'src/modules/shopping-cart/models/shopping-cart.dto'
+import { UserDto } from 'src/modules/user/models/user.dto'
 
 /**
- * The app's main product proxy class
+ * The app's main product dto class
  *
  * Class that deals with the product return data
  */
-export class ProductProxy extends BaseProxy {
+export class ProductDto extends BaseResponseDto {
   @ApiProperty()
   public imageUrl: string
 
@@ -44,33 +44,33 @@ export class ProductProxy extends BaseProxy {
   public userId: number
 
   @ApiPropertyOptional({
-    type: () => UserProxy
+    type: () => UserDto
   })
-  public user?: UserProxy
+  public user?: UserDto
 
   @ApiPropertyOptional({
-    type: () => OrderProxy,
+    type: () => OrderDto,
     isArray: true
   })
-  public orders?: OrderProxy[]
+  public orders?: OrderDto[]
 
   @ApiPropertyOptional({
-    type: () => ProductCategoryProxy,
+    type: () => ProductCategoryDto,
     isArray: true
   })
-  public productsCategories?: ProductCategoryProxy[]
+  public productsCategories?: ProductCategoryDto[]
 
   @ApiPropertyOptional({
-    type: () => RatingProxy,
+    type: () => RatingDto,
     isArray: true
   })
-  public ratings?: RatingProxy[]
+  public ratings?: RatingDto[]
 
   @ApiPropertyOptional({
-    type: () => ShoppingCartProxy,
+    type: () => ShoppingCartDto,
     isArray: true
   })
-  public shoppingCarts?: ShoppingCartProxy[]
+  public shoppingCarts?: ShoppingCartDto[]
 
   public constructor(entity: ProductEntity) {
     super(entity)
@@ -86,24 +86,24 @@ export class ProductProxy extends BaseProxy {
     this.userId = entity.userId
 
     // relations
-    this.user = entity.user?.toProxy()
-    this.orders = entity.orders?.map(order => order.toProxy())
+    this.user = entity.user?.toDto()
+    this.orders = entity.orders?.map(order => order.toDto())
     this.productsCategories = entity.productsCategories?.map(productCategory =>
-      productCategory.toProxy()
+      productCategory.toDto()
     )
-    this.ratings = entity.ratings?.map(rating => rating.toProxy())
+    this.ratings = entity.ratings?.map(rating => rating.toDto())
     this.shoppingCarts = entity.shoppingCarts?.map(shoppingCart =>
-      shoppingCart.toProxy()
+      shoppingCart.toDto()
     )
   }
 }
 
 /**
- * The app's main get many product proxy response
+ * The app's main get many product dto response
  *
  * Class that deals with the products return data with pagination
  */
-export class GetManyProductProxyResponse extends BaseGetManyDefaultResponse {
-  @ApiProperty({ type: ProductProxy, isArray: true })
-  data: ProductProxy[]
+export class GetManyProductDtoResponse extends BaseGetManyDefaultResponseDto {
+  @ApiProperty({ type: ProductDto, isArray: true })
+  data: ProductDto[]
 }

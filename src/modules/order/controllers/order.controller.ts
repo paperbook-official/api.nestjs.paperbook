@@ -28,9 +28,9 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { CreateOrderPayload } from '../models/create-order.payload'
-import { OrderProxy } from '../models/order.proxy'
-import { UpdateOrderPayload } from '../models/update-order.payload'
+import { CreateOrderDto } from '../models/create-order.dto'
+import { OrderDto } from '../models/order.dto'
+import { UpdateOrderDto } from '../models/update-order.dto'
 
 import { OrderService } from '../services/order.service'
 
@@ -45,7 +45,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: OrderProxy
+    type: OrderDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -80,19 +80,19 @@ export class OrderController {
   @ApiOperation({ summary: 'Creates a new order' })
   @ApiCreatedResponse({
     description: 'Gets the created order data',
-    type: OrderProxy
+    type: OrderDto
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createOrderPayload: CreateOrderPayload
-  ): Promise<OrderProxy> {
+    @Body() createOrderPayload: CreateOrderDto
+  ): Promise<OrderDto> {
     const entity = await this.orderService.create(
       requestUser,
       createOrderPayload
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -109,13 +109,13 @@ export class OrderController {
     @Param('id') orderId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<OrderProxy> {
+  ): Promise<OrderDto> {
     const entity = await this.orderService.get(
       orderId,
       requestUser,
       crudRequest
     )
-    return entity.toProxy()
+    return entity.toDto()
   }
 
   /**
@@ -130,9 +130,9 @@ export class OrderController {
   public async getMore(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
+  ): Promise<GetManyDefaultResponse<OrderDto> | OrderDto[]> {
     const entities = await this.orderService.getMore(requestUser, crudRequest)
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 
   /**
@@ -149,7 +149,7 @@ export class OrderController {
   public async update(
     @Param('id') orderId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updateOrderPayload: UpdateOrderPayload
+    @Body() updateOrderPayload: UpdateOrderDto
   ): Promise<void> {
     await this.orderService.update(orderId, requestUser, updateOrderPayload)
   }

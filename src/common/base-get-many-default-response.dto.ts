@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger'
  *
  * Class that deals with the paginated response in the app
  */
-export abstract class BaseGetManyDefaultResponse {
+export abstract class BaseGetManyDefaultResponseDto {
   @ApiProperty()
   public count: number
 

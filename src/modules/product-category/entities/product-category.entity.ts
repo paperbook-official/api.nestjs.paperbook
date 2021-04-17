@@ -5,8 +5,8 @@ import { BaseEntity } from 'src/common/base.entity'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
-import { ProductCategoryProxy } from '../models/product-category.proxy'
-import { ToProxy } from 'src/common/to-proxy.interface'
+import { ProductCategoryDto } from '../models/product-category.dto'
+import { ToDto } from 'src/common/to-dto.interface'
 
 /**
  * The app's main product category entity class
@@ -16,7 +16,7 @@ import { ToProxy } from 'src/common/to-proxy.interface'
  */
 @Entity('product-category')
 export class ProductCategoryEntity extends BaseEntity
-  implements ToProxy<ProductCategoryProxy> {
+  implements ToDto<ProductCategoryDto> {
   //#region Columns
 
   @ApiProperty()
@@ -61,10 +61,10 @@ export class ProductCategoryEntity extends BaseEntity
   }
 
   /**
-   * Method that converts the entity to your proxy
-   * @returns the proxy data
+   * Method that converts the entity to your dto
+   * @returns the dto data
    */
-  public toProxy(): ProductCategoryProxy {
-    return new ProductCategoryProxy(this)
+  public toDto(): ProductCategoryDto {
+    return new ProductCategoryDto(this)
   }
 }

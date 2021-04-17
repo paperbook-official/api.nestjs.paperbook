@@ -8,8 +8,8 @@ import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { ProductProxy } from '../models/product.proxy'
-import { ToProxy } from 'src/common/to-proxy.interface'
+import { ProductDto } from '../models/product.dto'
+import { ToDto } from 'src/common/to-dto.interface'
 
 /**
  * The app's main product entity class
@@ -17,7 +17,7 @@ import { ToProxy } from 'src/common/to-proxy.interface'
  * Class that represents the entity that deals with products
  */
 @Entity('product')
-export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
+export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
   //#region Columns
 
   @ApiProperty()
@@ -150,10 +150,10 @@ export class ProductEntity extends BaseEntity implements ToProxy<ProductProxy> {
   }
 
   /**
-   * Method that converts the entity to your proxy
-   * @returns the proxy data
+   * Method that converts the entity to your dto
+   * @returns the dto data
    */
-  public toProxy(): ProductProxy {
-    return new ProductProxy(this)
+  public toDto(): ProductDto {
+    return new ProductDto(this)
   }
 }

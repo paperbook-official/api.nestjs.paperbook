@@ -11,9 +11,9 @@ import {
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 
 import {
-  GetManyProductProxyResponse,
-  ProductProxy
-} from 'src/modules/product/models/product.proxy'
+  GetManyProductDtoResponse,
+  ProductDto
+} from 'src/modules/product/models/product.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 
@@ -30,7 +30,7 @@ import { ParseNumberOrUndefinedPipe } from 'src/pipes/parse-number-or-undefined/
  */
 @Crud({
   model: {
-    type: ProductProxy
+    type: ProductDto
   },
   query: {
     persist: ['id', 'isActive'],
@@ -125,7 +125,7 @@ export class SearchController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products that matches with the queries',
-    type: GetManyProductProxyResponse
+    type: GetManyProductDtoResponse
   })
   @Get()
   public async search(
@@ -145,7 +145,7 @@ export class SearchController {
     sortBy?: SortBySearchEnum,
     @ParsedRequest()
     crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.searchService.search(
       name,
       categoryId,
@@ -156,6 +156,6 @@ export class SearchController {
       sortBy,
       crudRequest
     )
-    return map(entities, entity => entity.toProxy())
+    return map(entities, entity => entity.toDto())
   }
 }

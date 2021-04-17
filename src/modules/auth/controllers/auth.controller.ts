@@ -7,8 +7,8 @@ import { LocalGuard } from 'src/guards/local/local.guard'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
-import { LoginPayload } from '../models/login.payload'
-import { TokenProxy } from '../models/token.proxy'
+import { LoginDto } from '../models/login.dto'
+import { TokenDto } from '../models/token.dto'
 
 import { AuthService } from '../services/auth.service'
 
@@ -28,13 +28,13 @@ export class AuthController {
    * @returns the token data
    */
   @ApiOperation({ summary: 'Authenticates the user' })
-  @ApiOkResponse({ description: 'Gets the token value', type: TokenProxy })
+  @ApiOkResponse({ description: 'Gets the token value', type: TokenDto })
   @UseGuards(LocalGuard)
   @Post('local')
   public async signIn(
-    @Body() _loginPayload: LoginPayload, // must be here to apply in swagger
+    @Body() _loginPayload: LoginDto, // must be here to apply in swagger
     @RequestUser() requestUser: UserEntity
-  ): Promise<TokenProxy> {
+  ): Promise<TokenDto> {
     return this.authService.signIn(requestUser)
   }
 }

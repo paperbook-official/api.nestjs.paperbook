@@ -10,7 +10,7 @@ import {
 import { ApiFile } from 'src/decorators/api-file/api-file.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
-import { MediaProxy } from '../models/media.proxy'
+import { MediaDto } from '../models/media.dto'
 
 import { FirebaseService } from 'src/modules/firebase/services/firebase.service'
 
@@ -35,7 +35,7 @@ export class MediaController {
   @ApiOperation({ summary: 'Uploads a new file' })
   @ApiCreatedResponse({
     description: 'Gets the uploaded file data',
-    type: MediaProxy
+    type: MediaDto
   })
   @ApiConsumes('multipart/form-data')
   @ApiFile('file')
@@ -44,7 +44,7 @@ export class MediaController {
   @Post('upload')
   public async upload(
     @UploadedFile() file: Express.Multer.File
-  ): Promise<MediaProxy> {
+  ): Promise<MediaDto> {
     const url = await this.firebaseService.upload(file)
     return {
       url

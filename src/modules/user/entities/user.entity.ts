@@ -8,8 +8,8 @@ import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
-import { UserProxy } from '../models/user.proxy'
-import { ToProxy } from 'src/common/to-proxy.interface'
+import { UserDto } from '../models/user.dto'
+import { ToDto } from 'src/common/to-dto.interface'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -19,7 +19,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  * Class that represents the entity that deals with users
  */
 @Entity('user')
-export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
+export class UserEntity extends BaseEntity implements ToDto<UserDto> {
   //#region Columns
 
   @ApiProperty()
@@ -141,10 +141,10 @@ export class UserEntity extends BaseEntity implements ToProxy<UserProxy> {
   }
 
   /**
-   * Method that converts the entity to your proxy
-   * @returns the proxy data
+   * Method that converts the entity to your dto
+   * @returns the dto data
    */
-  public toProxy(): UserProxy {
-    return new UserProxy(this)
+  public toDto(): UserDto {
+    return new UserDto(this)
   }
 }
