@@ -29,14 +29,10 @@ export class AuthService {
   public async signIn(requestUser: UserEntity): Promise<TokenProxy> {
     const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN')
 
-    const { id, email, roles } = requestUser
+    const { id, email, name, roles, cpf, isActive } = requestUser
 
     const token = await this.jwtService.signAsync(
-      {
-        id,
-        email,
-        roles
-      },
+      { id, email, name, roles, cpf, isActive },
       { expiresIn }
     )
     return { token, expiresIn }
