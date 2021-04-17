@@ -7,7 +7,7 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
 import { LoginPayload } from '../models/login.payload'
 import { TokenProxy } from '../models/token.proxy'
 
-import { comparePassword } from 'src/utils/password'
+import { PasswordService } from 'src/modules/password/services/password.service'
 
 /**
  * The app's main auth service service class
@@ -17,6 +17,7 @@ import { comparePassword } from 'src/utils/password'
 @Injectable()
 export class AuthService {
   public constructor(
+    private readonly passwordService: PasswordService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {}
@@ -54,7 +55,10 @@ export class AuthService {
         'You have no permission to access those sources'
       )
 
-    const passwordMatches = await comparePassword(password, entity.password)
+    const passwordMatches = await this.passwordService.comparePassword(
+      password,
+      entity.password
+    )
 
     if (!passwordMatches)
       throw new UnauthorizedException(

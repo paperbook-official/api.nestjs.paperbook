@@ -18,10 +18,9 @@ import { UpdateUserPaylaod } from '../models/update-user.payload'
 
 import { AddressService } from 'src/modules/address/services/address.service'
 import { OrderService } from 'src/modules/order/services/order.service'
+import { PasswordService } from 'src/modules/password/services/password.service'
 import { ProductService } from 'src/modules/product/services/product.service'
 import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
-
-import { encryptPassword } from 'src/utils/password'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -36,6 +35,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   public constructor(
     @InjectRepository(UserEntity)
     private readonly repository: Repository<UserEntity>,
+    private readonly passwordService: PasswordService,
     @Inject(forwardRef(() => AddressService))
     private readonly addressService: AddressService,
     @Inject(forwardRef(() => ProductService))
@@ -58,7 +58,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   ): Promise<UserEntity> {
     const entity = new UserEntity(createUserPayload)
 
-    entity.password = await encryptPassword(entity.password)
+    entity.password = await this.passwordService.encryptPassword(
+      entity.password
+    )
     entity.roles = entity.roles ?? RolesEnum.User
 
     return await entity.save()

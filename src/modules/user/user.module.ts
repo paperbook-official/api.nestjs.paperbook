@@ -10,11 +10,13 @@ import { UserController } from './controllers/user.controller'
 
 import { AddressModule } from '../address/address.module'
 import { OrderModule } from '../order/order.module'
+import { PasswordModule } from '../password/password.module'
 import { ProductModule } from '../product/product.module'
 import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
 
 @Module({
   imports: [
+    PasswordModule,
     forwardRef(() => ProductModule),
     forwardRef(() => AddressModule),
     forwardRef(() => OrderModule),
