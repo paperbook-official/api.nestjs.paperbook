@@ -54,14 +54,16 @@ export class OrderEntity extends BaseEntity implements ToProxy<OrderProxy> {
   @ApiPropertyOptional({ type: () => UserEntity })
   @ManyToOne(
     () => UserEntity,
-    user => user.orders
+    user => user.orders,
+    { onDelete: 'CASCADE' }
   )
   public user?: UserEntity
 
   @ApiPropertyOptional({ type: () => ProductEntity })
   @ManyToOne(
     () => ProductEntity,
-    product => product.orders
+    product => product.orders,
+    { onDelete: 'CASCADE' }
   )
   public product?: ProductEntity
 

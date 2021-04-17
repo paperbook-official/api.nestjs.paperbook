@@ -38,14 +38,16 @@ export class ProductCategoryEntity extends BaseEntity
   @ApiPropertyOptional({ type: () => ProductEntity })
   @ManyToOne(
     () => ProductEntity,
-    product => product.productsCategories
+    product => product.productsCategories,
+    { onDelete: 'CASCADE' }
   )
   public product?: ProductEntity
 
   @ApiPropertyOptional({ type: () => CategoryEntity })
   @ManyToOne(
     () => CategoryEntity,
-    category => category.productsCategories
+    category => category.productsCategories,
+    { onDelete: 'CASCADE' }
   )
   public category?: CategoryEntity
 
