@@ -8,8 +8,11 @@ import { LocalStrategyService } from './services/local.strategy.service'
 
 import { AuthController } from './controllers/auth.controller'
 
+import { PasswordModule } from '../password/password.module'
+
 @Module({
   imports: [
+    PasswordModule,
     ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

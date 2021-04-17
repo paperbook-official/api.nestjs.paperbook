@@ -18,11 +18,9 @@ import { UpdateUserPaylaod } from '../models/update-user.payload'
 
 import { AddressService } from 'src/modules/address/services/address.service'
 import { OrderService } from 'src/modules/order/services/order.service'
+import { PasswordService } from 'src/modules/password/services/password.service'
 import { ProductService } from 'src/modules/product/services/product.service'
 import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
-
-import { encryptPassword } from 'src/utils/password'
-import { isAdminUser } from 'src/utils/validations'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { RolesEnum } from 'src/models/enums/roles.enum'
@@ -37,6 +35,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   public constructor(
     @InjectRepository(UserEntity)
     private readonly repository: Repository<UserEntity>,
+    private readonly passwordService: PasswordService,
     @Inject(forwardRef(() => AddressService))
     private readonly addressService: AddressService,
     @Inject(forwardRef(() => ProductService))
@@ -59,7 +58,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   ): Promise<UserEntity> {
     const entity = new UserEntity(createUserPayload)
 
-    entity.password = await encryptPassword(entity.password)
+    entity.password = await this.passwordService.encryptPassword(
+      entity.password
+    )
     entity.roles = entity.roles ?? RolesEnum.User
 
     return await entity.save()
@@ -371,7 +372,32 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @returns true if the user can access some source, otherwise false
    */
   public hasPermissions(userId: number, requestUser: UserEntity): boolean {
-    return userId === requestUser.id || isAdminUser(requestUser)
+    return userId === requestUser.id || this.isAdminUser(requestUser)
+  }
+
+  /**
+   * Method that can test if the request user has the type "ADMIM"
+   * @param requestUser stores the user basic data
+   */
+  public isAdminUser(requestUser: UserEntity): boolean {
+    return (
+      requestUser &&
+      requestUser.roles &&
+      this.hasRole(requestUser.roles, RolesEnum.Admin)
+    )
+  }
+
+  /**
+   * Method that can compare roles
+   * @param roles stores the roles that will be compared
+   * @param targetRoles stores one or more roles that will be compared as well
+   */
+  public hasRole(roles: string, targetRoles: string): boolean {
+    return (
+      roles &&
+      roles.length !== 0 &&
+      roles.split('|').some(role => targetRoles.includes(role))
+    )
   }
 
   //#endregion
