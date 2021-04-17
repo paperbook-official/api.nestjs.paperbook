@@ -49,7 +49,7 @@ export class AddressEntity extends BaseEntity implements ToDto<AddressDto> {
   @ApiProperty()
   @Column({
     type: 'varchar',
-    length: 30,
+    length: 50,
     nullable: false
   })
   public district: string
