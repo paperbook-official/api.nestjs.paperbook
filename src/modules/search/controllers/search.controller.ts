@@ -20,6 +20,8 @@ import { ProductService } from 'src/modules/product/services/product.service'
 import { map } from 'src/utils/crud'
 
 import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
+import { ParseBoolOrUndefinedPipe } from 'src/pipes/parse-bool-or-undefined/parse-bool-or-undefined.pipe'
+import { ParseNumberOrUndefinedPipe } from 'src/pipes/parse-number-or-undefined/parse-number-or-undefined.pipe'
 
 /**
  * The app's main search controller class
@@ -127,14 +129,22 @@ export class SearchController {
   })
   @Get()
   public async search(
-    @Query('name') name?: string,
-    @Query('categoryId') categoryId?: number,
-    @Query('minPrice') minPrice?: number,
-    @Query('maxPrice') maxPrice?: number,
-    @Query('state') state?: string,
-    @Query('freeOfInterests') freeOfInterests?: string,
-    @Query('sortBy') sortBy?: SortBySearchEnum,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @Query('name')
+    name?: string,
+    @Query('categoryId')
+    categoryId?: number,
+    @Query('minPrice', ParseNumberOrUndefinedPipe)
+    minPrice?: number,
+    @Query('maxPrice', ParseNumberOrUndefinedPipe)
+    maxPrice?: number,
+    @Query('state')
+    state?: string,
+    @Query('freeOfInterests', ParseBoolOrUndefinedPipe)
+    freeOfInterests?: boolean,
+    @Query('sortBy')
+    sortBy?: SortBySearchEnum,
+    @ParsedRequest()
+    crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.searchService.search(
       name,
