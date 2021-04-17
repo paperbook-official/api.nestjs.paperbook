@@ -1,7 +1,27 @@
 import {
+  registerDecorator,
+  ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface
 } from 'class-validator'
+
+/**
+ * Decorator that validates the cpf value passed in the request body
+ * @returns a function with the data needed to validated the cpf
+ */
+export function IsCpf(
+  validationOptions?: ValidationOptions
+): (object: unknown, propertyName: string) => void {
+  return function(object: unknown, propertyName: string): void {
+    registerDecorator({
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      constraints: [],
+      validator: IsCpfValidatorConstraint
+    })
+  }
+}
 
 /**
  * The app's main "is cpf" validator class
@@ -10,7 +30,7 @@ import {
  * in some payload using the "class-validator" logic
  */
 @ValidatorConstraint({ name: 'is-cpf', async: false })
-export class IsCpfValidator implements ValidatorConstraintInterface {
+export class IsCpfValidatorConstraint implements ValidatorConstraintInterface {
   /**
    * Method that validates if the cpf passed is valid or not
    * @param value stores the cpf value
