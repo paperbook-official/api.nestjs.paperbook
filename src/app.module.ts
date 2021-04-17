@@ -33,7 +33,7 @@ import { UserModule } from './modules/user/user.module'
     SearchModule,
     FirebaseModule,
     ConfigModule.forRoot({
-      envFilePath: ['.env.local']
+      envFilePath: ['.env']
     }),
     TypeOrmModule.forRootAsync({
       imports: [TypeOrmConfigModule],

@@ -144,7 +144,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     minPrice?: number,
     maxPrice?: number,
     state?: string,
-    freeOfInterests?: string,
+    freeOfInterests?: boolean,
     sortBy?: SortBySearchEnum,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
@@ -175,7 +175,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     }
 
     if (freeOfInterests !== undefined) {
-      if (freeOfInterests === 'true') {
+      if (freeOfInterests) {
         crudRequest.parsed.search.$and.push({
           installmentPrice: {
             $isnull: true
