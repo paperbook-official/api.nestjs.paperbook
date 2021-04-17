@@ -8,6 +8,7 @@ import { ShoppingCartEntity } from '../entities/shopping-cart.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateShoppingCartPayload } from '../models/create-shopping-cart.payload'
 import { UpdateShoppingCartPayload } from '../models/update-shopping-cart.payload'
@@ -16,7 +17,6 @@ import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { some } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
@@ -42,7 +42,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
    * @returns the created shopping cart entity
    */
   public async create(
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     createShoppingCartPayload: CreateShoppingCartPayload
   ): Promise<ShoppingCartEntity> {
     const { productId, userId } = createShoppingCartPayload
@@ -70,7 +70,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
    */
   public async get(
     shoppingCartId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<ShoppingCartEntity> {
     let entity: ShoppingCartEntity
@@ -99,7 +99,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
    * @returns all the found shopping cart entities
    */
   public async getMore(
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<
     GetManyDefaultResponse<ShoppingCartEntity> | ShoppingCartEntity[]
@@ -145,7 +145,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
    */
   public async delete(
     shoppingCartId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await ShoppingCartEntity.findOne({ id: shoppingCartId })
 

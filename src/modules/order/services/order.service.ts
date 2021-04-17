@@ -9,6 +9,7 @@ import { OrderEntity } from '../entities/order.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateOrderPayload } from '../models/create-order.payload'
 import { UpdateOrderPayload } from '../models/update-order.payload'
@@ -17,7 +18,6 @@ import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { some } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
@@ -45,7 +45,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    * @returns the created order
    */
   public async create(
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     createOrderPayload: CreateOrderPayload
   ): Promise<OrderEntity> {
     const { userId, productId } = createOrderPayload
@@ -71,7 +71,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    */
   public async get(
     orderId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<OrderEntity> {
     let entity: OrderEntity
@@ -100,7 +100,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    * @returns the found elements
    */
   public async getMore(
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
     const entities = await super.getMany(crudRequest)
@@ -125,7 +125,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    */
   public async update(
     orderId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     updateOrderPayload: UpdateOrderPayload
   ): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
@@ -146,10 +146,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    */
-  public async delete(
-    orderId: number,
-    requestUser: RequestUser
-  ): Promise<void> {
+  public async delete(orderId: number, requestUser: UserEntity): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
 
     if (!entity || !entity.isActive) {
@@ -170,7 +167,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    */
   public async disable(
     orderId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
 
@@ -194,10 +191,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    * @param orderId stores the order id
    * @param requestUser stores the logged user
    */
-  public async enable(
-    orderId: number,
-    requestUser: RequestUser
-  ): Promise<void> {
+  public async enable(orderId: number, requestUser: UserEntity): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
 
     if (!entity) {

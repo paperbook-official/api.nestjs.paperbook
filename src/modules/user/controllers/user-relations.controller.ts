@@ -10,7 +10,9 @@ import {
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { User } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
+
+import { UserEntity } from '../entities/user.entity'
 
 import { UserProxy } from '../models/user.proxy'
 import {
@@ -33,7 +35,6 @@ import {
 import { UserService } from '../services/user.service'
 
 import { map } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
@@ -90,7 +91,7 @@ export class UserRalationsController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/addresses')
   public async getMyAddresses(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
     const entities = await this.userService.getAddressesByUserId(
@@ -117,7 +118,7 @@ export class UserRalationsController {
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/products')
   public async getMyProducts(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductProxy> | ProductProxy[]> {
     const entities = await this.userService.getProductsByUserId(
@@ -145,7 +146,7 @@ export class UserRalationsController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/shopping-carts')
   public async getMyShoppingCarts(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ShoppingCartProxy> | ShoppingCartProxy[]> {
     const entities = await this.userService.getShoppingCartsByUserId(
@@ -172,7 +173,7 @@ export class UserRalationsController {
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/orders')
   public async getMyOrders(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
     const entities = await this.userService.getOrdersByUserId(
@@ -201,7 +202,7 @@ export class UserRalationsController {
   @Get(':id/addresses')
   public async getAddressesByUserId(
     @Param('id') userId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressProxy> | AddressProxy[]> {
     const entities = await this.userService.getAddressesByUserId(
@@ -258,7 +259,7 @@ export class UserRalationsController {
   @Get(':id/shopping-carts')
   public async getShoppingCartsByUserId(
     @Param('id') userId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ShoppingCartProxy> | ShoppingCartProxy[]> {
     const entities = await this.userService.getShoppingCartsByUserId(
@@ -287,7 +288,7 @@ export class UserRalationsController {
   @Get(':id/orders')
   public async getOrdersByUserId(
     @Param('id') userId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
     const entities = await this.userService.getOrdersByUserId(

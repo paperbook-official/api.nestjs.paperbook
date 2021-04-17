@@ -8,6 +8,7 @@ import { RatingEntity } from '../entities/rating.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateRatingPayload } from '../models/create-rating.payload'
 import { UpdateRatingPayload } from '../models/update-rating.payload'
@@ -15,8 +16,6 @@ import { ProductReviewProxy } from 'src/modules/product/models/product-review.pr
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
-
-import { RequestUser } from 'src/utils/type.shared'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
@@ -45,7 +44,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    * @returns the created rating entity
    */
   public async create(
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     createRatingPayload: CreateRatingPayload
   ): Promise<RatingEntity> {
     const { userId, productId } = createRatingPayload
@@ -136,7 +135,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    */
   public async update(
     ratingId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     updateRatingPayload: UpdateRatingPayload
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
@@ -158,7 +157,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    */
   public async delete(
     ratingId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
@@ -179,7 +178,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    */
   public async disable(
     ratingId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
@@ -204,7 +203,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    */
   public async enable(
     ratingId: number,
-    requestUser: RequestUser
+    requestUser: UserEntity
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 

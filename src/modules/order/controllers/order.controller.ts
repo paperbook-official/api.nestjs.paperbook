@@ -24,7 +24,9 @@ import {
 } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { User } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
+
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateOrderPayload } from '../models/create-order.payload'
 import { OrderProxy } from '../models/order.proxy'
@@ -33,7 +35,6 @@ import { UpdateOrderPayload } from '../models/update-order.payload'
 import { OrderService } from '../services/order.service'
 
 import { map } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -84,7 +85,7 @@ export class OrderController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() createOrderPayload: CreateOrderPayload
   ): Promise<OrderProxy> {
     const entity = await this.orderService.create(
@@ -106,7 +107,7 @@ export class OrderController {
   @Get(':id')
   public async get(
     @Param('id') orderId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<OrderProxy> {
     const entity = await this.orderService.get(
@@ -127,7 +128,7 @@ export class OrderController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get()
   public async getMore(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderProxy> | OrderProxy[]> {
     const entities = await this.orderService.getMore(requestUser, crudRequest)
@@ -147,7 +148,7 @@ export class OrderController {
   @Patch(':id')
   public async update(
     @Param('id') orderId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() updateOrderPayload: UpdateOrderPayload
   ): Promise<void> {
     await this.orderService.update(orderId, requestUser, updateOrderPayload)
@@ -163,7 +164,7 @@ export class OrderController {
   @Delete(':id')
   public async delete(
     @Param('id') orderId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.orderService.delete(orderId, requestUser)
   }
@@ -180,7 +181,7 @@ export class OrderController {
   @Put(':id/disable')
   public async disable(
     @Param('id') orderId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.orderService.disable(orderId, requestUser)
   }
@@ -197,7 +198,7 @@ export class OrderController {
   @Put(':id/enable')
   public async enable(
     @Param('id') orderId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.orderService.enable(orderId, requestUser)
   }

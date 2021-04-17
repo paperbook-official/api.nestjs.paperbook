@@ -25,7 +25,9 @@ import {
 
 import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { User } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
+
+import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserPayload } from '../models/create-user.payload'
 import { UpdateUserPaylaod } from '../models/update-user.payload'
@@ -34,7 +36,6 @@ import { UserProxy } from '../models/user.proxy'
 import { UserService } from '../services/user.service'
 
 import { map } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -104,7 +105,7 @@ export class UserController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me')
   public async getMe(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<UserProxy> {
     const entity = await this.userService.get(
@@ -127,7 +128,7 @@ export class UserController {
   @Get(':id')
   public async get(
     @Param('id') userId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<UserProxy> {
     const entity = await this.userService.get(userId, requestUser, crudRequest)
@@ -162,7 +163,7 @@ export class UserController {
   @Patch(':id')
   public async update(
     @Param('id') userId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() updatedUserPayload: UpdateUserPaylaod
   ): Promise<void> {
     await this.userService.update(userId, requestUser, updatedUserPayload)
@@ -178,7 +179,7 @@ export class UserController {
   @Delete(':id')
   public async delete(
     @Param('id') userId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.userService.delete(userId, requestUser)
   }
@@ -195,7 +196,7 @@ export class UserController {
   @Put(':id/disable')
   public async disable(
     @Param('id') userId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.userService.disable(userId, requestUser)
   }
@@ -212,7 +213,7 @@ export class UserController {
   @Put(':id/enable')
   public async enable(
     @Param('id') userId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.userService.enable(userId, requestUser)
   }

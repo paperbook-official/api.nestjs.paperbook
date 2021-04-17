@@ -24,7 +24,9 @@ import {
 } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { User } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
+
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateRatingPayload } from '../models/create-rating.payload'
 import { RatingProxy } from '../models/rating.proxy'
@@ -33,7 +35,6 @@ import { UpdateRatingPayload } from '../models/update-rating.payload'
 import { RatingService } from '../services/rating.service'
 
 import { map } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -83,7 +84,7 @@ export class RatingController {
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() createRatingPayload: CreateRatingPayload
   ): Promise<RatingProxy> {
     const entity = await this.ratingService.create(
@@ -134,7 +135,7 @@ export class RatingController {
   @Patch(':id')
   public async update(
     @Param('id') ratingId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() updateRatingPayload: UpdateRatingPayload
   ): Promise<void> {
     await this.ratingService.update(ratingId, requestUser, updateRatingPayload)
@@ -149,7 +150,7 @@ export class RatingController {
   @Delete(':id')
   public async delete(
     @Param('id') ratingId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.ratingService.delete(ratingId, requestUser)
   }
@@ -166,7 +167,7 @@ export class RatingController {
   @Put(':id/disable')
   public async disable(
     @Param('id') ratingId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.ratingService.disable(ratingId, requestUser)
   }
@@ -183,7 +184,7 @@ export class RatingController {
   @Put(':id/enable')
   public async enable(
     @Param('id') ratingId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.ratingService.enable(ratingId, requestUser)
   }

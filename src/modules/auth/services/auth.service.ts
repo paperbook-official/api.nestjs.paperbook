@@ -8,7 +8,6 @@ import { LoginPayload } from '../models/login.payload'
 import { TokenProxy } from '../models/token.proxy'
 
 import { comparePassword } from 'src/utils/password'
-import { RequestUser } from 'src/utils/type.shared'
 
 /**
  * The app's main auth service service class
@@ -27,7 +26,7 @@ export class AuthService {
    * @param requestUser stores the user data
    * @returns the token
    */
-  public async signIn(requestUser: RequestUser): Promise<TokenProxy> {
+  public async signIn(requestUser: UserEntity): Promise<TokenProxy> {
     const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN')
 
     const { id, email, roles } = requestUser

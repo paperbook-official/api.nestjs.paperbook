@@ -28,7 +28,9 @@ import {
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { User } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/user/user.decorator'
+
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductPaylaod } from '../models/create-product.payload'
 import {
@@ -40,7 +42,6 @@ import { UpdateProductPayload } from '../models/update-product.payload'
 import { ProductService } from '../services/product.service'
 
 import { map } from 'src/utils/crud'
-import { RequestUser } from 'src/utils/type.shared'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -97,7 +98,7 @@ export class ProductController {
   @ProtectTo(RolesEnum.Admin, RolesEnum.Seller)
   @Post()
   public async create(
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() createProductPaylaod: CreateProductPaylaod
   ): Promise<ProductProxy> {
     const entity = await this.productService.create(
@@ -250,7 +251,7 @@ export class ProductController {
   @Patch(':id')
   public async update(
     @Param('id') productId: number,
-    @User() requestUser: RequestUser,
+    @RequestUser() requestUser: UserEntity,
     @Body() updateProductPayload: UpdateProductPayload
   ): Promise<void> {
     await this.productService.update(
@@ -270,7 +271,7 @@ export class ProductController {
   @Delete(':id')
   public async delete(
     @Param('id') productId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.productService.delete(productId, requestUser)
   }
@@ -287,7 +288,7 @@ export class ProductController {
   @Put(':id/disable')
   public async disable(
     @Param('id') productId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.productService.disable(productId, requestUser)
   }
@@ -304,7 +305,7 @@ export class ProductController {
   @Put(':id/enable')
   public async enable(
     @Param('id') productId: number,
-    @User() requestUser: RequestUser
+    @RequestUser() requestUser: UserEntity
   ): Promise<void> {
     await this.productService.enable(productId, requestUser)
   }

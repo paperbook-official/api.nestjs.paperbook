@@ -22,7 +22,6 @@ import { ProductService } from 'src/modules/product/services/product.service'
 import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
 
 import { encryptPassword } from 'src/utils/password'
-import { RequestUser } from 'src/utils/type.shared'
 import { isAdminUser } from 'src/utils/validations'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
@@ -78,7 +77,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    */
   public async get(
     userId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<UserEntity> {
     let entity: UserEntity
@@ -122,7 +121,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    */
   public async getAddressesByUserId(
     userId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
     const entity = await UserEntity.findOne({ id: userId })
@@ -195,7 +194,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    */
   public async getShoppingCartsByUserId(
     userId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<
     GetManyDefaultResponse<ShoppingCartEntity> | ShoppingCartEntity[]
@@ -236,7 +235,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    */
   public async getOrdersByUserId(
     userId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
     const entity = await UserEntity.findOne({ id: userId })
@@ -274,7 +273,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    */
   public async update(
     userId: number,
-    requestUser: RequestUser,
+    requestUser: UserEntity,
     updatedUserPayload: UpdateUserPaylaod
   ): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
@@ -298,7 +297,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    */
-  public async delete(userId: number, requestUser: RequestUser): Promise<void> {
+  public async delete(userId: number, requestUser: UserEntity): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity || !entity.isActive) {
@@ -319,10 +318,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    */
-  public async disable(
-    userId: number,
-    requestUser: RequestUser
-  ): Promise<void> {
+  public async disable(userId: number, requestUser: UserEntity): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity) {
@@ -348,7 +344,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @throws {ForbiddenException} if the request user has no
    * permission to execute this action
    */
-  public async enable(userId: number, requestUser: RequestUser): Promise<void> {
+  public async enable(userId: number, requestUser: UserEntity): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity) {
@@ -374,7 +370,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param requestUser stores the logged user
    * @returns true if the user can access some source, otherwise false
    */
-  public hasPermissions(userId: number, requestUser: RequestUser): boolean {
+  public hasPermissions(userId: number, requestUser: UserEntity): boolean {
     return userId === requestUser.id || isAdminUser(requestUser)
   }
 
