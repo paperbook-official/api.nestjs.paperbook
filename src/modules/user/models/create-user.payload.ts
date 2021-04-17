@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
+import { IsCpf } from 'src/decorators/is-cpf/is-cpf.decorator'
+
 import {
   IsDefined,
   IsEmail,
@@ -9,7 +11,6 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
-  Length,
   MinLength
 } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
@@ -47,7 +48,7 @@ export class CreateUserPayload {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumberString({}, { message: 'It is required to send a numeric string' })
-  @Length(11)
+  @IsCpf({ message: 'It is required to send a valid cpf value' })
   public cpf?: string
 
   @ApiPropertyOptional()
