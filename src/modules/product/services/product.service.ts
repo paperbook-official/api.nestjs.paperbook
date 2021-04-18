@@ -200,14 +200,22 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     let builder = await this.createBuilder(parsed, options)
 
     if (maxPrice !== undefined)
-      builder = builder.andWhere(`price * (1 - discount) <= ${maxPrice}`)
+      builder = builder
+        .addSelect(['price', 'discount'])
+        .andWhere(`price * (1 - discount) <= ${maxPrice}`)
     if (minPrice !== undefined)
-      builder = builder.andWhere(`price * (1 - discount) > ${minPrice}`)
+      builder = builder
+        .addSelect(['price', 'discount'])
+        .andWhere(`price * (1 - discount) > ${minPrice}`)
 
     if (sortBy === 'minPrice')
-      builder = builder.addOrderBy('price * (1 - discount)', 'ASC')
+      builder = builder
+        .addSelect(['price', 'discount'])
+        .addOrderBy('price * (1 - discount)', 'ASC')
     else if (sortBy === 'maxPrice')
-      builder = builder.addOrderBy('price * (1 - discount)', 'DESC')
+      builder = builder
+        .addSelect(['price', 'discount'])
+        .addOrderBy('price * (1 - discount)', 'DESC')
 
     return await this.doGetMany(builder, parsed, options)
   }
