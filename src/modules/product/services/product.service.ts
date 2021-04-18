@@ -210,10 +210,12 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
     if (sortBy === 'minPrice')
       builder = builder
+        .distinct(true)
         .addSelect(['price', 'discount'])
         .addOrderBy('price * (1 - discount)', 'ASC')
     else if (sortBy === 'maxPrice')
       builder = builder
+        .distinct(true)
         .addSelect(['price', 'discount'])
         .addOrderBy('price * (1 - discount)', 'DESC')
 
