@@ -165,14 +165,14 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     crudRequest.parsed.paramsFilter = []
     crudRequest.parsed.join = [
       ...crudRequest.parsed.join,
-      { field: 'productsCategories', select: ['categoryId'] },
+      { field: 'categories', select: ['id'] },
       { field: 'user' },
       { field: 'user.addresses', select: ['state'] }
     ]
 
     if (categoryId !== undefined) {
       crudRequest.parsed.search.$and.push({
-        'productsCategories.categoryId': {
+        'categories.id': {
           $eq: categoryId
         }
       })
