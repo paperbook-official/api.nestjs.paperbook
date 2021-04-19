@@ -57,12 +57,25 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     requestUser: UserEntity,
     createProductPayload: CreateProductDto
   ): Promise<ProductEntity> {
+    // If the user not exists the service will throw an exception
+
     const user = await this.userService.get(
       createProductPayload.userId,
       requestUser
     )
+
+    const { categoryIds, ...rest } = createProductPayload
+
+    const categories: CategoryEntity[] = []
+
+    for (const id of categoryIds) {
+      const category = await this.categoryService.get(id)
+      categories.push(category)
+    }
+
     return await new ProductEntity({
-      ...createProductPayload,
+      ...rest,
+      categories,
       user
     }).save()
   }
@@ -296,11 +309,16 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     crudRequest.parsed.paramsFilter = []
     crudRequest.parsed.join = [
       ...crudRequest.parsed.join,
-      { field: 'productsCategories' }
+      {
+        field: 'products',
+        select: ['id']
+      }
     ]
     crudRequest.parsed.search.$and = [
       ...crudRequest.parsed.search.$and,
-      { 'productsCategories.productId': { $eq: productId } }
+      {
+        'products.id': { $eq: productId }
+      }
     ]
 
     return await this.categoryService.getMany(crudRequest)
@@ -357,7 +375,16 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       throw new ForbiddenException()
     }
 
-    await ProductEntity.update({ id: productId }, updateProductPayload)
+    const { categoryIds, ...rest } = updateProductPayload
+
+    const categories: CategoryEntity[] = []
+
+    for (const id of categoryIds) {
+      const category = await this.categoryService.get(id)
+      categories.push(category)
+    }
+
+    await this.repository.save({ ...entity, ...rest, categories })
   }
 
   /**

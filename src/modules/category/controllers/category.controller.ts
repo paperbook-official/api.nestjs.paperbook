@@ -25,14 +25,14 @@ import {
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
+import { CategoryDto } from '../models/category.dto'
+import { CreateCategoryDto } from '../models/create-category.dto'
 import { UpdatedCategoryDto } from '../models/update-category.dto'
 
 import { CategoryService } from '../services/category.service'
 
 import { map } from 'src/utils/crud'
 
-import { CategoryDto } from '../models/category.dto'
-import { CreateCategoryDto } from '../models/create-category.dto'
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
@@ -48,7 +48,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
-      productsCategories: {}
+      products: {}
     }
   },
   routes: {

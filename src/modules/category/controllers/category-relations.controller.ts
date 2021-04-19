@@ -35,7 +35,8 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
-      productsCategories: {}
+      products: {},
+      categories: {}
     }
   },
   routes: {

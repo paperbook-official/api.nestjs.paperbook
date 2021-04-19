@@ -42,9 +42,10 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       rating: {},
       user: {},
       orders: {},
-      productsCategories: {},
+      categories: {},
       shoppingCarts: {},
       ratings: {},
+      products: {},
       product: {}
     }
   },
