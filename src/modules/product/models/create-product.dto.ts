@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import {
+  IsArray,
   IsDefined,
   IsNotEmpty,
   IsNumber,
@@ -78,4 +79,9 @@ export class CreateProductDto {
     { message: DefaultValidationMessages.IsNumber }
   )
   public userId: number
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsArray({ message: 'It is required to send a valid array' })
+  public categoryIds: number[]
 }
