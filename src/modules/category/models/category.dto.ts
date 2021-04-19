@@ -4,7 +4,7 @@ import { CategoryEntity } from '../entities/category.entity'
 
 import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
 import { BaseResponseDto } from 'src/common/base-response.dto'
-import { ProductCategoryDto } from 'src/modules/product-category/models/product-category.dto'
+import { ProductDto } from 'src/modules/product/models/product.dto'
 
 /**
  * The app's main category dto class
@@ -15,8 +15,8 @@ export class CategoryDto extends BaseResponseDto {
   @ApiProperty()
   public name: string
 
-  @ApiPropertyOptional({ type: () => ProductCategoryDto, isArray: true })
-  public productsCategories?: ProductCategoryDto[]
+  @ApiPropertyOptional({ type: () => ProductDto, isArray: true })
+  public products?: ProductDto[]
 
   public constructor(entity: CategoryEntity) {
     super(entity)
@@ -27,7 +27,7 @@ export class CategoryDto extends BaseResponseDto {
     this.name = entity.name
 
     // relations
-    this.productsCategories = entity.productsCategories?.map(productCategory =>
+    this.products = entity.products?.map(productCategory =>
       productCategory.toDto()
     )
   }

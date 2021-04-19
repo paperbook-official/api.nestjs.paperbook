@@ -108,11 +108,16 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
     crudRequest.parsed.paramsFilter = []
     crudRequest.parsed.join = [
       ...crudRequest.parsed.join,
-      { field: 'productsCategories' }
+      {
+        field: 'categories',
+        select: ['id']
+      }
     ]
     crudRequest.parsed.search.$and = [
       ...crudRequest.parsed.search.$and,
-      { 'productsCategories.categoryId': { $eq: categoryId } }
+      {
+        'categories.id': { $eq: categoryId }
+      }
     ]
 
     return await this.productService.getMany(crudRequest)

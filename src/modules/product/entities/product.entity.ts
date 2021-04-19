@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
+import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
-import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
 import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
@@ -110,14 +110,14 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
   public orders?: OrderEntity[]
 
   @ApiPropertyOptional({
-    type: () => ProductCategoryEntity,
+    type: () => CategoryEntity,
     isArray: true
   })
-  @OneToMany(
-    () => ProductCategoryEntity,
-    productCategory => productCategory.product
+  @ManyToMany(
+    () => CategoryEntity,
+    category => category.products
   )
-  public productsCategories?: ProductCategoryEntity[]
+  public categories?: CategoryEntity[]
 
   @ApiPropertyOptional({
     type: () => ShoppingCartEntity,

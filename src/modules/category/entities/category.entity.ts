@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Entity, Column, OneToMany } from 'typeorm'
+import { Entity, Column, ManyToMany, JoinTable } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
-import { ProductCategoryEntity } from 'src/modules/product-category/entities/product-category.entity'
+import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { CategoryDto } from '../models/category.dto'
 import { ToDto } from 'src/common/to-dto.interface'
@@ -26,12 +26,13 @@ export class CategoryEntity extends BaseEntity implements ToDto<CategoryDto> {
 
   //#region
 
-  @ApiPropertyOptional({ type: () => ProductCategoryEntity, isArray: true })
-  @OneToMany(
-    () => ProductCategoryEntity,
-    productCategory => productCategory.category
+  @ApiPropertyOptional({ type: () => ProductEntity, isArray: true })
+  @JoinTable()
+  @ManyToMany(
+    () => ProductEntity,
+    product => product.categories
   )
-  public productsCategories?: ProductCategoryEntity[]
+  public products?: ProductEntity[]
 
   //#endregion
 

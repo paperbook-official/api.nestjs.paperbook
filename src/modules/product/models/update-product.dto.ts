@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -69,4 +70,9 @@ export class UpdateProductDto {
   )
   @Min(1)
   public stockAmount?: number
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsArray({ message: 'It is required to send a valid array' })
+  public categoryIds: number[]
 }

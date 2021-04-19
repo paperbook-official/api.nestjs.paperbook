@@ -11,7 +11,6 @@ import { FirebaseModule } from './modules/firebase/firebase.module'
 import { MediaModule } from './modules/media/media.module'
 import { OrderModule } from './modules/order/order.module'
 import { PasswordModule } from './modules/password/password.module'
-import { ProductCategoryModule } from './modules/product-category/product-category.module'
 import { ProductModule } from './modules/product/product.module'
 import { RatingModule } from './modules/rating/rating.module'
 import { SearchModule } from './modules/search/search.module'
@@ -29,7 +28,6 @@ import { UserModule } from './modules/user/user.module'
     ProductModule,
     OrderModule,
     MediaModule,
-    ProductCategoryModule,
     RatingModule,
     ShoppingCartModule,
     SearchModule,
