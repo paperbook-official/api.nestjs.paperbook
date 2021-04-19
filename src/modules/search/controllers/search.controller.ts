@@ -39,7 +39,7 @@ import { ParseNumberOrUndefinedPipe } from 'src/pipes/parse-number-or-undefined/
       user: {},
       orders: {},
       'user.addresses': {},
-      productsCategories: {},
+      categories: {},
       shoppingCarts: {},
       ratings: {}
     }
