@@ -11,6 +11,7 @@ import { FirebaseModule } from './modules/firebase/firebase.module'
 import { MediaModule } from './modules/media/media.module'
 import { OrderModule } from './modules/order/order.module'
 import { PasswordModule } from './modules/password/password.module'
+import { ProductGroupModule } from './modules/product-group/product-group.module'
 import { ProductModule } from './modules/product/product.module'
 import { RatingModule } from './modules/rating/rating.module'
 import { SearchModule } from './modules/search/search.module'
@@ -32,6 +33,7 @@ import { UserModule } from './modules/user/user.module'
     ShoppingCartModule,
     SearchModule,
     FirebaseModule,
+    ProductGroupModule,
     ConfigModule.forRoot({
       envFilePath: ['.env']
     }),
