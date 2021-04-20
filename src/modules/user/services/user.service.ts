@@ -34,7 +34,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
 export class UserService extends TypeOrmCrudService<UserEntity> {
   public constructor(
     @InjectRepository(UserEntity)
-    private readonly repository: Repository<UserEntity>,
+    repository: Repository<UserEntity>,
     private readonly passwordService: PasswordService,
     @Inject(forwardRef(() => AddressService))
     private readonly addressService: AddressService,
