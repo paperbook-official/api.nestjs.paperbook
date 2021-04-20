@@ -45,18 +45,16 @@ export class ShoppingCartService extends TypeOrmCrudService<
     requestUser: UserEntity,
     createShoppingCartPayload: CreateShoppingCartDto
   ): Promise<ShoppingCartEntity> {
-    const { productId, userId } = createShoppingCartPayload
+    const { userId } = createShoppingCartPayload
 
     /* If there are no products or users with the passed id those
     services will throw "EntityNotFoundException", if the request
     user has no permission the "UserService" will throw "ForbiddenException" */
 
     const user = await this.userService.get(userId, requestUser)
-    const product = await this.productService.get(productId)
 
     return await new ShoppingCartEntity({
       ...createShoppingCartPayload,
-      product,
       user
     }).save()
   }

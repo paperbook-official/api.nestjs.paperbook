@@ -4,8 +4,8 @@ import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm'
 import { BaseEntity } from 'src/common/base.entity'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
+import { ProductGroupEntity } from 'src/modules/product-group/entities/product-group.entity'
 import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
-import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ProductDto } from '../models/product.dto'
@@ -120,14 +120,14 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
   public categories?: CategoryEntity[]
 
   @ApiPropertyOptional({
-    type: () => ShoppingCartEntity,
+    type: () => ProductGroupEntity,
     isArray: true
   })
   @OneToMany(
-    () => ShoppingCartEntity,
-    shoppingCart => shoppingCart.product
+    () => ProductGroupEntity,
+    productGroup => productGroup.product
   )
-  public shoppingCarts?: ShoppingCartEntity[]
+  public productGroups?: ProductGroupEntity[]
 
   @ApiPropertyOptional({
     type: () => RatingEntity,

@@ -51,8 +51,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
-      product: {},
-      user: {}
+      user: {},
+      productGroups: {}
     }
   },
   routes: {

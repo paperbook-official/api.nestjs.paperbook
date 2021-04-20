@@ -1,8 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
-import { ProductEntity } from 'src/modules/product/entities/product.entity'
+import { ProductGroupEntity } from 'src/modules/product-group/entities/product-group.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { ShoppingCartDto } from '../models/shopping-cart.dto'
@@ -22,35 +22,30 @@ export class ShoppingCartEntity extends BaseEntity
     type: 'int',
     nullable: false
   })
-  public productId: number
-
-  @Column({
-    type: 'int',
-    nullable: false
-  })
   public userId: number
 
   //#region Relations
 
   @ApiPropertyOptional({
-    type: () => ProductEntity
-  })
-  @ManyToOne(
-    () => ProductEntity,
-    product => product.shoppingCarts,
-    { onDelete: 'CASCADE' }
-  )
-  public product?: ProductEntity
-
-  @ApiPropertyOptional({
     type: () => UserEntity
   })
-  @ManyToOne(
+  @JoinColumn()
+  @OneToOne(
     () => UserEntity,
-    user => user.shoppingCarts,
+    user => user.shoppingCart,
     { onDelete: 'CASCADE' }
   )
   public user?: UserEntity
+
+  @ApiPropertyOptional({
+    type: () => ProductGroupEntity,
+    isArray: true
+  })
+  @OneToMany(
+    () => ProductGroupEntity,
+    product => product.product
+  )
+  public productGroups?: ProductGroupEntity[]
 
   //#endregion
 

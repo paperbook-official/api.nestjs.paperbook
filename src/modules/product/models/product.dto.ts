@@ -6,8 +6,8 @@ import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-
 import { BaseResponseDto } from 'src/common/base-response.dto'
 import { CategoryDto } from 'src/modules/category/models/category.dto'
 import { OrderDto } from 'src/modules/order/models/order.dto'
+import { ProductGroupDto } from 'src/modules/product-group/models/product-group.dto'
 import { RatingDto } from 'src/modules/rating/models/rating.dto'
-import { ShoppingCartDto } from 'src/modules/shopping-cart/models/shopping-cart.dto'
 import { UserDto } from 'src/modules/user/models/user.dto'
 
 /**
@@ -67,10 +67,10 @@ export class ProductDto extends BaseResponseDto {
   public ratings?: RatingDto[]
 
   @ApiPropertyOptional({
-    type: () => ShoppingCartDto,
+    type: () => ProductGroupDto,
     isArray: true
   })
-  public shoppingCarts?: ShoppingCartDto[]
+  public productGroups?: ProductGroupDto[]
 
   public constructor(entity: ProductEntity) {
     super(entity)
@@ -92,7 +92,7 @@ export class ProductDto extends BaseResponseDto {
       productCategory.toDto()
     )
     this.ratings = entity.ratings?.map(rating => rating.toDto())
-    this.shoppingCarts = entity.shoppingCarts?.map(shoppingCart =>
+    this.productGroups = entity.productGroups?.map(shoppingCart =>
       shoppingCart.toDto()
     )
   }
