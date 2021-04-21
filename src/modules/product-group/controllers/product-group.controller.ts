@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post
+} from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -127,5 +135,16 @@ export class ProductGroupController {
     @Body() updateProductGroupDto: UpdateProductGroupDto
   ): Promise<void> {
     await this.productGroupService.update(productGroupId, updateProductGroupDto)
+  }
+
+  /**
+   * Method that is called when the user access the "/product-groups/:id"
+   * route with the "DELETE" method
+   * @param productGroupId stores the product group id
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Delete(':id')
+  public async delete(@Param('id') productGroupId: number): Promise<void> {
+    await this.productGroupService.delete(productGroupId)
   }
 }

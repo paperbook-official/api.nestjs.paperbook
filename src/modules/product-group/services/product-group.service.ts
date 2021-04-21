@@ -109,4 +109,18 @@ export class ProductGroupService extends TypeOrmCrudService<
       updateProductGroupDto
     )
   }
+
+  /**
+   * Method that can delete some product group entity
+   * @param productGroupId stores the product group id
+   */
+  public async delete(productGroupId: number): Promise<void> {
+    const entity = await ProductGroupEntity.findOne({ id: productGroupId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(productGroupId, ProductGroupEntity)
+    }
+
+    await ProductGroupEntity.delete({ id: productGroupId })
+  }
 }
