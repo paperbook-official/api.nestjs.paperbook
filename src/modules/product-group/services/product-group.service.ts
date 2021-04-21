@@ -15,7 +15,6 @@ import { UpdateProductGroupDto } from '../models/update-product-group.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
-import { UserService } from 'src/modules/user/services/user.service'
 
 /**
  * The app's main product group service clas
@@ -29,7 +28,6 @@ export class ProductGroupService extends TypeOrmCrudService<
   public constructor(
     @InjectRepository(ProductGroupEntity)
     repository: Repository<ProductGroupEntity>,
-    private readonly userService: UserService,
     private readonly productService: ProductService,
     private readonly shoppingCartService: ShoppingCartService
   ) {

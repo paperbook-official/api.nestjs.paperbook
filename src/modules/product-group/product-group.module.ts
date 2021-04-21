@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
+
+import { ProductGroupEntity } from './entities/product-group.entity'
 
 import { ProductGroupService } from './services/product-group.service'
 
@@ -8,7 +11,11 @@ import { ProductModule } from '../product/product.module'
 import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
 
 @Module({
-  imports: [ProductModule, ShoppingCartModule],
+  imports: [
+    ProductModule,
+    ShoppingCartModule,
+    TypeOrmModule.forFeature([ProductGroupEntity])
+  ],
   controllers: [ProductGroupController],
   providers: [ProductGroupService]
 })

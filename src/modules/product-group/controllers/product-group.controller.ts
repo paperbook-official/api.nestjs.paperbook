@@ -6,7 +6,8 @@ import {
   Param,
   Patch,
   Post,
-  Put
+  Put,
+  UseInterceptors
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
@@ -17,6 +18,7 @@ import {
 import {
   Crud,
   CrudRequest,
+  CrudRequestInterceptor,
   GetManyDefaultResponse,
   ParsedRequest
 } from '@nestjsx/crud'
@@ -52,8 +54,17 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
       product: {},
       shoppingCart: {}
     }
+  },
+  routes: {
+    exclude: [
+      'createManyBase',
+      'createOneBase',
+      'updateOneBase',
+      'replaceOneBase'
+    ]
   }
 })
+@UseInterceptors(CrudRequestInterceptor)
 @ApiTags('product-groups')
 @Controller('product-groups')
 export class ProductGroupController {
@@ -115,7 +126,7 @@ export class ProductGroupController {
   @ProtectTo(RolesEnum.Admin)
   @Get()
   public async getMore(
-    crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductGroupDto> | ProductGroupDto[]> {
     const entities = await this.productGroupService.getMany(crudRequest)
     return map(entities, entity => entity.toDto())
