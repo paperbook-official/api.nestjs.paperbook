@@ -10,11 +10,14 @@ import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-al
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
+import { ProductGroupEntity } from 'src/modules/product-group/entities/product-group.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
+import { AddProductGroupDto } from 'src/modules/product-group/models/add-product-group.dto'
+import { ProductGroupDto } from 'src/modules/product-group/models/product-group.dto'
 
 import { AddressService } from 'src/modules/address/services/address.service'
 import { OrderService } from 'src/modules/order/services/order.service'
@@ -359,6 +362,31 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     await UserEntity.update({ id: userId }, { isActive: true })
+  }
+
+  public async addProductInMyShoppingCart(
+    userId: number,
+    requestUser: UserEntity,
+    addProductGroupDto: AddProductGroupDto
+  ): Promise<ProductGroupEntity> {
+    const user = await this.get(userId, requestUser)
+    const product = await this.productService.get(addProductGroupDto.productId)
+
+    const existsShoppingCart = !!user.shoppingCart
+
+    const shoppingCart = existsShoppingCart
+      ? await this.shoppingCartService.get(user.shoppingCartId, requestUser)
+      : await this.shoppingCartService.create(requestUser, { userId })
+
+    if (existsShoppingCart) {
+    }
+
+    return new ProductGroupEntity({
+      ...addProductGroupDto,
+      shoppingCartId: shoppingCart.id,
+      product,
+      shoppingCart
+    }).save()
   }
 
   //#region Utils

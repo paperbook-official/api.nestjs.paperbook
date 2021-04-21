@@ -79,6 +79,13 @@ export class UserEntity extends BaseEntity implements ToDto<UserDto> {
   })
   public phone?: string
 
+  @ApiPropertyOptional()
+  @Column({
+    type: 'int',
+    nullable: true
+  })
+  public shoppingCartId: number
+
   //#region Relations
 
   @ApiPropertyOptional({ type: () => ShoppingCartEntity })
