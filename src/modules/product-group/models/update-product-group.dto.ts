@@ -8,7 +8,7 @@ import { DefaultValidationMessages } from 'src/models/enums/default-validation-m
  *
  * Class that handles the dto sent by the user to perform the update
  */
-export class UpdateProductGroup {
+export class UpdateProductGroupDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber(

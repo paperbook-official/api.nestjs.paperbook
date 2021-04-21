@@ -1,5 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -14,6 +19,7 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
 import { ProductGroupDto } from '../models/product-group.dto'
+import { UpdateProductGroupDto } from '../models/update-product-group.dto'
 
 import { ProductGroupService } from '../services/product-group.service'
 
@@ -50,7 +56,7 @@ export class ProductGroupController {
    * Method that is called when the user access the "/product-groups"
    * route with the "POST" method
    * @param requestUser stores the logged user data
-   * @param createProductGroupPayload stores the new product group data
+   * @param createProductGroupDto stores the new product group data
    * @returns the created product group entity dto
    */
   @ApiOperation({ summary: 'Creates a new product group' })
@@ -62,11 +68,11 @@ export class ProductGroupController {
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createProductGroupPayload: CreateProductGroupDto
+    @Body() createProductGroupDto: CreateProductGroupDto
   ): Promise<ProductGroupDto> {
     const entity = await this.productGroupService.create(
       requestUser,
-      createProductGroupPayload
+      createProductGroupDto
     )
     return entity.toDto()
   }
@@ -104,5 +110,22 @@ export class ProductGroupController {
   ): Promise<GetManyDefaultResponse<ProductGroupDto> | ProductGroupDto[]> {
     const entities = await this.productGroupService.getMany(crudRequest)
     return map(entities, entity => entity.toDto())
+  }
+
+  /**
+   * Method that is called when the user access the "/product-groups/:id"
+   * route with the "PATCH" method
+   * @param productGroupId stores the product group id
+   * @param updateProductGroupDto stores the product group new data
+   */
+  @ApiOperation({ summary: 'Updates a single product group' })
+  @ApiOkResponse({ description: 'Updates a single product group' })
+  @ProtectTo(RolesEnum.Admin)
+  @Patch(':id')
+  public async update(
+    @Param('id') productGroupId: number,
+    @Body() updateProductGroupDto: UpdateProductGroupDto
+  ): Promise<void> {
+    await this.productGroupService.update(productGroupId, updateProductGroupDto)
   }
 }

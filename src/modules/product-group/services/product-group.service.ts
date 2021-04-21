@@ -9,6 +9,7 @@ import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-fou
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
+import { UpdateProductGroupDto } from '../models/update-product-group.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
@@ -36,14 +37,14 @@ export class ProductGroupService extends TypeOrmCrudService<
   /**
    * Method that can create a new product group entity
    * @param requestUser stores the logged user data
-   * @param createProductGroupPayload stores the new product group data
+   * @param createProductGroupDto stores the new product group data
    * @returns the created product group entity
    */
   public async create(
     requestUser: UserEntity,
-    createProductGroupPayload: CreateProductGroupDto
+    createProductGroupDto: CreateProductGroupDto
   ): Promise<ProductGroupEntity> {
-    const { productId, shoppingCartId } = createProductGroupPayload
+    const { productId, shoppingCartId } = createProductGroupDto
 
     /* If there are no products or shopping carts with the passed id those
     services will throw "EntityNotFoundException", if the request
@@ -56,7 +57,7 @@ export class ProductGroupService extends TypeOrmCrudService<
     )
 
     return await new ProductGroupEntity({
-      ...createProductGroupPayload,
+      ...createProductGroupDto,
       product,
       shoppingCart
     }).save()
@@ -86,5 +87,26 @@ export class ProductGroupService extends TypeOrmCrudService<
     }
 
     return entity
+  }
+
+  /**
+   * Method that can change the data of some product group entity
+   * @param productGroupId stores the product group id
+   * @param updateProductGroupDto store the product group new data
+   */
+  public async update(
+    productGroupId: number,
+    updateProductGroupDto: UpdateProductGroupDto
+  ): Promise<void> {
+    const entity = await ProductGroupEntity.findOne({ id: productGroupId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(productGroupId, ProductGroupEntity)
+    }
+
+    await ProductGroupEntity.update(
+      { id: productGroupId },
+      updateProductGroupDto
+    )
   }
 }
