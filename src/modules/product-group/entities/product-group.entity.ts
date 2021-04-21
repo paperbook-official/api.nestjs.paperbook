@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity, ManyToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
@@ -10,6 +11,7 @@ import { ProductGroupDto } from '../models/product-group.dto'
 export class ProductGroupEntity extends BaseEntity {
   //#region Columns
 
+  @ApiPropertyOptional()
   @Column({
     type: 'int',
     nullable: true,
@@ -17,12 +19,14 @@ export class ProductGroupEntity extends BaseEntity {
   })
   public amount?: number
 
+  @ApiProperty()
   @Column({
     type: 'int',
     nullable: false
   })
   public productId: number
 
+  @ApiProperty()
   @Column({
     type: 'int',
     nullable: false
@@ -31,6 +35,7 @@ export class ProductGroupEntity extends BaseEntity {
 
   //#region Relations
 
+  @ApiPropertyOptional({ type: () => ProductEntity })
   @ManyToOne(
     () => ProductEntity,
     product => product.productGroups,
@@ -38,6 +43,7 @@ export class ProductGroupEntity extends BaseEntity {
   )
   public product?: ProductEntity
 
+  @ApiPropertyOptional({ type: () => ShoppingCartEntity })
   @ManyToOne(
     () => ShoppingCartEntity,
     shoppingCart => shoppingCart.productGroups,

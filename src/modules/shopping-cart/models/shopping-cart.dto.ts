@@ -18,9 +18,7 @@ export class ShoppingCartDto extends BaseResponseDto {
 
   //#region Relations
 
-  @ApiPropertyOptional({
-    type: () => UserDto
-  })
+  @ApiPropertyOptional({ type: () => UserDto })
   public user?: UserDto
 
   @ApiPropertyOptional({

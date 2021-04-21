@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
@@ -18,6 +18,7 @@ export class ShoppingCartEntity extends BaseEntity
   implements ToDto<ShoppingCartDto> {
   //#region Columns
 
+  @ApiProperty()
   @Column({
     type: 'int',
     nullable: false

@@ -135,8 +135,7 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
   })
   @OneToMany(
     () => RatingEntity,
-    rating => rating.product,
-    { nullable: true }
+    rating => rating.product
   )
   public ratings?: RatingEntity[]
 

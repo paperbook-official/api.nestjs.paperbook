@@ -81,9 +81,7 @@ export class UserEntity extends BaseEntity implements ToDto<UserDto> {
 
   //#region Relations
 
-  @ApiPropertyOptional({
-    type: () => ShoppingCartEntity
-  })
+  @ApiPropertyOptional({ type: () => ShoppingCartEntity })
   @OneToOne(
     () => ShoppingCartEntity,
     shoppingCart => shoppingCart.user
