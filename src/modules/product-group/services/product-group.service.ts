@@ -5,6 +5,8 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { ProductGroupEntity } from '../entities/product-group.entity'
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
@@ -122,5 +124,49 @@ export class ProductGroupService extends TypeOrmCrudService<
     }
 
     await ProductGroupEntity.delete({ id: productGroupId })
+  }
+
+  /**
+   * Method that can disables some product group
+   * @param productGroupId stores the product group id
+   * @param requestUser stores the logged user data
+   */
+  public async disable(productGroupId: number): Promise<void> {
+    const entity = await ProductGroupEntity.findOne({ id: productGroupId })
+
+    if (!entity) {
+      throw new EntityNotFoundException(productGroupId, ProductGroupEntity)
+    }
+
+    if (!entity.isActive) {
+      throw new EntityAlreadyDisabledException(
+        productGroupId,
+        ProductGroupEntity
+      )
+    }
+
+    await ProductGroupEntity.update({ id: productGroupId }, { isActive: false })
+  }
+
+  /**
+   * Method that can enables some product group
+   * @param productGroupId stores the product group id
+   * @param requestUser stores the logged user data
+   */
+  public async enable(productGroupId: number): Promise<void> {
+    const entity = await ProductGroupEntity.findOne({ id: productGroupId })
+
+    if (!entity) {
+      throw new EntityNotFoundException(productGroupId, ProductGroupEntity)
+    }
+
+    if (entity.isActive) {
+      throw new EntityAlreadyEnabledException(
+        productGroupId,
+        ProductGroupEntity
+      )
+    }
+
+    await ProductGroupEntity.update({ id: productGroupId }, { isActive: true })
   }
 }

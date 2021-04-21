@@ -5,7 +5,8 @@ import {
   Get,
   Param,
   Patch,
-  Post
+  Post,
+  Put
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
@@ -146,5 +147,31 @@ export class ProductGroupController {
   @Delete(':id')
   public async delete(@Param('id') productGroupId: number): Promise<void> {
     await this.productGroupService.delete(productGroupId)
+  }
+
+  /**
+   * Method that is called when the user access the
+   * "/products/:id/disable" route with the "PUT" method
+   * @param productId stores the product id
+   */
+  @ApiOperation({ summary: 'Disables a single product group entity' })
+  @ApiOkResponse({ description: 'Disables a single product group entity' })
+  @ProtectTo(RolesEnum.Admin)
+  @Put(':id/disable')
+  public async disable(@Param('id') productId: number): Promise<void> {
+    await this.productGroupService.disable(productId)
+  }
+
+  /**
+   * Method that is called when the user access the
+   * "/products/:id/enable" route with the "PUT" method
+   * @param productId stores the product id
+   */
+  @ApiOperation({ summary: 'Enables a single product group entity' })
+  @ApiOkResponse({ description: 'Enables a single product group entity' })
+  @ProtectTo(RolesEnum.Admin)
+  @Put(':id/enable')
+  public async enable(@Param('id') productId: number): Promise<void> {
+    await this.productGroupService.enable(productId)
   }
 }
