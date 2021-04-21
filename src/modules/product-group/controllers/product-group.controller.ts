@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Crud } from '@nestjsx/crud'
+import { Crud, CrudRequest, ParsedRequest } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { RequestUser } from 'src/decorators/user/user.decorator'
@@ -40,8 +40,8 @@ export class ProductGroupController {
   ) {}
 
   /**
-   * Method that is called when the user access the "/product-groups" with
-   * the "POST" method
+   * Method that is called when the user access the "/product-groups" route
+   * with the "POST" method
    * @param requestUser stores the logged user data
    * @param createProductGroupPayload stores the new product group data
    * @returns the created product group entity dto
@@ -51,7 +51,7 @@ export class ProductGroupController {
     description: 'Gets the created product group',
     type: ProductGroupDto
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
@@ -60,6 +60,26 @@ export class ProductGroupController {
     const entity = await this.productGroupService.create(
       requestUser,
       createProductGroupPayload
+    )
+    return entity.toDto()
+  }
+
+  /**
+   * Method that is called when the user access the "/products/:id" route
+   * with the "GET" method
+   * @param productGroupId stores the product group id
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found product group entity dto
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Get(':id')
+  public async get(
+    @Param('id') productGroupId: number,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<ProductGroupDto> {
+    const entity = await this.productGroupService.get(
+      productGroupId,
+      crudRequest
     )
     return entity.toDto()
   }

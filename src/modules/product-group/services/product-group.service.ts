@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
 import { ProductGroupEntity } from '../entities/product-group.entity'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
+import { UserService } from 'src/modules/user/services/user.service'
 
 /**
  * The app's main product group service clas
@@ -23,6 +26,7 @@ export class ProductGroupService extends TypeOrmCrudService<
   public constructor(
     @InjectRepository(ProductGroupEntity)
     repository: Repository<ProductGroupEntity>,
+    private readonly userService: UserService,
     private readonly productService: ProductService,
     private readonly shoppingCartService: ShoppingCartService
   ) {
@@ -56,5 +60,31 @@ export class ProductGroupService extends TypeOrmCrudService<
       product,
       shoppingCart
     }).save()
+  }
+
+  /**
+   * Method that can get only one product group from
+   * @param productGroupId stores the product group id
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found product group entity
+   */
+  public async get(
+    productGroupId: number,
+    crudRequest?: CrudRequest
+  ): Promise<ProductGroupEntity> {
+    let entity: ProductGroupEntity
+
+    if (crudRequest) {
+      entity = await super.getOne(crudRequest).catch(() => undefined)
+    } else {
+      entity = await ProductGroupEntity.findOne({ id: productGroupId })
+    }
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(productGroupId, ProductGroupEntity)
+    }
+
+    return entity
   }
 }
