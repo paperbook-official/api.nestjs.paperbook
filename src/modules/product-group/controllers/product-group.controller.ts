@@ -1,6 +1,11 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Crud, CrudRequest, ParsedRequest } from '@nestjsx/crud'
+import {
+  Crud,
+  CrudRequest,
+  GetManyDefaultResponse,
+  ParsedRequest
+} from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { RequestUser } from 'src/decorators/user/user.decorator'
@@ -11,6 +16,8 @@ import { CreateProductGroupDto } from '../models/create-product-group.dto'
 import { ProductGroupDto } from '../models/product-group.dto'
 
 import { ProductGroupService } from '../services/product-group.service'
+
+import { map } from 'src/utils/crud'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -40,8 +47,8 @@ export class ProductGroupController {
   ) {}
 
   /**
-   * Method that is called when the user access the "/product-groups" route
-   * with the "POST" method
+   * Method that is called when the user access the "/product-groups"
+   * route with the "POST" method
    * @param requestUser stores the logged user data
    * @param createProductGroupPayload stores the new product group data
    * @returns the created product group entity dto
@@ -65,8 +72,8 @@ export class ProductGroupController {
   }
 
   /**
-   * Method that is called when the user access the "/products/:id" route
-   * with the "GET" method
+   * Method that is called when the user access the "/product-groups/:id"
+   * route with the "GET" method
    * @param productGroupId stores the product group id
    * @param crudRequest stores the joins, filters, etc
    * @returns the found product group entity dto
@@ -82,5 +89,20 @@ export class ProductGroupController {
       crudRequest
     )
     return entity.toDto()
+  }
+
+  /**
+   * Method that is called when the user access the "/product-groups"
+   * route with the "GET" method
+   * @param crudRequest
+   * @returns
+   */
+  @ProtectTo(RolesEnum.Admin)
+  @Get()
+  public async getMore(
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductGroupDto> | ProductGroupDto[]> {
+    const entities = await this.productGroupService.getMany(crudRequest)
+    return map(entities, entity => entity.toDto())
   }
 }
