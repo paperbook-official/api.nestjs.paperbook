@@ -68,9 +68,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
     const categories: CategoryEntity[] = []
 
-    for (const id of categoryIds) {
-      const category = await this.categoryService.get(id)
-      categories.push(category)
+    if (categoryIds) {
+      for (const id of categoryIds) {
+        const category = await this.categoryService.get(id)
+        categories.push(category)
+      }
     }
 
     return await new ProductEntity({
