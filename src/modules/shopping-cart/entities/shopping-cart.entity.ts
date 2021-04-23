@@ -44,7 +44,7 @@ export class ShoppingCartEntity extends BaseEntity
   })
   @OneToMany(
     () => ProductGroupEntity,
-    product => product.product
+    productGroup => productGroup.shoppingCart
   )
   public productGroups?: ProductGroupEntity[]
 
