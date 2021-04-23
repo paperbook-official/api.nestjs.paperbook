@@ -1,10 +1,10 @@
 import {
-  UseInterceptors,
+  Body,
   Controller,
   Get,
   Param,
-  Body,
-  Put
+  Post,
+  UseInterceptors
 } from '@nestjs/common'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
@@ -21,19 +21,18 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from '../entities/user.entity'
 
+import { AddProductGroupDto } from '../../product-group/models/add-product-group.dto'
+import { ProductGroupDto } from '../../product-group/models/product-group.dto'
+import { RemoveProductGroupDto } from '../../product-group/models/remove-product-group.dto'
 import { UserDto } from '../models/user.dto'
 import {
-  GetManyAddressDtoResponse,
-  AddressDto
+  AddressDto,
+  GetManyAddressDtoResponse
 } from 'src/modules/address/models/address.dto'
 import {
   GetManyOrderDtoResponse,
   OrderDto
 } from 'src/modules/order/models/order.dto'
-import { AddProductGroupDto } from 'src/modules/product-group/models/add-product-group.dto'
-import { CreateProductGroupDto } from 'src/modules/product-group/models/create-product-group.dto'
-import { ProductGroupDto } from 'src/modules/product-group/models/product-group.dto'
-import { RemoveProductGroupDto } from 'src/modules/product-group/models/remove-product-group.dto'
 import {
   GetManyProductDtoResponse,
   ProductDto
@@ -140,26 +139,30 @@ export class UserRalationsController {
   }
 
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @Put('me/shopping-carts/add')
-  public async add(
+  @Post('me/shopping-carts/add')
+  public async addProductInMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
     @Body() addProductGroupDto: AddProductGroupDto
   ): Promise<ProductGroupDto> {
-    return await this.userService.addProductInMyShoppingCart(
+    const entity = await this.userService.addProductInShoppingCartByUserId(
       requestUser.id,
       requestUser,
       addProductGroupDto
     )
+    return entity.toDto()
   }
 
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @Put('me/shopping-carts/remove')
-  public async remove(
+  @Post('me/shopping-carts/remove')
+  public async removeProductFromMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
     @Body() removeProductGroupDto: RemoveProductGroupDto
   ): Promise<void> {
-    return null
-    // await this.shoppingCartService.remove(requestUser, removeProductGroupDto)
+    await this.userService.removeProductFromShoppingCartByUserId(
+      requestUser.id,
+      requestUser,
+      removeProductGroupDto
+    )
   }
 
   /**
@@ -274,28 +277,32 @@ export class UserRalationsController {
   }
 
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @Put(':id/shopping-carts/add')
-  public async addByUserId(
+  @Post(':id/shopping-carts/add')
+  public async addProductInShoppingCartByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() createProductGroupDto: CreateProductGroupDto
+    @Body() addProductGroupDto: AddProductGroupDto
   ): Promise<ProductGroupDto> {
-    return null
-    // return await this.shoppingCartService.add(
-    //   requestUser,
-    //   createProductGroupDto
-    // )
+    const entity = await this.userService.addProductInShoppingCartByUserId(
+      userId,
+      requestUser,
+      addProductGroupDto
+    )
+    return entity.toDto()
   }
 
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
-  @Put(':id/shopping-carts/remove')
-  public async removeByUserId(
+  @Post(':id/shopping-carts/remove')
+  public async removeProductFromShoppingCartByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
     @Body() removeProductGroupDto: RemoveProductGroupDto
   ): Promise<void> {
-    return null
-    // await this.shoppingCartService.remove(requestUser, removeProductGroupDto)
+    await this.userService.removeProductFromShoppingCartByUserId(
+      userId,
+      requestUser,
+      removeProductGroupDto
+    )
   }
 
   /**

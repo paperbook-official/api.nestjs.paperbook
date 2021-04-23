@@ -17,6 +17,7 @@ import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
     TypeOrmModule.forFeature([ProductGroupEntity])
   ],
   controllers: [ProductGroupController],
-  providers: [ProductGroupService]
+  providers: [ProductGroupService],
+  exports: [ProductGroupService]
 })
 export class ProductGroupModule {}

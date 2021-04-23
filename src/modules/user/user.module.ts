@@ -11,6 +11,7 @@ import { UserController } from './controllers/user.controller'
 import { AddressModule } from '../address/address.module'
 import { OrderModule } from '../order/order.module'
 import { PasswordModule } from '../password/password.module'
+import { ProductGroupModule } from '../product-group/product-group.module'
 import { ProductModule } from '../product/product.module'
 import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
 
@@ -21,6 +22,7 @@ import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
     forwardRef(() => AddressModule),
     forwardRef(() => OrderModule),
     forwardRef(() => ShoppingCartModule),
+    ProductGroupModule,
     TypeOrmModule.forFeature([UserEntity])
   ],
   controllers: [UserController, UserRalationsController],

@@ -75,7 +75,6 @@ export class ProductGroupController {
   /**
    * Method that is called when the user access the "/product-groups"
    * route with the "POST" method
-   * @param requestUser stores the logged user data
    * @param createProductGroupDto stores the new product group data
    * @returns the created product group entity dto
    */
@@ -87,13 +86,9 @@ export class ProductGroupController {
   @ProtectTo(RolesEnum.Admin)
   @Post()
   public async create(
-    @RequestUser() requestUser: UserEntity,
     @Body() createProductGroupDto: CreateProductGroupDto
   ): Promise<ProductGroupDto> {
-    const entity = await this.productGroupService.create(
-      requestUser,
-      createProductGroupDto
-    )
+    const entity = await this.productGroupService.create(createProductGroupDto)
     return entity.toDto()
   }
 

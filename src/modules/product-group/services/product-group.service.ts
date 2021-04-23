@@ -4,6 +4,8 @@ import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
+import { ProductEntity } from '../../product/entities/product.entity'
+import { ShoppingCartEntity } from '../../shopping-cart/entities/shopping-cart.entity'
 import { ProductGroupEntity } from '../entities/product-group.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
@@ -36,25 +38,26 @@ export class ProductGroupService extends TypeOrmCrudService<
 
   /**
    * Method that can create a new product group entity
-   * @param requestUser stores the logged user data
    * @param createProductGroupDto stores the new product group data
    * @returns the created product group entity
    */
   public async create(
-    requestUser: UserEntity,
     createProductGroupDto: CreateProductGroupDto
   ): Promise<ProductGroupEntity> {
     const { productId, shoppingCartId } = createProductGroupDto
 
-    /* If there are no products or shopping carts with the passed id those
-    services will throw "EntityNotFoundException", if the request
-    user has no permission the "UserService" will throw "ForbiddenException" */
+    const product = await ProductEntity.findOne({ id: productId })
+    const shoppingCart = await ShoppingCartEntity.findOne({
+      id: shoppingCartId
+    })
 
-    const product = await this.productService.get(productId)
-    const shoppingCart = await this.shoppingCartService.get(
-      shoppingCartId,
-      requestUser
-    )
+    if (!product || !product.isActive) {
+      throw new EntityNotFoundException(productId, ProductEntity)
+    }
+
+    if (!shoppingCart || !shoppingCart.isActive) {
+      throw new EntityNotFoundException(shoppingCartId, ShoppingCartEntity)
+    }
 
     return await new ProductGroupEntity({
       ...createProductGroupDto,
@@ -66,7 +69,6 @@ export class ProductGroupService extends TypeOrmCrudService<
   /**
    * Method that can get only one product group from
    * @param productGroupId stores the product group id
-   * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found product group entity
    */
@@ -127,7 +129,6 @@ export class ProductGroupService extends TypeOrmCrudService<
   /**
    * Method that can disables some product group
    * @param productGroupId stores the product group id
-   * @param requestUser stores the logged user data
    */
   public async disable(productGroupId: number): Promise<void> {
     const entity = await ProductGroupEntity.findOne({ id: productGroupId })
@@ -149,7 +150,6 @@ export class ProductGroupService extends TypeOrmCrudService<
   /**
    * Method that can enables some product group
    * @param productGroupId stores the product group id
-   * @param requestUser stores the logged user data
    */
   public async enable(productGroupId: number): Promise<void> {
     const entity = await ProductGroupEntity.findOne({ id: productGroupId })
