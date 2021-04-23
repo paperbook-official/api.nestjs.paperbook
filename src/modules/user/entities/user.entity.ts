@@ -84,7 +84,7 @@ export class UserEntity extends BaseEntity implements ToDto<UserDto> {
     type: 'int',
     nullable: true
   })
-  public shoppingCartId: number
+  public shoppingCartId?: number
 
   //#region Relations
 
