@@ -197,29 +197,4 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
     await ShoppingCartEntity.update({ id: shoppingCartId }, { isActive: true })
   }
-
-  // public async add(
-  //   requestUser: UserEntity,
-  //   createProductGroupDto: CreateProductGroupDto
-  // ): Promise<ProductGroupDto> {
-  //   const { shoppingCartId, productId } = createProductGroupDto
-
-  //   const product = await this.productService.get(productId)
-  //   const shoppingCart = await ShoppingCartEntity.findOne({
-  //     id: shoppingCartId
-  //   })
-
-  //   if (!shoppingCartId) {
-  //     this.create()
-  //   }
-
-  //   const
-  // }
-
-  // public async remove(
-  //   requestUser: UserEntity,
-  //   removeProductGroupDto: RemoveProductGroupDto
-  // ): Promise<void> {
-  //   return null
-  // }
 }

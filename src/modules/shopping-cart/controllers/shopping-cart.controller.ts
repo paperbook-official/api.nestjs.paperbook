@@ -180,7 +180,6 @@ export class ShoppingCartController {
    * Method that is called when the user access the
    * "/shopping-cart/:id/disable" route with the "PUT" method
    * @param shoppingCartId stores the shopping cart id
-   * @param requestUser stores the logged user data
    */
   @ApiOperation({ summary: 'Disables a single shopping cart entity' })
   @ApiOkResponse({ description: 'Disables a single shopping cart entity' })
@@ -194,7 +193,6 @@ export class ShoppingCartController {
    * Method that is called when the user access the
    * "/shopping-cart/:id/enable" route with the "PUT" method
    * @param shoppingCartId stores the shopping cart id
-   * @param requestUser stores the logged user data
    */
   @ApiOperation({ summary: 'Enables a single shopping cart entity' })
   @ApiOkResponse({ description: 'Enables a single shopping cart entity' })
