@@ -9,7 +9,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 /**
  * The app's main jwt strategy service class
  *
- * Service that deals with the jwt strategry
+ * Service that deals with the jwt strategy
  */
 @Injectable()
 export class JwtStrategyService extends PassportStrategy(Strategy) {

@@ -12,7 +12,7 @@ import { OrderStatus } from 'src/models/enums/order-status.enum'
 /**
  * The app's main order dto class
  *
- * Class that deals with the ordder return data
+ * Class that deals with the order return data
  */
 export class OrderDto extends BaseResponseDto {
   @ApiProperty()

@@ -24,9 +24,6 @@ import {
 } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
-
-import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
 import { ProductGroupDto } from '../models/product-group.dto'

@@ -149,6 +149,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param state stores the seller state
    * @param freeOfInterests stores a value indicating if the products
    * are free or interests
+   * @param sortBy stores a value indicating how the items must be returned
    * @param crudRequest stores the joins, filters, etc;
    * @returns all the found products that match with the queries
    */
@@ -280,7 +281,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param crudRequest stores the joins, filters, etc.
    * @returns all the found elements
    */
-  public async getRecents(
+  public async getRecent(
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.sort = [

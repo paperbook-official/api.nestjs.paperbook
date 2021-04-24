@@ -82,11 +82,7 @@ class IsCpfValidatorConstraint implements ValidatorConstraintInterface {
       rev = 0
     }
 
-    if (rev != parseInt(value.charAt(10))) {
-      return false
-    }
-
-    return true
+    return rev == parseInt(value.charAt(10))
   }
 
   /**

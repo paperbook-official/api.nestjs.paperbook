@@ -84,7 +84,7 @@ export class ProductController {
    * Method that is called when the user access the "/products"
    * route with the "POST" method
    * @param requestUser stores the logged user data
-   * @param createProductPaylaod stores the new product data
+   * @param createProductDto stores the new product data
    * @returns the created product data
    */
   @ApiOperation({ summary: 'Creates a new product' })
@@ -96,11 +96,11 @@ export class ProductController {
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createProductPaylaod: CreateProductDto
+    @Body() createProductDto: CreateProductDto
   ): Promise<ProductDto> {
     const entity = await this.productService.create(
       requestUser,
-      createProductPaylaod
+      createProductDto
     )
     return entity.toDto()
   }
@@ -184,8 +184,8 @@ export class ProductController {
   }
 
   /**
-   * Method that is called when the user acces the "products/recents"
-   * foute with "GET" method
+   * Method that is called when the user access the "products/recent"
+   * route with "GET" method
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found elements
    */
@@ -197,11 +197,11 @@ export class ProductController {
     description: 'Gets all the products organized by "createdAt" field',
     type: GetManyProductDtoResponse
   })
-  @Get('recents')
-  public async getRecents(
+  @Get('recent')
+  public async getRecent(
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.productService.getFreeOfInterests(crudRequest)
+    const entities = await this.productService.getRecent(crudRequest)
     return map(entities, entity => entity.toDto())
   }
 
@@ -210,7 +210,7 @@ export class ProductController {
    * route with the "GET" method
    * @param productId stores the product id
    * @param crudRequest store the joins, filters, etc
-   * @returns the found entity
+   * @returns the found entity dto
    */
   @Get(':id')
   public async get(
@@ -225,7 +225,7 @@ export class ProductController {
    * Method that is called when the user access the "/products" route
    * with the "GET" method
    * @param crudRequest stores the joins, filters, etc
-   * @returns all the found entities
+   * @returns all the found entity dtos
    */
   @Get()
   public async getMore(

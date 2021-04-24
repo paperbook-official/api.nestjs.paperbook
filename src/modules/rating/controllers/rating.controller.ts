@@ -73,8 +73,9 @@ export class RatingController {
   /**
    * Method that is called when the user access the "/ratings"
    * route with the "POST" method
-   * @param createRatingPayload
-   * @returns
+   * @param requestUser stores the logged user data
+   * @param createRatingDto stores the rating data
+   * @returns the created rating entity dto
    */
   @ApiOperation({ summary: 'Creates a new rating' })
   @ApiCreatedResponse({
@@ -85,12 +86,9 @@ export class RatingController {
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createRatingPayload: CreateRatingDto
+    @Body() createRatingDto: CreateRatingDto
   ): Promise<RatingDto> {
-    const entity = await this.ratingService.create(
-      requestUser,
-      createRatingPayload
-    )
+    const entity = await this.ratingService.create(requestUser, createRatingDto)
     return entity.toDto()
   }
 
@@ -113,7 +111,7 @@ export class RatingController {
   /**
    * Method that can get rating entities
    * @param crudRequest stores the joins, filters, etc
-   * @returns all the found rating entities
+   * @returns all the found rating entity dtos
    */
   @Get()
   public async getMore(
@@ -127,7 +125,8 @@ export class RatingController {
    * Method that is called when the user access the "/ratings/:id"
    * route with the "PATCH" method
    * @param ratingId stores the rating id
-   * @param updateRatingPayload stores the rating entity new data
+   * @param requestUser stores the logged user data
+   * @param updateRatingDto stores the rating entity new data
    */
   @ApiOperation({ summary: 'Updates a single rating entity' })
   @ApiOkResponse({ description: 'Updates a single rating entity' })
@@ -136,15 +135,16 @@ export class RatingController {
   public async update(
     @Param('id') ratingId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updateRatingPayload: UpdateRatingDto
+    @Body() updateRatingDto: UpdateRatingDto
   ): Promise<void> {
-    await this.ratingService.update(ratingId, requestUser, updateRatingPayload)
+    await this.ratingService.update(ratingId, requestUser, updateRatingDto)
   }
 
   /**
    * Method that is called when the user access the "/ratings/:id"
    * route with the "DELETE" method
    * @param ratingId stores the rating id
+   * @param requestUser stores the logged user data
    */
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Delete(':id')

@@ -5,7 +5,7 @@ import { UserEntity } from './entities/user.entity'
 
 import { UserService } from './services/user.service'
 
-import { UserRalationsController } from './controllers/user-relations.controller'
+import { UserRelationsController } from './controllers/user-relations.controller'
 import { UserController } from './controllers/user.controller'
 
 import { AddressModule } from '../address/address.module'
@@ -25,7 +25,7 @@ import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
     ProductGroupModule,
     TypeOrmModule.forFeature([UserEntity])
   ],
-  controllers: [UserController, UserRalationsController],
+  controllers: [UserController, UserRelationsController],
   providers: [UserService],
   exports: [UserService]
 })

@@ -10,7 +10,6 @@ import { ProductGroupEntity } from '../entities/product-group.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
-import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
 import { UpdateProductGroupDto } from '../models/update-product-group.dto'
@@ -19,9 +18,9 @@ import { ProductService } from 'src/modules/product/services/product.service'
 import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
 
 /**
- * The app's main product group service clas
+ * The app's main product group service class
  *
- * Class that deals with the product groupo data
+ * Class that deals with the product group data
  */
 @Injectable()
 export class ProductGroupService extends TypeOrmCrudService<
@@ -29,9 +28,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 > {
   public constructor(
     @InjectRepository(ProductGroupEntity)
-    repository: Repository<ProductGroupEntity>,
-    private readonly productService: ProductService,
-    private readonly shoppingCartService: ShoppingCartService
+    repository: Repository<ProductGroupEntity>
   ) {
     super(repository)
   }

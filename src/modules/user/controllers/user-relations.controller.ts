@@ -82,7 +82,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('users')
 @Controller('users')
-export class UserRalationsController {
+export class UserRelationsController {
   public constructor(private readonly userService: UserService) {}
 
   /**

@@ -73,6 +73,7 @@ export class SearchController {
    * @param state stores the seller state
    * @param freeOfInterests stores a value indicating if the products
    * are free or interests
+   * @param sortBy stores a value indicating how the items must be returned
    * @param crudRequest stores the joins, filters, etc;
    * @returns all the found products that match with the queries
    */

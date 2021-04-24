@@ -69,7 +69,6 @@ export class CategoryController {
   /**
    * Method that is called when the user access the "/category"
    * route with "POST" method
-   * @param requestUser stores the logged user data
    * @param createCategoryPayload stores the new Category data
    * @returns the created Category data
    */
@@ -92,7 +91,7 @@ export class CategoryController {
    * route with "GET" method
    * @param categoryId stores the target category id
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found category data
+   * @returns the found category entity dto
    */
   @Get(':id')
   public async get(
@@ -107,7 +106,7 @@ export class CategoryController {
    * Method that is called when the user access the "/category" route
    * with "GET" method
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found category data
+   * @returns the found category entity dtos
    */
   @Get()
   public async getMore(
@@ -121,8 +120,7 @@ export class CategoryController {
    * Method that is called when the user access the "/category/:id"
    * route with "PATCH"
    * @param categoryId stores the target category id
-   * @param requestUser stores the logged user data
-   * @param updatedUserPayload stores the new user data
+   * @param updatedCategoryDto stores the new category data
    */
   @ApiOperation({ summary: 'Updates a single category' })
   @ApiOkResponse({ description: 'Updates user' })
@@ -130,16 +128,15 @@ export class CategoryController {
   @Patch(':id')
   public async update(
     @Param('id') categoryId: number,
-    @Body() updatedCategoryPayload: UpdatedCategoryDto
+    @Body() updatedCategoryDto: UpdatedCategoryDto
   ): Promise<void> {
-    await this.categoryService.update(categoryId, updatedCategoryPayload)
+    await this.categoryService.update(categoryId, updatedCategoryDto)
   }
 
   /**
-   * Method that is called when the user acces the "/category/:id"
+   * Method that is called when the user access the "/category/:id"
    * route with "DELETE" method
    * @param categoryId stores the target user id
-   * @param requestUser stores the logged user data
    */
   @ProtectTo(RolesEnum.Admin)
   @Delete(':id')
@@ -148,10 +145,9 @@ export class CategoryController {
   }
 
   /**
-   * Method that is called when the user acces the "category/:id/disable"
+   * Method that is called when the user access the "category/:id/disable"
    * route with "PUT" method
    * @param categoryId stores the target category id
-   * @param requestUser stores the logged user data
    */
   @ApiOperation({ summary: 'Disables a single category' })
   @ApiOkResponse({ description: 'Disables a single category' })
@@ -162,7 +158,7 @@ export class CategoryController {
   }
 
   /**
-   * Method that is called when the user acces the "category/:id/enable"
+   * Method that is called when the user access the "category/:id/enable"
    * route with "PUT" method
    * @param categoryId stores the target category id
    */

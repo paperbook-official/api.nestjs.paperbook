@@ -2,9 +2,9 @@ import {
   ConflictException,
   forwardRef,
   Inject,
-  Injectable
+  Injectable,
+  NotFoundException
 } from '@nestjs/common'
-import { NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
@@ -40,15 +40,14 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can save some entity in the database
-   * @param requestUser stores the logged user data
-   * @param createCategoryPayload stores the new category data
+   * @param createCategoryDto stores the new category data
    * @returns the created category
    */
   public async create(
-    createCategoryPayload: CreateCategoryDto
+    createCategoryDto: CreateCategoryDto
   ): Promise<CategoryEntity> {
     const entity = new CategoryEntity({
-      ...createCategoryPayload
+      ...createCategoryDto
     })
 
     return await entity.save()
@@ -57,7 +56,6 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   /**
    * Method that can get one category entity
    * @param categoryId stores the category id
-   * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found category entity
    */
@@ -85,8 +83,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   public async getMore(
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
-    const entities = await super.getMany(crudRequest)
-    return entities
+    return await super.getMany(crudRequest)
   }
 
   /**
@@ -126,7 +123,6 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   /**
    * Method that can update some category
    * @param categoryId stores the category id
-   * @param requestUser stores the logged user data
    * @param updateCategoryPayload stores the new category data
    */
   public async update(

@@ -73,7 +73,7 @@ export class ShoppingCartController {
   ) {}
 
   /**
-   * Method that is called when the user acces the "/shopping-cart"
+   * Method that is called when the user access the "/shopping-cart"
    * route with the "POST" method
    * @param requestUser stores the logged user data
    * @param createShoppingCartPayload stores the new shopping

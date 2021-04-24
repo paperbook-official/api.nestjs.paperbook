@@ -131,6 +131,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
   /**
    * Method that can change some entity data
    * @param ratingId stores the rating entity id
+   * @param requestUser stores the logged user data
    * @param updateRatingPayload stores the rating entity new data
    */
   public async update(
@@ -154,6 +155,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
   /**
    * Method that can remove some rating entity from the database
    * @param ratingId stores the rating entity id
+   * @param requestUser stores the logged user data
    */
   public async delete(
     ratingId: number,
@@ -175,6 +177,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
   /**
    * Method that can disables some rating entity
    * @param ratingId stores the rating entity id
+   * @param requestUser stores the logged user data
    */
   public async disable(
     ratingId: number,
@@ -200,6 +203,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
   /**
    * Method that can disables some rating entity
    * @param ratingId stores the rating entity id
+   * @param requestUser stores the logged user data
    */
   public async enable(
     ratingId: number,

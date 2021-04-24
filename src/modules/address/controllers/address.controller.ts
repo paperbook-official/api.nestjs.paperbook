@@ -73,8 +73,8 @@ export class AddressController {
    * Method that is called when the user access the "/addresses"
    * route with "POST" method
    * @param requestUser stores the logged user data
-   * @param createAddressPayload stores the new address data
-   * @returns the created address data
+   * @param createAddressDto stores the new address data
+   * @returns the created address entity dto
    */
   @ApiOperation({ summary: 'Creates a new address' })
   @ApiCreatedResponse({
@@ -85,11 +85,11 @@ export class AddressController {
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createAddressPayload: CreateAddressDto
+    @Body() createAddressDto: CreateAddressDto
   ): Promise<AddressDto> {
     const entity = await this.addressService.create(
       requestUser,
-      createAddressPayload
+      createAddressDto
     )
     return entity.toDto()
   }
@@ -100,7 +100,7 @@ export class AddressController {
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found address data
+   * @returns the found address entity dto
    */
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
@@ -122,13 +122,13 @@ export class AddressController {
    * with "GET" method
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found addresses data
+   * @returns the found address entity dtos
    */
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get()
   public async getMore(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
     const entities = await this.addressService.getMore(requestUser, crudRequest)
     return map(entities, entity => entity.toDto())
@@ -139,7 +139,7 @@ export class AddressController {
    * route with "PATCH"
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
-   * @param updatedUserPayload stores the new user data
+   * @param updatedAddressDto stores the new address data
    */
   @ApiOperation({ summary: 'Updates a single address' })
   @ApiOkResponse({ description: 'Updates the user' })
@@ -148,17 +148,13 @@ export class AddressController {
   public async update(
     @Param('id') addressId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updatedAddressPayload: UpdatedAddressDto
+    @Body() updatedAddressDto: UpdatedAddressDto
   ): Promise<void> {
-    await this.addressService.update(
-      addressId,
-      requestUser,
-      updatedAddressPayload
-    )
+    await this.addressService.update(addressId, requestUser, updatedAddressDto)
   }
 
   /**
-   * Method that is called when the user acces the "/addresses/:id"
+   * Method that is called when the user access the "/addresses/:id"
    * route with "DELETE" method
    * @param addressId stores the target user id
    * @param requestUser stores the logged user data
@@ -173,7 +169,7 @@ export class AddressController {
   }
 
   /**
-   * Method that is called when the user acces the "addresses/:id/disable"
+   * Method that is called when the user access the "addresses/:id/disable"
    * route with "PUT" method
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
@@ -190,7 +186,7 @@ export class AddressController {
   }
 
   /**
-   * Method that is called when the user acces the "addresses/:id/enable"
+   * Method that is called when the user access the "addresses/:id/enable"
    * route with "PUT" method
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
