@@ -4,9 +4,15 @@ import {
   Get,
   Param,
   Post,
-  UseInterceptors
+  UseInterceptors,
+  HttpCode
 } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -138,6 +144,19 @@ export class UserRelationsController {
     return map(entities, entity => entity.toDto())
   }
 
+  /**
+   * Method that is called when the user access the "/users/me/shopping-carts/add"
+   * route with the "POST" method
+   * @param requestUser stores the logged user data
+   * @param addProductGroupDto stores the add product group dto
+   */
+  @ApiOperation({
+    summary: 'Adds a new product group in the user shopping cart'
+  })
+  @ApiCreatedResponse({
+    description: 'Gets the created product group entity dto',
+    type: ProductGroupDto
+  })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-carts/add')
   public async addProductInMyShoppingCart(
@@ -152,8 +171,21 @@ export class UserRelationsController {
     return entity.toDto()
   }
 
+  /**
+   * Method that is called when the user access the "/users/me/shopping-carts/remove"
+   * route with the "POST" method
+   * @param requestUser stores the logged user data
+   * @param removeProductGroupDto stores the remove product group dto
+   */
+  @ApiOperation({
+    summary: 'Removes some product group from the shopping cart'
+  })
+  @ApiOkResponse({
+    description: 'Removes the product group from the shopping cart'
+  })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-carts/remove')
+  @HttpCode(200)
   public async removeProductFromMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
     @Body() removeProductGroupDto: RemoveProductGroupDto
@@ -276,6 +308,20 @@ export class UserRelationsController {
     return map(entities, entity => entity.toDto())
   }
 
+  /**
+   * Method that is called when the user access the "/users/:id/shopping-carts/add"
+   * route with the "POST" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param addProductGroupDto stores the add product group dto
+   */
+  @ApiOperation({
+    summary: 'Adds a new product group in the user shopping cart'
+  })
+  @ApiCreatedResponse({
+    description: 'Gets the created product group entity dto',
+    type: ProductGroupDto
+  })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-carts/add')
   public async addProductInShoppingCartByUserId(
@@ -291,6 +337,19 @@ export class UserRelationsController {
     return entity.toDto()
   }
 
+  /**
+   * Method that is called when the user access the "/users/:id/shopping-carts/remove"
+   * route with the "POST" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param removeProductGroupDto stores the remove product group dto
+   */
+  @ApiOperation({
+    summary: 'Removes some product group from the shopping cart'
+  })
+  @ApiOkResponse({
+    description: 'Removes the product group from the shopping cart'
+  })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-carts/remove')
   public async removeProductFromShoppingCartByUserId(
@@ -311,7 +370,7 @@ export class UserRelationsController {
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns all the found shopping cart entity proxies
+   * @returns all the found shopping cart entity dtos
    */
   @ApiOperation({
     summary: 'Retrieves all the user shopping carts'
