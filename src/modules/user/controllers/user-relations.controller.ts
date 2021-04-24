@@ -1,5 +1,18 @@
-import { UseInterceptors, Controller, Get, Param } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+  HttpCode
+} from '@nestjs/common'
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -14,10 +27,13 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from '../entities/user.entity'
 
+import { AddProductGroupDto } from '../../product-group/models/add-product-group.dto'
+import { ProductGroupDto } from '../../product-group/models/product-group.dto'
+import { RemoveProductGroupDto } from '../../product-group/models/remove-product-group.dto'
 import { UserDto } from '../models/user.dto'
 import {
-  GetManyAddressDtoResponse,
-  AddressDto
+  AddressDto,
+  GetManyAddressDtoResponse
 } from 'src/modules/address/models/address.dto'
 import {
   GetManyOrderDtoResponse,
@@ -52,10 +68,10 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
+      shoppingCart: {},
       addresses: {},
       products: {},
       orders: {},
-      shoppingCarts: {},
       ratings: {},
       product: {}
     }
@@ -72,7 +88,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('users')
 @Controller('users')
-export class UserRalationsController {
+export class UserRelationsController {
   public constructor(private readonly userService: UserService) {}
 
   /**
@@ -126,6 +142,59 @@ export class UserRalationsController {
       crudRequest
     )
     return map(entities, entity => entity.toDto())
+  }
+
+  /**
+   * Method that is called when the user access the "/users/me/shopping-carts/add"
+   * route with the "POST" method
+   * @param requestUser stores the logged user data
+   * @param addProductGroupDto stores the add product group dto
+   */
+  @ApiOperation({
+    summary: 'Adds a new product group in the user shopping cart'
+  })
+  @ApiCreatedResponse({
+    description: 'Gets the created product group entity dto',
+    type: ProductGroupDto
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Post('me/shopping-carts/add')
+  public async addProductInMyShoppingCart(
+    @RequestUser() requestUser: UserEntity,
+    @Body() addProductGroupDto: AddProductGroupDto
+  ): Promise<ProductGroupDto> {
+    const entity = await this.userService.addProductInShoppingCartByUserId(
+      requestUser.id,
+      requestUser,
+      addProductGroupDto
+    )
+    return entity.toDto()
+  }
+
+  /**
+   * Method that is called when the user access the "/users/me/shopping-carts/remove"
+   * route with the "POST" method
+   * @param requestUser stores the logged user data
+   * @param removeProductGroupDto stores the remove product group dto
+   */
+  @ApiOperation({
+    summary: 'Removes some product group from the shopping cart'
+  })
+  @ApiOkResponse({
+    description: 'Removes the product group from the shopping cart'
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Post('me/shopping-carts/remove')
+  @HttpCode(200)
+  public async removeProductFromMyShoppingCart(
+    @RequestUser() requestUser: UserEntity,
+    @Body() removeProductGroupDto: RemoveProductGroupDto
+  ): Promise<void> {
+    await this.userService.removeProductFromShoppingCartByUserId(
+      requestUser.id,
+      requestUser,
+      removeProductGroupDto
+    )
   }
 
   /**
@@ -240,12 +309,68 @@ export class UserRalationsController {
   }
 
   /**
+   * Method that is called when the user access the "/users/:id/shopping-carts/add"
+   * route with the "POST" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param addProductGroupDto stores the add product group dto
+   */
+  @ApiOperation({
+    summary: 'Adds a new product group in the user shopping cart'
+  })
+  @ApiCreatedResponse({
+    description: 'Gets the created product group entity dto',
+    type: ProductGroupDto
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Post(':id/shopping-carts/add')
+  public async addProductInShoppingCartByUserId(
+    @Param('id') userId: number,
+    @RequestUser() requestUser: UserEntity,
+    @Body() addProductGroupDto: AddProductGroupDto
+  ): Promise<ProductGroupDto> {
+    const entity = await this.userService.addProductInShoppingCartByUserId(
+      userId,
+      requestUser,
+      addProductGroupDto
+    )
+    return entity.toDto()
+  }
+
+  /**
+   * Method that is called when the user access the "/users/:id/shopping-carts/remove"
+   * route with the "POST" method
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param removeProductGroupDto stores the remove product group dto
+   */
+  @ApiOperation({
+    summary: 'Removes some product group from the shopping cart'
+  })
+  @ApiOkResponse({
+    description: 'Removes the product group from the shopping cart'
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Post(':id/shopping-carts/remove')
+  public async removeProductFromShoppingCartByUserId(
+    @Param('id') userId: number,
+    @RequestUser() requestUser: UserEntity,
+    @Body() removeProductGroupDto: RemoveProductGroupDto
+  ): Promise<void> {
+    await this.userService.removeProductFromShoppingCartByUserId(
+      userId,
+      requestUser,
+      removeProductGroupDto
+    )
+  }
+
+  /**
    * Method that is called when the user access the "users/:id/shopping-carts"
    * route with "GET" method
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns all the found shopping cart entity proxies
+   * @returns all the found shopping cart entity dtos
    */
   @ApiOperation({
     summary: 'Retrieves all the user shopping carts'

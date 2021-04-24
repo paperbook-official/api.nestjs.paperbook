@@ -58,7 +58,7 @@ export class CategoryRelationsController {
    * route with "GET" method
    * @param categoryId stores the category id
    * @param crudRequest stores the joins, filters, etc
-   * @returns all the found product entities
+   * @returns all the found product entity dtos
    */
   @ApiOperation({
     summary: 'Retrieves all the products of a single category'

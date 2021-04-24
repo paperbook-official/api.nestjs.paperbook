@@ -2,8 +2,8 @@ import { GetManyDefaultResponse } from '@nestjsx/crud'
 
 /**
  * CPerforms the specified action for each element in an array or a
- * "GetManyDefaultReponse" class instance
- * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * "GetManyDefaultResponse" class instance
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
  * array
@@ -21,13 +21,13 @@ export function forEach<T>(
 
 /**
  * Calls a defined callback function on each element of an array,
- * and returns an array or a "GetManyDefaultReponse" class instance
+ * and returns an array or a "GetManyDefaultResponse" class instance
  * that contains the results
- * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
  * array
- * @returns the array or "GetManyDefaultReponse" class instance with the new data
+ * @returns the array or "GetManyDefaultResponse" class instance with the new data
  */
 export function map<T, R>(
   getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
@@ -43,9 +43,9 @@ export function map<T, R>(
 }
 
 /**
- * Returns the elements of an array or "GetManyDefaultReponse" class instance that
+ * Returns the elements of an array or "GetManyDefaultResponse" class instance that
  * meet the condition specified in a callback function.
- * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
  * array
@@ -66,12 +66,12 @@ export function filter<T>(
 
 /**
  * Determines whether the specified callback function returns true for any element
- * of an array or "GetManyDefaultReponse" class instance
- * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * of an array or "GetManyDefaultResponse" class instance
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
  * array
- * @returns if any element of the array or "GetManyDefaultReponse" class instance
+ * @returns if any element of the array or "GetManyDefaultResponse" class instance
  */
 export function some<T>(
   getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
@@ -84,13 +84,13 @@ export function some<T>(
 }
 
 /**
- * Determines whether all the members of an array or "GetManyDefaultReponse" class
+ * Determines whether all the members of an array or "GetManyDefaultResponse" class
  *  instance satisfy the specified test.
- * @param getManyDefaultResponse stores an array or a "GetManyDefaultReponse"
+ * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
  * array
- * @returns if every element of the array or a "GetManyDefaultReponse" class instance
+ * @returns if every element of the array or a "GetManyDefaultResponse" class instance
  */
 export function every<T>(
   getManyDefaultResponse: GetManyDefaultResponse<T> | T[],
@@ -111,9 +111,8 @@ export function every<T>(
 export function isGetMany<T>(
   value: GetManyDefaultResponse<T> | T[]
 ): value is GetManyDefaultResponse<T> {
-  if (!value || Array.isArray(value)) return false
-
-  if (value.hasOwnProperty('data') && Array.isArray(value.data)) return true
-
-  return false
+  if (!value || Array.isArray(value)) {
+    return false
+  }
+  return !!(value.hasOwnProperty('data') && Array.isArray(value.data))
 }

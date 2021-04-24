@@ -51,8 +51,8 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
-      product: {},
-      user: {}
+      user: {},
+      productGroups: {}
     }
   },
   routes: {
@@ -73,7 +73,7 @@ export class ShoppingCartController {
   ) {}
 
   /**
-   * Method that is called when the user acces the "/shopping-cart"
+   * Method that is called when the user access the "/shopping-cart"
    * route with the "POST" method
    * @param requestUser stores the logged user data
    * @param createShoppingCartPayload stores the new shopping
@@ -180,7 +180,6 @@ export class ShoppingCartController {
    * Method that is called when the user access the
    * "/shopping-cart/:id/disable" route with the "PUT" method
    * @param shoppingCartId stores the shopping cart id
-   * @param requestUser stores the logged user data
    */
   @ApiOperation({ summary: 'Disables a single shopping cart entity' })
   @ApiOkResponse({ description: 'Disables a single shopping cart entity' })
@@ -194,7 +193,6 @@ export class ShoppingCartController {
    * Method that is called when the user access the
    * "/shopping-cart/:id/enable" route with the "PUT" method
    * @param shoppingCartId stores the shopping cart id
-   * @param requestUser stores the logged user data
    */
   @ApiOperation({ summary: 'Enables a single shopping cart entity' })
   @ApiOkResponse({ description: 'Enables a single shopping cart entity' })

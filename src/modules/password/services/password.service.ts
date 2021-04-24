@@ -5,7 +5,7 @@ import * as bcryptjs from 'bcryptjs'
 /**
  * The app's main password service class
  *
- * Class that deals with the password encryptation and comparing
+ * Class that deals with the password encryption and comparing
  * logic
  */
 @Injectable()

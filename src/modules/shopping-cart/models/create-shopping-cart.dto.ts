@@ -10,15 +10,6 @@ import { DefaultValidationMessages } from 'src/models/enums/default-validation-m
  */
 export class CreateShoppingCartDto {
   @ApiProperty()
-  @IsDefined({ message: 'It is required to send te product id' })
-  @IsNumber(
-    { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
-  )
-  @Min(0)
-  public productId: number
-
-  @ApiProperty()
   @IsDefined({ message: 'It is required to send te user id' })
   @IsNumber(
     { maxDecimalPlaces: 0 },

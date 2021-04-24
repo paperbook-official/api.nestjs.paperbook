@@ -38,19 +38,19 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   /**
    * Method that can save some entity in the database
    * @param requestUser stores the logged user data
-   * @param createAddressPayload stores the new address data
-   * @returns the created address
+   * @param createAddressDto stores the new address data
+   * @returns the created address entity
    */
   public async create(
     requestUser: UserEntity,
-    createAddressPayload: CreateAddressDto
+    createAddressDto: CreateAddressDto
   ): Promise<AddressEntity> {
-    const { userId } = createAddressPayload
+    const { userId } = createAddressDto
 
     const user = await this.userService.get(userId, requestUser)
 
     const entity = new AddressEntity({
-      ...createAddressPayload,
+      ...createAddressDto,
       user
     })
 
@@ -88,7 +88,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    * Method that can get some addresses entities
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found addresses entities
+   * @returns the found address entities
    */
   public async getMore(
     requestUser: UserEntity,
@@ -111,12 +111,12 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    * Method that can update some address
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
-   * @param updateAddressPayload stores the new address data
+   * @param updatedAddressDto stores the new address data
    */
   public async update(
     addressId: number,
     requestUser: UserEntity,
-    updateAddressPayload: UpdatedAddressDto
+    updatedAddressDto: UpdatedAddressDto
   ): Promise<void> {
     const entity = await AddressEntity.findOne({ id: addressId })
 
@@ -128,7 +128,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
       throw new ForbiddenException()
     }
 
-    await AddressEntity.update({ id: addressId }, updateAddressPayload)
+    await AddressEntity.update({ id: addressId }, updatedAddressDto)
   }
 
   /**

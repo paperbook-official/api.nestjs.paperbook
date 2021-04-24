@@ -4,40 +4,41 @@ import { ShoppingCartEntity } from '../entities/shopping-cart.entity'
 
 import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
 import { BaseResponseDto } from 'src/common/base-response.dto'
-import { ProductDto } from 'src/modules/product/models/product.dto'
+import { ProductGroupDto } from 'src/modules/product-group/models/product-group.dto'
 import { UserDto } from 'src/modules/user/models/user.dto'
 
 /**
  * The app's main shopping cart dto class
  *
- * Class that deals with the shopping cart returndata
+ * Class that deals with the shopping cart return data
  */
 export class ShoppingCartDto extends BaseResponseDto {
   @ApiProperty()
-  public productId: number
-
-  @ApiProperty()
   public userId: number
 
-  @ApiPropertyOptional({
-    type: () => ProductDto
-  })
-  public product?: ProductDto
+  //#region Relations
+
+  @ApiPropertyOptional({ type: () => UserDto })
+  public user?: UserDto
 
   @ApiPropertyOptional({
-    type: () => UserDto
+    type: () => ProductGroupDto,
+    isArray: true
   })
-  public user?: UserDto
+  public productGroups?: ProductGroupDto[]
+
+  //#endregion
 
   public constructor(entity: ShoppingCartEntity) {
     super(entity)
 
-    this.productId = entity.productId
     this.userId = entity.userId
 
     // relations
-    this.product = entity.product?.toDto()
     this.user = entity.user?.toDto()
+    this.productGroups = entity.productGroups?.map(productGroup =>
+      productGroup.toDto()
+    )
   }
 }
 

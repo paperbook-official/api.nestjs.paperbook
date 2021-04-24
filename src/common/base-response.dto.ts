@@ -20,7 +20,7 @@ export abstract class BaseResponseDto {
   @ApiProperty()
   public isActive: boolean
 
-  public constructor(entity: BaseEntity) {
+  protected constructor(entity: BaseEntity) {
     this.id = entity.id
     this.createdAt = entity.createdAt
     this.updatedAt = entity.updatedAt

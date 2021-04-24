@@ -13,7 +13,6 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
 import { CreateShoppingCartDto } from '../models/create-shopping-cart.dto'
 import { UpdateShoppingCartDto } from '../models/update-shopping-cart.dto'
 
-import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { some } from 'src/utils/crud'
@@ -26,10 +25,9 @@ export class ShoppingCartService extends TypeOrmCrudService<
 > {
   public constructor(
     @InjectRepository(ShoppingCartEntity)
-    private readonly repository: Repository<ShoppingCartEntity>,
+    repository: Repository<ShoppingCartEntity>,
     @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService,
-    private readonly productService: ProductService
+    private readonly userService: UserService
   ) {
     super(repository)
   }
@@ -37,26 +35,24 @@ export class ShoppingCartService extends TypeOrmCrudService<
   /**
    * Method that can create a new shopping cart entity
    * @param requestUser stores the logged user data
-   * @param createShoppingCartPayload stores the new shopping
+   * @param createShoppingCartDto stores the new shopping
    * cart entity data
    * @returns the created shopping cart entity
    */
   public async create(
     requestUser: UserEntity,
-    createShoppingCartPayload: CreateShoppingCartDto
+    createShoppingCartDto: CreateShoppingCartDto
   ): Promise<ShoppingCartEntity> {
-    const { productId, userId } = createShoppingCartPayload
+    const { userId } = createShoppingCartDto
 
     /* If there are no products or users with the passed id those
     services will throw "EntityNotFoundException", if the request
     user has no permission the "UserService" will throw "ForbiddenException" */
 
     const user = await this.userService.get(userId, requestUser)
-    const product = await this.productService.get(productId)
 
     return await new ShoppingCartEntity({
-      ...createShoppingCartPayload,
-      product,
+      ...createShoppingCartDto,
       user
     }).save()
   }

@@ -101,7 +101,7 @@ export class OrderController {
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found order
+   * @returns the found order entity dto
    */
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
@@ -123,7 +123,7 @@ export class OrderController {
    * with "GET" method
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found orders
+   * @returns the found order entity dtos
    */
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get()

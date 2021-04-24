@@ -122,7 +122,6 @@ export class ProductRelationsController {
    * Method that is called when the user access the "/products/:id/ratings"
    * route with "GET" method
    * @param productId stores the product id
-   * @param crudRequest stores the joins, filters, etc
    * @returns all the found rating entities proxies
    */
   @ApiOperation({
@@ -136,7 +135,6 @@ export class ProductRelationsController {
   public async getReviewByProductId(
     @Param('id') productId: number
   ): Promise<ProductReviewDto> {
-    const entities = await this.productService.getReviewByProductId(productId)
-    return entities
+    return await this.productService.getReviewByProductId(productId)
   }
 }

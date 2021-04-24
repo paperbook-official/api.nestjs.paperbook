@@ -68,9 +68,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
     const categories: CategoryEntity[] = []
 
-    for (const id of categoryIds) {
-      const category = await this.categoryService.get(id)
-      categories.push(category)
+    if (categoryIds) {
+      for (const id of categoryIds) {
+        const category = await this.categoryService.get(id)
+        categories.push(category)
+      }
     }
 
     return await new ProductEntity({
@@ -92,11 +94,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   }
 
   /**
-   * Method that can get only product entity from the database
+   * Method that can get only product entity from the
    * @param productId stores the product id
    * @param crudRequest stores the joins, filter, etc
    * @throws {EntityNotFoundException} if the product was not found
-   * @returns the found entity
+   * @returns the found product entity
    */
   public async get(
     productId: number,
@@ -111,7 +113,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     }
 
     if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(productId)
+      throw new EntityNotFoundException(productId, ProductEntity)
     }
 
     return entity
@@ -147,6 +149,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param state stores the seller state
    * @param freeOfInterests stores a value indicating if the products
    * are free or interests
+   * @param sortBy stores a value indicating how the items must be returned
    * @param crudRequest stores the joins, filters, etc;
    * @returns all the found products that match with the queries
    */
@@ -280,7 +283,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param crudRequest stores the joins, filters, etc.
    * @returns all the found elements
    */
-  public async getRecents(
+  public async getRecent(
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.sort = [

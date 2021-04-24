@@ -70,6 +70,7 @@ export class AddressEntity extends BaseEntity implements ToDto<AddressDto> {
   })
   public state: string
 
+  @ApiProperty()
   @Column({
     type: 'integer',
     nullable: false

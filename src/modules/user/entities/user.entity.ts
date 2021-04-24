@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, OneToMany } from 'typeorm'
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
@@ -79,7 +79,21 @@ export class UserEntity extends BaseEntity implements ToDto<UserDto> {
   })
   public phone?: string
 
+  @ApiPropertyOptional()
+  @Column({
+    type: 'int',
+    nullable: true
+  })
+  public shoppingCartId?: number
+
   //#region Relations
+
+  @ApiPropertyOptional({ type: () => ShoppingCartEntity })
+  @OneToOne(
+    () => ShoppingCartEntity,
+    shoppingCart => shoppingCart.user
+  )
+  public shoppingCart?: ShoppingCartEntity
 
   @ApiPropertyOptional({
     type: () => AddressEntity,
@@ -110,16 +124,6 @@ export class UserEntity extends BaseEntity implements ToDto<UserDto> {
     order => order.user
   )
   public orders?: OrderEntity[]
-
-  @ApiPropertyOptional({
-    type: () => ShoppingCartEntity,
-    isArray: true
-  })
-  @OneToMany(
-    () => ShoppingCartEntity,
-    shoppingCart => shoppingCart.user
-  )
-  public shoppingCarts?: ShoppingCartEntity[]
 
   @ApiPropertyOptional({
     type: () => RatingEntity,
