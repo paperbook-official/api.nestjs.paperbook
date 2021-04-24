@@ -35,6 +35,13 @@ export class UserDto extends BaseResponseDto {
   @ApiPropertyOptional()
   public phone?: string
 
+  //#region Relations
+
+  @ApiPropertyOptional({
+    type: () => ShoppingCartDto
+  })
+  public shoppingCart?: ShoppingCartDto
+
   @ApiPropertyOptional({
     type: () => AddressDto,
     isArray: true
@@ -54,16 +61,12 @@ export class UserDto extends BaseResponseDto {
   public orders?: OrderDto[]
 
   @ApiPropertyOptional({
-    type: () => ShoppingCartDto,
-    isArray: true
-  })
-  public shoppingCarts?: ShoppingCartDto[]
-
-  @ApiPropertyOptional({
     type: () => RatingDto,
     isArray: true
   })
   public ratings?: RatingDto[]
+
+  //#endregion
 
   public constructor(entity: UserEntity) {
     super(entity)
@@ -76,12 +79,10 @@ export class UserDto extends BaseResponseDto {
     this.phone = entity.phone
 
     // relations
+    this.shoppingCart = entity.shoppingCart?.toDto()
     this.addresses = entity.addresses?.map(address => address.toDto())
     this.products = entity.products?.map(product => product.toDto())
     this.orders = entity.orders?.map(order => order.toDto())
-    this.shoppingCarts = entity.shoppingCarts?.map(shoppingCart =>
-      shoppingCart.toDto()
-    )
     this.ratings = entity.ratings?.map(rating => rating.toDto())
   }
 }

@@ -17,6 +17,7 @@ async function bootstrap() {
 
   await app.listen(configService.get<number>('PORT') || 3000)
 }
+
 bootstrap()
 
 //#region Setup

@@ -49,6 +49,7 @@ export class RatingEntity extends BaseEntity implements ToDto<RatingDto> {
 
   //#region Relations
 
+  @ApiPropertyOptional({ type: () => UserEntity })
   @ManyToOne(
     () => UserEntity,
     user => user.ratings,
@@ -56,9 +57,7 @@ export class RatingEntity extends BaseEntity implements ToDto<RatingDto> {
   )
   public user?: UserEntity
 
-  @ApiPropertyOptional({
-    type: () => ProductEntity
-  })
+  @ApiPropertyOptional({ type: () => ProductEntity })
   @ManyToOne(
     () => ProductEntity,
     product => product.ratings,

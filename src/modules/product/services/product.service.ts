@@ -68,9 +68,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
     const categories: CategoryEntity[] = []
 
-    for (const id of categoryIds) {
-      const category = await this.categoryService.get(id)
-      categories.push(category)
+    if (categoryIds) {
+      for (const id of categoryIds) {
+        const category = await this.categoryService.get(id)
+        categories.push(category)
+      }
     }
 
     return await new ProductEntity({
@@ -92,11 +94,11 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   }
 
   /**
-   * Method that can get only product entity from the database
+   * Method that can get only product entity from the
    * @param productId stores the product id
    * @param crudRequest stores the joins, filter, etc
    * @throws {EntityNotFoundException} if the product was not found
-   * @returns the found entity
+   * @returns the found product entity
    */
   public async get(
     productId: number,
@@ -111,7 +113,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     }
 
     if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(productId)
+      throw new EntityNotFoundException(productId, ProductEntity)
     }
 
     return entity

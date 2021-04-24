@@ -1,12 +1,13 @@
 import {
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   UnauthorizedException
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
+
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
 /**
  * The app's main roles guard class
@@ -30,8 +31,6 @@ export class RolesGuard implements CanActivate {
 
     if (user.roles && hasRole) return true
 
-    throw new ForbiddenException(
-      'You have no permission to access those sources'
-    )
+    throw new ForbiddenException()
   }
 }

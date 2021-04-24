@@ -16,7 +16,7 @@ export class RemoveIdSearchPipe implements PipeTransform {
   public transform(crudRequest: CrudRequest): CrudRequest {
     crudRequest.parsed.search.$and = crudRequest.parsed.search.$and.filter(
       value => {
-        return !this.objectHasIdFilter(value)
+        return !RemoveIdSearchPipe.objectHasIdFilter(value)
       }
     )
     return crudRequest
@@ -27,7 +27,7 @@ export class RemoveIdSearchPipe implements PipeTransform {
    * @param value stores the object that will be tested
    * @returns true if the object has the "id" property, otherwise false
    */
-  private objectHasIdFilter(value: unknown): value is { id: number } {
+  private static objectHasIdFilter(value: unknown): value is { id: number } {
     return !!value && value.hasOwnProperty('id')
   }
 }

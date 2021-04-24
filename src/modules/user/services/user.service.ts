@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
@@ -10,12 +15,16 @@ import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-al
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
+import { ProductGroupEntity } from 'src/modules/product-group/entities/product-group.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
+import { RemoveProductGroupDto } from '../../product-group/models/remove-product-group.dto'
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
+import { AddProductGroupDto } from 'src/modules/product-group/models/add-product-group.dto'
 
+import { ProductGroupService } from '../../product-group/services/product-group.service'
 import { AddressService } from 'src/modules/address/services/address.service'
 import { OrderService } from 'src/modules/order/services/order.service'
 import { PasswordService } from 'src/modules/password/services/password.service'
@@ -34,7 +43,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
 export class UserService extends TypeOrmCrudService<UserEntity> {
   public constructor(
     @InjectRepository(UserEntity)
-    private readonly repository: Repository<UserEntity>,
+    repository: Repository<UserEntity>,
     private readonly passwordService: PasswordService,
     @Inject(forwardRef(() => AddressService))
     private readonly addressService: AddressService,
@@ -43,7 +52,8 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     @Inject(forwardRef(() => OrderService))
     private readonly orderService: OrderService,
     @Inject(forwardRef(() => ShoppingCartService))
-    private readonly shoppingCartService: ShoppingCartService
+    private readonly shoppingCartService: ShoppingCartService,
+    private readonly productGroupService: ProductGroupService
   ) {
     super(repository)
   }
@@ -150,7 +160,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   /**
    * Method that gets all the products of some user
    * @param userId stores the user id
-   * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no
@@ -359,6 +368,94 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     await UserEntity.update({ id: userId }, { isActive: true })
+  }
+
+  /**
+   * Method that can add some product in the user shopping cart
+   * @param userId stores the user id
+   * @param requestUser store the logged user data
+   * @param addProductGroupDto stores the product group entity data
+   */
+  public async addProductInShoppingCartByUserId(
+    userId: number,
+    requestUser: UserEntity,
+    addProductGroupDto: AddProductGroupDto
+  ): Promise<ProductGroupEntity> {
+    const user = await this.get(userId, requestUser)
+    const { productId, amount } = addProductGroupDto
+
+    let shoppingCart: ShoppingCartEntity
+    if (user.shoppingCartId !== undefined && user.shoppingCartId !== null) {
+      shoppingCart = await ShoppingCartEntity.findOne({
+        id: user.shoppingCartId
+      })
+    } else {
+      shoppingCart = await new ShoppingCartEntity({ userId, user }).save()
+      await UserEntity.update(
+        { id: userId },
+        { shoppingCartId: shoppingCart.id }
+      )
+    }
+
+    let productGroup = await ProductGroupEntity.findOne({
+      productId,
+      shoppingCartId: user.shoppingCartId
+    })
+    if (!productGroup) {
+      productGroup = await this.productGroupService.create({
+        shoppingCartId: shoppingCart.id,
+        amount,
+        productId
+      })
+    } else {
+      await this.productGroupService.update(productGroup.id, {
+        amount: productGroup.amount + amount
+      })
+      await productGroup.reload()
+    }
+
+    return productGroup
+  }
+
+  /**
+   * Method that can remove some product from the user shopping cart
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @param removeProductGroupDto stores an object that informs how many product will be remove
+   * and which product is
+   */
+  public async removeProductFromShoppingCartByUserId(
+    userId: number,
+    requestUser: UserEntity,
+    removeProductGroupDto: RemoveProductGroupDto
+  ): Promise<void> {
+    const { shoppingCartId } = await this.get(userId, requestUser)
+
+    if (shoppingCartId === undefined || shoppingCartId === null) {
+      throw new NotFoundException('User has no created shopping cart')
+    }
+
+    let { amount } = removeProductGroupDto
+    const { productId } = removeProductGroupDto
+
+    const productGroup = await ProductGroupEntity.findOne({
+      productId,
+      shoppingCartId
+    })
+
+    if (!productGroup || !productGroup.isActive) {
+      throw new NotFoundException('User has no any product of this type')
+    }
+
+    if (productGroup.amount - amount < 0) {
+      amount = productGroup.amount
+    } else {
+      amount = productGroup.amount - amount
+    }
+
+    await this.productGroupService.update(productGroup.id, {
+      amount
+    })
   }
 
   //#region Utils
