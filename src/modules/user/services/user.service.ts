@@ -200,13 +200,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * permission to execute this action
    * @returns all the found shopping cart entities
    */
-  public async getShoppingCartsByUserId(
+  public async getShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity,
     crudRequest?: CrudRequest
-  ): Promise<
-    GetManyDefaultResponse<ShoppingCartEntity> | ShoppingCartEntity[]
-  > {
+  ): Promise<ShoppingCartEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
     if (!entity || !entity.isActive) {
@@ -228,7 +226,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       ]
     }
 
-    return await this.shoppingCartService.getMany(crudRequest)
+    return await this.shoppingCartService.getOne(crudRequest)
   }
 
   /**
