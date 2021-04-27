@@ -83,6 +83,7 @@ export class ProductController {
   /**
    * Method that is called when the user access the "/products"
    * route with the "POST" method
+   *
    * @param requestUser stores the logged user data
    * @param createProductDto stores the new product data
    * @returns the created product data
@@ -108,6 +109,7 @@ export class ProductController {
   /**
    * Method that is called when the user access the "/products/less-than"
    * route with "GET" method passing the "maxPrice" query
+   *
    * @param maxPrice stores the max price value
    * @param crudRequest stores the filters, joins, etc
    * @returns all the found elements
@@ -142,6 +144,7 @@ export class ProductController {
   /**
    * Method that is called when the user access the "/products/offers"
    * route with "GET" method
+   *
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found products
    */
@@ -164,6 +167,7 @@ export class ProductController {
   /**
    * Method that is called when the user access the "/products/free-of-interests"
    * route with "GET" method
+   *
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found products
    */
@@ -184,8 +188,9 @@ export class ProductController {
   }
 
   /**
-   * Method that is called when the user access the "products/recent"
-   * route with "GET" method
+   * Method that is called when the user access the "products/recent" route
+   * with "GET" method
+   *
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found elements
    */
@@ -206,8 +211,9 @@ export class ProductController {
   }
 
   /**
-   * Method that is called when the user access the "/products/:id"
-   * route with the "GET" method
+   * Method that is called when the user access the "/products/:id" route
+   * with the "GET" method
+   *
    * @param productId stores the product id
    * @param crudRequest store the joins, filters, etc
    * @returns the found entity dto
@@ -224,6 +230,7 @@ export class ProductController {
   /**
    * Method that is called when the user access the "/products" route
    * with the "GET" method
+   *
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found entity dtos
    */
@@ -236,8 +243,9 @@ export class ProductController {
   }
 
   /**
-   * Method that is called when the user access the "/products/:id"
-   * route with the "PATCH" method
+   * Method that is called when the user access the "/products/:id" route
+   * with the "PATCH" method
+   *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    * @param updateProductPayload stores the new product data
@@ -259,8 +267,9 @@ export class ProductController {
   }
 
   /**
-   * Method that is called when the user access the "/products/:id"
-   * route with the "DELETE" method
+   * Method that is called when the user access the "/products/:id" route
+   * with the "DELETE" method
+   *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */
@@ -274,8 +283,9 @@ export class ProductController {
   }
 
   /**
-   * Method that is called when the user access the
-   * "/products/:id/disable" route with the "PUT" method
+   * Method that is called when the user access the "/products/:id/disable"
+   * route with the "PUT" method
+   *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */
@@ -291,8 +301,9 @@ export class ProductController {
   }
 
   /**
-   * Method that is called when the user access the
-   * "/products/:id/enable" route with the "PUT" method
+   * Method that is called when the user access the "/products/:id/enable"
+   * route with the "PUT" method
+   *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */

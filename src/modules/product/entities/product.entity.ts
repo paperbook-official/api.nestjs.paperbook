@@ -150,6 +150,7 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
 
   /**
    * Method that converts the entity to your dto
+   *
    * @returns the dto data
    */
   public toDto(): ProductDto {

@@ -24,6 +24,7 @@ bootstrap()
 
 /**
  * Function that set the global pipes to the application
+ *
  * @param app stores the application instance
  */
 function setupPipes(app: INestApplication): void {
@@ -32,6 +33,7 @@ function setupPipes(app: INestApplication): void {
 
 /**
  * Function that set the swagger to the application
+ *
  * @param app stores the application instance
  * @param configService stores the application settings
  */

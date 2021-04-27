@@ -78,6 +78,7 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
 
   /**
    * Method that converts the entity to your dto
+   *
    * @returns the dto data
    */
   public toDto(): OrderDto {

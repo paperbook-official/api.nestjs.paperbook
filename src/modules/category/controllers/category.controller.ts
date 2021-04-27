@@ -69,6 +69,7 @@ export class CategoryController {
   /**
    * Method that is called when the user access the "/category"
    * route with "POST" method
+   *
    * @param createCategoryPayload stores the new Category data
    * @returns the created Category data
    */
@@ -89,6 +90,7 @@ export class CategoryController {
   /**
    * Method that is called when the user access the "/category/:id"
    * route with "GET" method
+   *
    * @param categoryId stores the target category id
    * @param crudRequest stores the joins, filters, etc
    * @returns the found category entity dto
@@ -105,6 +107,7 @@ export class CategoryController {
   /**
    * Method that is called when the user access the "/category" route
    * with "GET" method
+   *
    * @param crudRequest stores the joins, filters, etc
    * @returns the found category entity dtos
    */
@@ -119,6 +122,7 @@ export class CategoryController {
   /**
    * Method that is called when the user access the "/category/:id"
    * route with "PATCH"
+   *
    * @param categoryId stores the target category id
    * @param updatedCategoryDto stores the new category data
    */
@@ -136,6 +140,7 @@ export class CategoryController {
   /**
    * Method that is called when the user access the "/category/:id"
    * route with "DELETE" method
+   *
    * @param categoryId stores the target user id
    */
   @ProtectTo(RolesEnum.Admin)
@@ -147,6 +152,7 @@ export class CategoryController {
   /**
    * Method that is called when the user access the "category/:id/disable"
    * route with "PUT" method
+   *
    * @param categoryId stores the target category id
    */
   @ApiOperation({ summary: 'Disables a single category' })
@@ -160,6 +166,7 @@ export class CategoryController {
   /**
    * Method that is called when the user access the "category/:id/enable"
    * route with "PUT" method
+   *
    * @param categoryId stores the target category id
    */
   @ApiOperation({ summary: 'Enables a single category' })

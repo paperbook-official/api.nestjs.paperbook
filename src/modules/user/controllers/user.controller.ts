@@ -77,6 +77,7 @@ export class UserController {
   /**
    * Method that is called when the user access the "/users" route with
    * the "POST" method
+   *
    * @param createdUserPayload stores the new user data
    * @returns the created user data
    */
@@ -96,6 +97,7 @@ export class UserController {
   /**
    * Method that is called when the user access the "/users/me" route
    * with "GET" method
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the logged user data
@@ -120,6 +122,7 @@ export class UserController {
   /**
    * Method that is called when the user access the "/users/:id"
    * route with "GET" method
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -139,6 +142,7 @@ export class UserController {
   /**
    * Method that is called when the user access the "/users" route with
    * "GET" method
+   *
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
@@ -153,7 +157,8 @@ export class UserController {
 
   /**
    * Method that is called when the user access the "/users/:id" route
-   * with "PATCH"
+   * with "PATCH" method
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
@@ -173,6 +178,7 @@ export class UserController {
   /**
    * Method that is called when the user access the "/users/:id" route
    * with "DELETE" method
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
@@ -188,6 +194,7 @@ export class UserController {
   /**
    * Method that is called when the user access the "users/:id/disable"
    * route with "PUT" method
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */
@@ -205,6 +212,7 @@ export class UserController {
   /**
    * Method that is called when the user access the "users/:id/enable"
    * route with "PUT" method
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    */

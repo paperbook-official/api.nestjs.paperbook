@@ -66,6 +66,7 @@ export class SearchController {
   /**
    * Method that is called when the user access the "/search" with
    * the "GET" method
+   *
    * @param name stores the product name
    * @param categoryId stores the category id
    * @param minPrice stores the product min price

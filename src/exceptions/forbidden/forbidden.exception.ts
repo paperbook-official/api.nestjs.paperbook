@@ -4,7 +4,9 @@ import { HttpException, HttpStatus } from '@nestjs/common'
  * Instantiate a ForbiddenException Exception.
  *
  * @example
- * `throw new ForbiddenException()`
+ * ```typescript
+ * throw new ForbiddenException()
+ * ```
  */
 export class ForbiddenException extends HttpException {
   constructor() {

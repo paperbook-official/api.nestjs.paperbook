@@ -23,6 +23,7 @@ export class JwtStrategyService extends PassportStrategy(Strategy) {
 
   /**
    * Method that extracts from the request the user data
+   *
    * @param user stores the user data
    * @returns the user data
    */

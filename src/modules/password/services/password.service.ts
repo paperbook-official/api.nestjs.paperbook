@@ -12,6 +12,7 @@ import * as bcryptjs from 'bcryptjs'
 export class PasswordService {
   /**
    * Method that can encrypt some password
+   *
    * @param password stores the password that will be encrypted
    */
   public async encryptPassword(password: string): Promise<string> {
@@ -21,6 +22,7 @@ export class PasswordService {
 
   /**
    * Method that can compare two passwords
+   *
    * @param password stores the password that the user is passing
    * @param hashedPassword stores the hashed password in the database
    */

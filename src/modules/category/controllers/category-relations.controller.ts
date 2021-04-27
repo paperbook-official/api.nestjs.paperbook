@@ -56,6 +56,7 @@ export class CategoryRelationsController {
 
   /** Method that is called when the user access the "/categories/:id/products"
    * route with "GET" method
+   *
    * @param categoryId stores the category id
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found product entity dtos

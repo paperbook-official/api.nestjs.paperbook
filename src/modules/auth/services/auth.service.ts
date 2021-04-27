@@ -24,6 +24,7 @@ export class AuthService {
 
   /**
    * Method that signs the user based in him data
+   *
    * @param requestUser stores the user data
    * @returns the token
    */
@@ -43,6 +44,7 @@ export class AuthService {
    * Method that validates if the user exists in the database and if
    * the password that is passing in parameters matches with the one in the
    * saved
+   *
    * @param loginPayload stores the data that will be tested
    */
   public async authenticate(loginPayload: LoginDto): Promise<UserEntity> {

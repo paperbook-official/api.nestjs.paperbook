@@ -7,6 +7,7 @@ import {
 
 /**
  * Decorator that validates the cpf value passed in the request body
+ *
  * @returns a function with the data needed to validated the cpf
  */
 export function IsCpf(
@@ -33,6 +34,7 @@ export function IsCpf(
 class IsCpfValidatorConstraint implements ValidatorConstraintInterface {
   /**
    * Method that validates if the cpf passed is valid or not
+   *
    * @param value stores the cpf value
    * @returns true if the cpf is valid, otherwise false
    */
@@ -87,6 +89,7 @@ class IsCpfValidatorConstraint implements ValidatorConstraintInterface {
 
   /**
    * Method that returns a default message informing which
+   *
    * error has thrown
    * @returns the error message
    */

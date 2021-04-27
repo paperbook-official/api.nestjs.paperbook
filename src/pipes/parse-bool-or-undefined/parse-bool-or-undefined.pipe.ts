@@ -11,6 +11,7 @@ export class ParseBoolOrUndefinedPipe implements PipeTransform {
   /**
    * Method that converts some string value to a boolean value or
    * undefined
+   *
    * @param value stores the string value that will be converted
    * @returns a boolean value or undefined
    */

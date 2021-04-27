@@ -35,6 +35,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 
   /**
    * Method that can create a new product group entity
+   *
    * @param createProductGroupDto stores the new product group data
    * @returns the created product group entity
    */
@@ -65,6 +66,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 
   /**
    * Method that can get only one product group from
+   *
    * @param productGroupId stores the product group id
    * @param crudRequest stores the joins, filters, etc
    * @returns the found product group entity
@@ -90,6 +92,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 
   /**
    * Method that can change the data of some product group entity
+   *
    * @param productGroupId stores the product group id
    * @param updateProductGroupDto store the product group new data
    */
@@ -111,6 +114,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 
   /**
    * Method that can delete some product group entity
+   *
    * @param productGroupId stores the product group id
    */
   public async delete(productGroupId: number): Promise<void> {
@@ -125,6 +129,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 
   /**
    * Method that can disables some product group
+   *
    * @param productGroupId stores the product group id
    */
   public async disable(productGroupId: number): Promise<void> {
@@ -146,6 +151,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 
   /**
    * Method that can enables some product group
+   *
    * @param productGroupId stores the product group id
    */
   public async enable(productGroupId: number): Promise<void> {

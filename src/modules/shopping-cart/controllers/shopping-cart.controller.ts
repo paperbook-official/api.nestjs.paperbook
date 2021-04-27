@@ -75,6 +75,7 @@ export class ShoppingCartController {
   /**
    * Method that is called when the user access the "/shopping-cart"
    * route with the "POST" method
+   *
    * @param requestUser stores the logged user data
    * @param createShoppingCartPayload stores the new shopping
    * cart entity data
@@ -101,6 +102,7 @@ export class ShoppingCartController {
   /**
    * Method that is called when the user access the "/shopping-cart/:id"
    * route with the "GET" method
+   *
    * @param shoppingCartId stores the shopping cart id
    * @param requestUser stores the logged user
    * @param crudRequest stores the joins, filters, etc
@@ -124,6 +126,7 @@ export class ShoppingCartController {
   /**
    * Method that is called when the user access the "/shopping-cart"
    * route with the "GET" method
+   *
    * @param requestUser stores the logged user
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found shopping cart entity proxies
@@ -144,6 +147,7 @@ export class ShoppingCartController {
   /**
    * Method that is called when the user access the "/shopping-cart/:id"
    * route with the "PATCH" method
+   *
    * @param shoppingCartId stores the shopping cart id
    * @param updateShoppingCartPayload stores the shopping cart new data
    */
@@ -164,6 +168,7 @@ export class ShoppingCartController {
   /**
    * Method that is called when the user access the "/shopping-cart/:id"
    * route with the "DELETE" method
+   *
    * @param shoppingCartId stores the shopping cart id
    * @param requestUser stores the logged user data
    */
@@ -179,6 +184,7 @@ export class ShoppingCartController {
   /**
    * Method that is called when the user access the
    * "/shopping-cart/:id/disable" route with the "PUT" method
+   *
    * @param shoppingCartId stores the shopping cart id
    */
   @ApiOperation({ summary: 'Disables a single shopping cart entity' })
@@ -192,6 +198,7 @@ export class ShoppingCartController {
   /**
    * Method that is called when the user access the
    * "/shopping-cart/:id/enable" route with the "PUT" method
+   *
    * @param shoppingCartId stores the shopping cart id
    */
   @ApiOperation({ summary: 'Enables a single shopping cart entity' })

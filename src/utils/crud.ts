@@ -3,6 +3,7 @@ import { GetManyDefaultResponse } from '@nestjsx/crud'
 /**
  * CPerforms the specified action for each element in an array or a
  * "GetManyDefaultResponse" class instance
+ *
  * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
@@ -23,6 +24,7 @@ export function forEach<T>(
  * Calls a defined callback function on each element of an array,
  * and returns an array or a "GetManyDefaultResponse" class instance
  * that contains the results
+ *
  * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
@@ -45,6 +47,7 @@ export function map<T, R>(
 /**
  * Returns the elements of an array or "GetManyDefaultResponse" class instance that
  * meet the condition specified in a callback function.
+ *
  * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
@@ -67,6 +70,7 @@ export function filter<T>(
 /**
  * Determines whether the specified callback function returns true for any element
  * of an array or "GetManyDefaultResponse" class instance
+ *
  * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
@@ -86,6 +90,7 @@ export function some<T>(
 /**
  * Determines whether all the members of an array or "GetManyDefaultResponse" class
  *  instance satisfy the specified test.
+ *
  * @param getManyDefaultResponse stores an array or a "GetManyDefaultResponse"
  * class instance
  * @param callback stores an action that will be called for each element of the
@@ -105,6 +110,7 @@ export function every<T>(
 /**
  * Function that validates if the object that is being passed in the "value"
  * parameter is a GetManyDefaultResponse class instance
+ *
  * @param value stores an object that will be tested
  * @returns true if "value" is a "GetManyDefaultResponse" class instance
  */

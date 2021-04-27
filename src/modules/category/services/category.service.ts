@@ -40,6 +40,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can save some entity in the database
+   *
    * @param createCategoryDto stores the new category data
    * @returns the created category
    */
@@ -55,6 +56,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can get one category entity
+   *
    * @param categoryId stores the category id
    * @param crudRequest stores the joins, filters, etc
    * @returns the found category entity
@@ -77,6 +79,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can get some category entities
+   *
    * @param crudRequest stores the joins, filters, etc
    * @returns the found category entities
    */
@@ -88,6 +91,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can get all the products related to some category
+   *
    * @param categoryId store the category id
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found products
@@ -122,6 +126,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can update some category
+   *
    * @param categoryId stores the category id
    * @param updateCategoryPayload stores the new category data
    */
@@ -142,6 +147,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can delete some category
+   *
    * @param categoryId stores the category id
    */
   public async delete(categoryId: number): Promise<void> {
@@ -158,6 +164,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can disable some category
+   *
    * @param categoryId stores the category id
    */
   public async disable(categoryId: number): Promise<void> {
@@ -180,6 +187,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
 
   /**
    * Method that can enable some category
+   *
    * @param categoryId stores the category id
    */
   public async enable(categoryId: number): Promise<void> {

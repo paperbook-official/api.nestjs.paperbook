@@ -7,7 +7,9 @@ import { BaseEntity } from 'src/common/base.entity'
  * Instantiate a EntityAlreadyDisabledException Exception.
  *
  * @example
- * `throw new EntityAlreadyDisabledException()`
+ * ```typescript
+ * throw new EntityAlreadyDisabledException()
+ * ```
  *
  * @param identifier stores the entity id or unique identifier value
  * @param type stores the entity type

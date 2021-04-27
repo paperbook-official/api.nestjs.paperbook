@@ -59,6 +59,7 @@ export class ShoppingCartEntity extends BaseEntity
 
   /**
    * Method that converts the shopping cart entity to your dto
+   *
    * @returns the dto data
    */
   public toDto(): ShoppingCartDto {
