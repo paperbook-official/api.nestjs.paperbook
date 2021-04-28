@@ -29,6 +29,7 @@ export class MediaController {
   /**
    * Method that is called when the user access the "media/upload"
    * route with "POST" method
+   *
    * @param file stores the file sent by the user
    * @returns an object with the file url
    */

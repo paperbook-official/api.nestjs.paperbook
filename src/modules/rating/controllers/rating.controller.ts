@@ -73,6 +73,7 @@ export class RatingController {
   /**
    * Method that is called when the user access the "/ratings"
    * route with the "POST" method
+   *
    * @param requestUser stores the logged user data
    * @param createRatingDto stores the rating data
    * @returns the created rating entity dto
@@ -95,6 +96,7 @@ export class RatingController {
   /**
    * Method that is called when the user access the "/ratings/:id"
    * route with the "GET" method
+   *
    * @param ratingId stores the rating id
    * @param crudRequest stores the joins, filters, etc
    * @returns the found rating entity dto
@@ -110,6 +112,7 @@ export class RatingController {
 
   /**
    * Method that can get rating entities
+   *
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found rating entity dtos
    */
@@ -124,6 +127,7 @@ export class RatingController {
   /**
    * Method that is called when the user access the "/ratings/:id"
    * route with the "PATCH" method
+   *
    * @param ratingId stores the rating id
    * @param requestUser stores the logged user data
    * @param updateRatingDto stores the rating entity new data
@@ -143,6 +147,7 @@ export class RatingController {
   /**
    * Method that is called when the user access the "/ratings/:id"
    * route with the "DELETE" method
+   *
    * @param ratingId stores the rating id
    * @param requestUser stores the logged user data
    */
@@ -158,6 +163,7 @@ export class RatingController {
   /**
    * Method that is called when the user access the
    * "/products/:id/disable" route with the "PUT" method
+   *
    * @param ratingId stores the product id
    * @param requestUser stores the logged user data
    */
@@ -175,6 +181,7 @@ export class RatingController {
   /**
    * Method that is called when the user access the
    * "/products/:id/enable" route with the "PUT" method
+   *
    * @param ratingId stores the product id
    * @param requestUser stores the logged user data
    */

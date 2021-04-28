@@ -76,6 +76,7 @@ export class RatingEntity extends BaseEntity implements ToDto<RatingDto> {
 
   /**
    * Method that converts the entity to your dto
+   *
    * @returns the dto data
    */
   public toDto(): RatingDto {

@@ -72,6 +72,7 @@ export class ProductGroupController {
   /**
    * Method that is called when the user access the "/product-groups"
    * route with the "POST" method
+   *
    * @param createProductGroupDto stores the new product group data
    * @returns the created product group entity dto
    */
@@ -92,6 +93,7 @@ export class ProductGroupController {
   /**
    * Method that is called when the user access the "/product-groups/:id"
    * route with the "GET" method
+   *
    * @param productGroupId stores the product group id
    * @param crudRequest stores the joins, filters, etc
    * @returns the found product group entity dto
@@ -111,9 +113,10 @@ export class ProductGroupController {
 
   /**
    * Method that is called when the user access the "/product-groups"
+   *
    * route with the "GET" method
-   * @param crudRequest
-   * @returns
+   * @param crudRequest stores the joins, filters, etc
+   * @returns all the found product group entity dtos
    */
   @ProtectTo(RolesEnum.Admin)
   @Get()
@@ -127,6 +130,7 @@ export class ProductGroupController {
   /**
    * Method that is called when the user access the "/product-groups/:id"
    * route with the "PATCH" method
+   *
    * @param productGroupId stores the product group id
    * @param updateProductGroupDto stores the product group new data
    */
@@ -144,6 +148,7 @@ export class ProductGroupController {
   /**
    * Method that is called when the user access the "/product-groups/:id"
    * route with the "DELETE" method
+   *
    * @param productGroupId stores the product group id
    */
   @ProtectTo(RolesEnum.Admin)
@@ -153,8 +158,9 @@ export class ProductGroupController {
   }
 
   /**
-   * Method that is called when the user access the
-   * "/products/:id/disable" route with the "PUT" method
+   * Method that is called when the user access the "/products/:id/disable"
+   * route with the "PUT" method
+   *
    * @param productId stores the product id
    */
   @ApiOperation({ summary: 'Disables a single product group entity' })
@@ -166,8 +172,9 @@ export class ProductGroupController {
   }
 
   /**
-   * Method that is called when the user access the
-   * "/products/:id/enable" route with the "PUT" method
+   * Method that is called when the user access the "/products/:id/enable"
+   * route with the "PUT" method
+   *
    * @param productId stores the product id
    */
   @ApiOperation({ summary: 'Enables a single product group entity' })

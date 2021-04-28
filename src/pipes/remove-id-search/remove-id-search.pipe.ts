@@ -10,6 +10,7 @@ import { CrudRequest } from '@nestjsx/crud'
 export class RemoveIdSearchPipe implements PipeTransform {
   /**
    * Method that removes objects with the "id" property
+   *
    * @param crudRequest stores the joins, filters, etc
    * @returns the new crud request
    */

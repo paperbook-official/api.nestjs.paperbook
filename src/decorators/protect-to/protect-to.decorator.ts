@@ -12,6 +12,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * Decorator that sets all the protect roles and it guards
+ *
  * @param roles stores the roles allowed to do something
  */
 export function ProtectTo(

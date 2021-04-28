@@ -67,6 +67,7 @@ export class ProductRelationsController {
   /**
    * Method that is called when the user access the "/products/:id/categories"
    * route with "GET" method
+   *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found category entities proxies
@@ -94,6 +95,7 @@ export class ProductRelationsController {
   /**
    * Method that is called when the user access the "/products/:id/ratings"
    * route with "GET" method
+   *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found rating entities proxies
@@ -121,6 +123,7 @@ export class ProductRelationsController {
   /**
    * Method that is called when the user access the "/products/:id/ratings"
    * route with "GET" method
+   *
    * @param productId stores the product id
    * @returns all the found rating entities proxies
    */

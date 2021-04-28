@@ -93,6 +93,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "/user/me/addresses" route
    * with the "GET" method
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found data
@@ -120,6 +121,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "/user/me/products" route
    * with the "GET" method
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found data
@@ -146,6 +148,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "/users/me/shopping-cart/add"
    * route with the "POST" method
+   *
    * @param requestUser stores the logged user data
    * @param addProductGroupDto stores the add product group dto
    */
@@ -173,6 +176,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "/users/me/shopping-cart/remove"
    * route with the "POST" method
+   *
    * @param requestUser stores the logged user data
    * @param removeProductGroupDto stores the remove product group dto
    */
@@ -199,6 +203,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "users/me/shopping-cart"
    * route with "GET" method
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found shopping cart entity dto
@@ -228,6 +233,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "/user/me/orders" route
    * with the "GET" method
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found data
@@ -255,6 +261,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "users/:id/addresses"
    * route with "GET" method
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user id
    * @param crudRequest stores the joins, filters, etc
@@ -284,6 +291,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "users/:id/products"
    * route with "GET" method
+   *
    * @param userId stores the user id
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found data
@@ -310,6 +318,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "/users/:id/shopping-cart/add"
    * route with the "POST" method
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param addProductGroupDto stores the add product group dto
@@ -339,6 +348,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "/users/:id/shopping-cart/remove"
    * route with the "POST" method
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param removeProductGroupDto stores the remove product group dto
@@ -366,6 +376,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "users/:id/shopping-cart"
    * route with "GET" method
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -397,6 +408,7 @@ export class UserRelationsController {
   /**
    * Method that is called when the user access the "users/:id/orders"
    * route with "GET" method
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user id
    * @param crudRequest stores the joins, filters, etc

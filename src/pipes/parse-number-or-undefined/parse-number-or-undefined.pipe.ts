@@ -11,6 +11,7 @@ export class ParseNumberOrUndefinedPipe implements PipeTransform {
   /**
    * Method that converts some string value toa number value or
    * undefined
+   *
    * @param value stores the string value that will be converted
    * @returns a number value or undefined
    */

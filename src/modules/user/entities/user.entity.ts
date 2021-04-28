@@ -146,6 +146,7 @@ export class UserEntity extends BaseEntity implements ToDto<UserDto> {
 
   /**
    * Method that converts the entity to your dto
+   *
    * @returns the dto data
    */
   public toDto(): UserDto {

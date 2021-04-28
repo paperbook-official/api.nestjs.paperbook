@@ -46,6 +46,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can save some entity in the database
+   *
    * @param requestUser stores the logged user data
    * @param createProductPayload stores the new product data
    * @throws {EntityNotFoundException} if the user was not found
@@ -84,6 +85,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can get a review of the product ratings
+   *
    * @param productId stores the product id
    * @returns the product review
    */
@@ -95,6 +97,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can get only product entity from the
+   *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filter, etc
    * @throws {EntityNotFoundException} if the product was not found
@@ -122,6 +125,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   /**
    * Method that can products with price less than the current price with
    * discount
+   *
    * @param maxPrice stores the max price
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found products
@@ -142,6 +146,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that searches products based on the query values
+   *
    * @param name stores the product name
    * @param categoryId stores the category id
    * @param minPrice stores the product min price
@@ -240,6 +245,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can get some offers
+   *
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found products
    */
@@ -259,6 +265,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can get some free of interests products
+   *
    * @param crudRequest stores the joins, filers, etc
    * @returns all the found products
    */
@@ -280,6 +287,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can get some products added recently
+   *
    * @param crudRequest stores the joins, filters, etc.
    * @returns all the found elements
    */
@@ -297,6 +305,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can get all the categories of some product
+   *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found categories
@@ -331,6 +340,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can get the ratings of some product
+   *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found rating entities
@@ -361,6 +371,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can change the data of some product
+   *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    * @param updateProductPayload stores the product new data
@@ -394,6 +405,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can remove some product from the database
+   *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */
@@ -416,6 +428,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can disables some product
+   *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */
@@ -442,6 +455,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
   /**
    * Method that can enables some product
+   *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    */

@@ -2,6 +2,7 @@ import { ApiBody } from '@nestjs/swagger'
 
 /**
  * Decorator that says to swagger how a file look like
+ *
  * @param fileName stores the swagger field name
  */
 export const ApiFile = (fileName = 'file'): MethodDecorator => (

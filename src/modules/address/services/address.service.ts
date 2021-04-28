@@ -28,7 +28,7 @@ import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception
 export class AddressService extends TypeOrmCrudService<AddressEntity> {
   public constructor(
     @InjectRepository(AddressEntity)
-    private readonly repository: Repository<AddressEntity>,
+    repository: Repository<AddressEntity>,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService
   ) {
@@ -37,6 +37,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
 
   /**
    * Method that can save some entity in the database
+   *
    * @param requestUser stores the logged user data
    * @param createAddressDto stores the new address data
    * @returns the created address entity
@@ -59,6 +60,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
 
   /**
    * Method that can get one address entity
+   *
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -86,6 +88,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
 
   /**
    * Method that can get some addresses entities
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found address entities
@@ -109,6 +112,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
 
   /**
    * Method that can update some address
+   *
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
    * @param updatedAddressDto stores the new address data
@@ -133,6 +137,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
 
   /**
    * Method that can delete some address
+   *
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
    */
@@ -155,6 +160,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
 
   /**
    * Method that can disable some address
+   *
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
    */
@@ -181,6 +187,7 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
 
   /**
    * Method that can enable some address
+   *
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
    */

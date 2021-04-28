@@ -40,6 +40,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
   /**
    * Method that can save some order entity in the database
+   *
    * @param requestUser stores the logged user data
    * @param createOrderPayload stores the order new data
    * @returns the created order
@@ -64,6 +65,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
   /**
    * Method that can get only on order entity
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -95,6 +97,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
   /**
    * Method that can get some orders entities
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found elements
@@ -119,6 +122,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
   /**
    * Method that can change some data of some entity
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    * @param updateOrderPayload stores the new order data
@@ -143,6 +147,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
   /**
    * Method that removes some order entity
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    */
@@ -162,6 +167,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
   /**
    * Method that can disable some entity
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    */
@@ -188,6 +194,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
   /**
    * Method that can enable some entity
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user
    */

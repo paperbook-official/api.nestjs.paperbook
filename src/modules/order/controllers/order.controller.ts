@@ -73,6 +73,7 @@ export class OrderController {
   /**
    * Method that is called when the user access the "orders" route
    * with "POST" method
+   *
    * @param requestUser stores the logged user data
    * @param createOrderPayload stores the new order data
    * @returns the new order
@@ -98,6 +99,7 @@ export class OrderController {
   /**
    * Method that is called when the user access the "orders/:id"
    * route with "GET" method
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -121,6 +123,7 @@ export class OrderController {
   /**
    * Method that is called when the user access the "orders" route
    * with "GET" method
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found order entity dtos
@@ -138,6 +141,7 @@ export class OrderController {
   /**
    * Method that is called when the user access the "orders/:id"
    * route with "PATCH" method
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    * @param updateOrderPayload stores the new order data
@@ -157,6 +161,7 @@ export class OrderController {
   /**
    * Method that is called when the user access the "orders/:id"
    * route with "DELETE" method
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    */
@@ -172,6 +177,7 @@ export class OrderController {
   /**
    * Method that is called when the user access the "orders/:id"
    * route with "PUT" method
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user
    */
@@ -189,6 +195,7 @@ export class OrderController {
   /**
    * Method that is called when the user access the "orders/:id"
    * route with "PUT" method
+   *
    * @param orderId stores the order id
    * @param requestUser stores the logged user
    */

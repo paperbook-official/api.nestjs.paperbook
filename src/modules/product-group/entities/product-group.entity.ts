@@ -62,6 +62,7 @@ export class ProductGroupEntity extends BaseEntity {
 
   /**
    * Method that converts the entity to your dto
+   *
    * @returns the dto data
    */
   public toDto(): ProductGroupDto {

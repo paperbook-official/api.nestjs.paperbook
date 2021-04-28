@@ -23,6 +23,7 @@ export class LocalStrategyService extends PassportStrategy(Strategy) {
 
   /**
    * Method that validates if the user that want to connect exists in the database
+   *
    * @param username stores the email data
    * @param password stores the password data
    * @returns the user data

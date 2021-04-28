@@ -76,6 +76,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can get one user entity
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -120,6 +121,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that gets all the addresses of some user
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -159,6 +161,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that gets all the products of some user
+   *
    * @param userId stores the user id
    * @param crudRequest stores the joins, filters, etc
    * @throws {EntityNotFoundException} if the user was not found
@@ -192,6 +195,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that gets all the shopping carts related with some user
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -231,6 +235,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that gets all the orders of some user
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -270,6 +275,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can update some user
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
@@ -297,6 +303,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method can delete some user
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @throws {EntityNotFoundException} if the user was not found
@@ -318,6 +325,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can disable some user
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @throws {EntityNotFoundException} if the user was not found
@@ -344,6 +352,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can enable some user
+   *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @throws {EntityNotFoundException} if the user was not found
@@ -370,6 +379,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can add some product in the user shopping cart
+   *
    * @param userId stores the user id
    * @param requestUser store the logged user data
    * @param addProductGroupDto stores the product group entity data
@@ -417,6 +427,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can remove some product from the user shopping cart
+   *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
    * @param removeProductGroupDto stores an object that informs how many product will be remove
@@ -446,20 +457,21 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     if (productGroup.amount - amount < 0) {
-      amount = productGroup.amount
+      amount = 0
+      await this.productGroupService.delete(productGroup.id)
     } else {
       amount = productGroup.amount - amount
+      await this.productGroupService.update(productGroup.id, {
+        amount
+      })
     }
-
-    await this.productGroupService.update(productGroup.id, {
-      amount
-    })
   }
 
   //#region Utils
 
   /**
    * Method that validates if the user can access some source
+   *
    * @param userId stores the found entity
    * @param requestUser stores the logged user
    * @returns true if the user can access some source, otherwise false
@@ -470,6 +482,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can test if the request user has the type "ADMIM"
+   *
    * @param requestUser stores the user basic data
    */
   public isAdminUser(requestUser: UserEntity): boolean {
@@ -482,6 +495,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
   /**
    * Method that can compare roles
+   *
    * @param roles stores the roles that will be compared
    * @param targetRoles stores one or more roles that will be compared as well
    */

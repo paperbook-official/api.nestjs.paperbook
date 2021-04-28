@@ -72,6 +72,7 @@ export class AddressController {
   /**
    * Method that is called when the user access the "/addresses"
    * route with "POST" method
+   *
    * @param requestUser stores the logged user data
    * @param createAddressDto stores the new address data
    * @returns the created address entity dto
@@ -97,6 +98,7 @@ export class AddressController {
   /**
    * Method that is called when the user access the "/addresses/:id"
    * route with "GET" method
+   *
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
@@ -120,6 +122,7 @@ export class AddressController {
   /**
    * Method that is called when the user access the "/addresses" route
    * with "GET" method
+   *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * @returns the found address entity dtos
@@ -137,6 +140,7 @@ export class AddressController {
   /**
    * Method that is called when the user access the "/addresses/:id"
    * route with "PATCH"
+   *
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
    * @param updatedAddressDto stores the new address data
@@ -156,6 +160,7 @@ export class AddressController {
   /**
    * Method that is called when the user access the "/addresses/:id"
    * route with "DELETE" method
+   *
    * @param addressId stores the target user id
    * @param requestUser stores the logged user data
    */
@@ -171,6 +176,7 @@ export class AddressController {
   /**
    * Method that is called when the user access the "addresses/:id/disable"
    * route with "PUT" method
+   *
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
    */
@@ -188,6 +194,7 @@ export class AddressController {
   /**
    * Method that is called when the user access the "addresses/:id/enable"
    * route with "PUT" method
+   *
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
    */

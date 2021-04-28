@@ -34,6 +34,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
   /**
    * Method that can create a new shopping cart entity
+   *
    * @param requestUser stores the logged user data
    * @param createShoppingCartDto stores the new shopping
    * cart entity data
@@ -59,6 +60,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
   /**
    * Method that can get only on shopping cart entity
+   *
    * @param shoppingCartId stores the shopping cart id
    * @param requestUser stores the logged user
    * @param crudRequest stores the joins, filters, etc
@@ -90,6 +92,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
   /**
    * Method that can get shopping cart entities
+   *
    * @param requestUser stores the logged user
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found shopping cart entities
@@ -115,6 +118,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
   /**
    * Method that can change data of some shopping cart entity
+   *
    * @param shoppingCartId stores the shopping cart id
    * @param updateShoppingCartPayload stores the shopping cart new data
    */
@@ -136,6 +140,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
   /**
    * Method that can delete some shopping cart entity
+   *
    * @param shoppingCartId stores the shopping cart id
    * @param requestUser stores the logged user data
    */
@@ -158,6 +163,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
   /**
    * Method that can disables some shopping cart entity
+   *
    * @param shoppingCartId stores the shopping cart entity id
    */
   public async disable(shoppingCartId: number): Promise<void> {
@@ -179,6 +185,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
   /**
    * Method that can enables some shopping cart entity
+   *
    * @param shoppingCartId stores the shopping cart entity id
    */
   public async enable(shoppingCartId: number): Promise<void> {

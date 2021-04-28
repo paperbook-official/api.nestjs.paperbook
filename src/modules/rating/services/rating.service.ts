@@ -39,6 +39,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
   /**
    * Method that can create a new rating entity
+   *
    * @param requestUser stores the logged user data
    * @param createRatingPayload stores the new rating data
    * @returns the created rating entity
@@ -65,6 +66,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
   /**
    * Method that can only one rating entity
+   *
    * @param ratingId stores the rating id
    * @param crudRequest stores the joins, filters, etc
    * @returns the found rating entity
@@ -90,6 +92,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
   /**
    * Method that can get a review of the product ratings
+   *
    * @param productId stores the product id
    * @returns the product review
    */
@@ -130,6 +133,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
   /**
    * Method that can change some entity data
+   *
    * @param ratingId stores the rating entity id
    * @param requestUser stores the logged user data
    * @param updateRatingPayload stores the rating entity new data
@@ -154,6 +158,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
   /**
    * Method that can remove some rating entity from the database
+   *
    * @param ratingId stores the rating entity id
    * @param requestUser stores the logged user data
    */
@@ -176,6 +181,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
   /**
    * Method that can disables some rating entity
+   *
    * @param ratingId stores the rating entity id
    * @param requestUser stores the logged user data
    */
@@ -202,6 +208,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
 
   /**
    * Method that can disables some rating entity
+   *
    * @param ratingId stores the rating entity id
    * @param requestUser stores the logged user data
    */

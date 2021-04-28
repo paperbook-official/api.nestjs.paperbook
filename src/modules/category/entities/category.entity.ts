@@ -45,6 +45,7 @@ export class CategoryEntity extends BaseEntity implements ToDto<CategoryDto> {
 
   /**
    * Method that converts the entity to your dto
+   *
    * @returns the dto data
    */
   public toDto(): CategoryDto {

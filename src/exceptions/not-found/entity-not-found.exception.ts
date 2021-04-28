@@ -7,7 +7,9 @@ import { BaseEntity } from 'src/common/base.entity'
  * Instantiate a EntityNotFoundException Exception.
  *
  * @example
- * `throw new EntityNotFoundException()`
+ * ```typescript
+ * throw new EntityNotFoundException()
+ * ```
  *
  * @param identifier stores the entity id or unique identifier value
  * @param type stores the entity type

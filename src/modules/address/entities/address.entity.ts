@@ -100,6 +100,7 @@ export class AddressEntity extends BaseEntity implements ToDto<AddressDto> {
 
   /**
    * Method that converts the entity to you dto
+   *
    * @returns the dto data
    */
   public toDto(): AddressDto {

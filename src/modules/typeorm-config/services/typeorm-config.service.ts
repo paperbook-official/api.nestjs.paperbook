@@ -15,6 +15,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
 
   /**
    * Method to create the typeorm settings
+   *
    * @returns an objects with the options
    */
   public createTypeOrmOptions(): TypeOrmModuleOptions {
