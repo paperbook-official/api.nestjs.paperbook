@@ -457,14 +457,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     if (productGroup.amount - amount < 0) {
-      amount = productGroup.amount
+      amount = 0
+      await this.productGroupService.delete(productGroup.id)
     } else {
       amount = productGroup.amount - amount
+      await this.productGroupService.update(productGroup.id, {
+        amount
+      })
     }
-
-    await this.productGroupService.update(productGroup.id, {
-      amount
-    })
   }
 
   //#region Utils
