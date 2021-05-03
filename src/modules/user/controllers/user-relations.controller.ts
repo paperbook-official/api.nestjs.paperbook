@@ -28,9 +28,8 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from '../entities/user.entity'
 
-import { AddProductGroupDto } from '../../product-group/models/add-product-group.dto'
 import { ProductGroupDto } from '../../product-group/models/product-group.dto'
-import { RemoveProductGroupDto } from '../../product-group/models/remove-product-group.dto'
+import { RemoveProductGroupDto } from '../../shopping-cart/models/remove-product-group.dto'
 import { UserDto } from '../models/user.dto'
 import {
   AddressDto,
@@ -44,6 +43,7 @@ import {
   GetManyProductDtoResponse,
   ProductDto
 } from 'src/modules/product/models/product.dto'
+import { AddProductGroupDto } from 'src/modules/shopping-cart/models/add-product-group.dto'
 import { ShoppingCartDto } from 'src/modules/shopping-cart/models/shopping-cart.dto'
 
 import { UserService } from '../services/user.service'

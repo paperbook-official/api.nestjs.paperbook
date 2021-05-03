@@ -19,10 +19,10 @@ import { ProductGroupEntity } from 'src/modules/product-group/entities/product-g
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
-import { RemoveProductGroupDto } from '../../product-group/models/remove-product-group.dto'
+import { RemoveProductGroupDto } from '../../shopping-cart/models/remove-product-group.dto'
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
-import { AddProductGroupDto } from 'src/modules/product-group/models/add-product-group.dto'
+import { AddProductGroupDto } from 'src/modules/shopping-cart/models/add-product-group.dto'
 
 import { ProductGroupService } from '../../product-group/services/product-group.service'
 import { AddressService } from 'src/modules/address/services/address.service'
