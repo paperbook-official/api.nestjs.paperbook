@@ -3,7 +3,6 @@ import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
-import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductGroupEntity } from 'src/modules/product-group/entities/product-group.entity'
 import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
@@ -98,16 +97,6 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
     { onDelete: 'CASCADE' }
   )
   public user?: UserEntity
-
-  @ApiPropertyOptional({
-    type: () => OrderEntity,
-    isArray: true
-  })
-  @OneToMany(
-    () => OrderEntity,
-    order => order.product
-  )
-  public orders?: OrderEntity[]
 
   @ApiPropertyOptional({
     type: () => CategoryEntity,

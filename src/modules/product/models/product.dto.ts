@@ -5,7 +5,6 @@ import { ProductEntity } from '../entities/product.entity'
 import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
 import { BaseResponseDto } from 'src/common/base-response.dto'
 import { CategoryDto } from 'src/modules/category/models/category.dto'
-import { OrderDto } from 'src/modules/order/models/order.dto'
 import { ProductGroupDto } from 'src/modules/product-group/models/product-group.dto'
 import { RatingDto } from 'src/modules/rating/models/rating.dto'
 import { UserDto } from 'src/modules/user/models/user.dto'
@@ -49,12 +48,6 @@ export class ProductDto extends BaseResponseDto {
   public user?: UserDto
 
   @ApiPropertyOptional({
-    type: () => OrderDto,
-    isArray: true
-  })
-  public orders?: OrderDto[]
-
-  @ApiPropertyOptional({
     type: () => CategoryDto,
     isArray: true
   })
@@ -87,7 +80,6 @@ export class ProductDto extends BaseResponseDto {
 
     // relations
     this.user = entity.user?.toDto()
-    this.orders = entity.orders?.map(order => order.toDto())
     this.categories = entity.categories?.map(productCategory =>
       productCategory.toDto()
     )

@@ -467,6 +467,13 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
   }
 
+  public async finishShoppingCartByUserId(
+    userId: number,
+    requestUser: UserEntity
+  ): Promise<void> {
+    return
+  }
+
   //#region Utils
 
   /**

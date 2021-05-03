@@ -4,7 +4,7 @@ import { OrderEntity } from '../entities/order.entity'
 
 import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
 import { BaseResponseDto } from 'src/common/base-response.dto'
-import { ProductDto } from 'src/modules/product/models/product.dto'
+import { ProductGroupDto } from 'src/modules/product-group/models/product-group.dto'
 import { UserDto } from 'src/modules/user/models/user.dto'
 
 import { OrderStatus } from 'src/models/enums/order-status.enum'
@@ -30,8 +30,8 @@ export class OrderDto extends BaseResponseDto {
   @ApiPropertyOptional({ type: () => UserDto })
   public user?: UserDto
 
-  @ApiPropertyOptional({ type: () => ProductDto })
-  public product?: ProductDto
+  @ApiPropertyOptional({ type: () => ProductGroupDto, isArray: true })
+  public productGroups?: ProductGroupDto[]
 
   public constructor(entity: OrderEntity) {
     super(entity)
@@ -43,7 +43,7 @@ export class OrderDto extends BaseResponseDto {
 
     // relations
     this.user = entity.user?.toDto()
-    this.product = entity.product?.toDto()
+    this.productGroups = entity.productGroups?.map(order => order.toDto())
   }
 }
 

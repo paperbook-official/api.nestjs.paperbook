@@ -30,7 +30,7 @@ import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception
 export class OrderService extends TypeOrmCrudService<OrderEntity> {
   public constructor(
     @InjectRepository(OrderEntity)
-    private readonly repository: Repository<OrderEntity>,
+    repository: Repository<OrderEntity>,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly productService: ProductService
@@ -49,15 +49,13 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     requestUser: UserEntity,
     createOrderPayload: CreateOrderDto
   ): Promise<OrderEntity> {
-    const { userId, productId } = createOrderPayload
+    const { userId } = createOrderPayload
 
     const user = await this.userService.get(userId, requestUser)
-    const product = await this.productService.get(productId)
 
     const entity = new OrderEntity({
       ...createOrderPayload,
-      user,
-      product
+      user
     })
 
     return await entity.save()

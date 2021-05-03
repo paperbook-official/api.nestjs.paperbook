@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne } from 'typeorm'
+import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
+import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
@@ -50,6 +51,14 @@ export class ProductGroupEntity extends BaseEntity {
     { onDelete: 'CASCADE' }
   )
   public shoppingCart?: ShoppingCartEntity
+
+  @ApiPropertyOptional({ type: () => OrderEntity })
+  @ManyToMany(
+    () => OrderEntity,
+    order => order.productGroups,
+    { onDelete: 'CASCADE' }
+  )
+  public order?: OrderEntity
 
   //#endregion
 

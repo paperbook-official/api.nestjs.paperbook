@@ -200,6 +200,18 @@ export class UserRelationsController {
     )
   }
 
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Post('me/shopping-cart/finish')
+  @HttpCode(200)
+  public async finishMyShoppingCart(
+    @RequestUser() requestUser: UserEntity
+  ): Promise<void> {
+    await this.userService.finishShoppingCartByUserId(
+      requestUser.id,
+      requestUser
+    )
+  }
+
   /**
    * Method that is called when the user access the "users/me/shopping-cart"
    * route with "GET" method
@@ -371,6 +383,16 @@ export class UserRelationsController {
       requestUser,
       removeProductGroupDto
     )
+  }
+
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Post(':id/shopping-cart/finish')
+  @HttpCode(200)
+  public async finishShoppingCartByUserId(
+    @Param('id') userId: number,
+    @RequestUser() requestUser: UserEntity
+  ): Promise<void> {
+    await this.userService.finishShoppingCartByUserId(userId, requestUser)
   }
 
   /**
