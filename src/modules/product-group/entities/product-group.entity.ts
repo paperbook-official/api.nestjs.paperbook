@@ -27,12 +27,19 @@ export class ProductGroupEntity extends BaseEntity {
   })
   public productId: number
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @Column({
     type: 'int',
-    nullable: false
+    nullable: true
   })
-  public shoppingCartId: number
+  public shoppingCartId?: number
+
+  @ApiPropertyOptional()
+  @Column({
+    type: 'int',
+    nullable: true
+  })
+  public orderId?: number
 
   //#region Relations
 
@@ -53,7 +60,7 @@ export class ProductGroupEntity extends BaseEntity {
   public shoppingCart?: ShoppingCartEntity
 
   @ApiPropertyOptional({ type: () => OrderEntity })
-  @ManyToMany(
+  @ManyToOne(
     () => OrderEntity,
     order => order.productGroups,
     { onDelete: 'CASCADE' }

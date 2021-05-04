@@ -39,7 +39,6 @@ export class OrderDto extends BaseResponseDto {
     this.status = entity.status
     this.trackingCode = entity.trackingCode
     this.userId = entity.userId
-    this.productId = entity.productId
 
     // relations
     this.user = entity.user?.toDto()

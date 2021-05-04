@@ -22,9 +22,10 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: false
+    nullable: true,
+    default: OrderStatus.Confirmed
   })
-  public status: OrderStatus
+  public status?: OrderStatus
 
   @ApiProperty()
   @Column({
@@ -41,13 +42,6 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
     nullable: false
   })
   public userId: number
-
-  @ApiProperty()
-  @Column({
-    type: 'int',
-    nullable: false
-  })
-  public productId: number
 
   //#region Relations
 
