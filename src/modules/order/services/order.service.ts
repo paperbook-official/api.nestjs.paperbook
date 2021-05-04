@@ -14,7 +14,6 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
 import { CreateOrderDto } from '../models/create-order.dto'
 import { UpdateOrderDto } from '../models/update-order.dto'
 
-import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { some } from 'src/utils/crud'
@@ -32,8 +31,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     @InjectRepository(OrderEntity)
     repository: Repository<OrderEntity>,
     @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService,
-    private readonly productService: ProductService
+    private readonly userService: UserService
   ) {
     super(repository)
   }
@@ -55,6 +53,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
 
     const entity = new OrderEntity({
       ...createOrderPayload,
+      trackingCode: this.generateTrackingCode(),
       user
     })
 
@@ -74,13 +73,9 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<OrderEntity> {
-    let entity: OrderEntity
-
-    if (crudRequest) {
-      entity = await super.getOne(crudRequest).catch(() => undefined)
-    } else {
-      entity = await OrderEntity.findOne({ id: orderId })
-    }
+    const entity = crudRequest
+      ? await super.getOne(crudRequest).catch(() => undefined)
+      : await OrderEntity.findOne({ id: orderId })
 
     if (!entity || !entity.isActive) {
       throw new EntityNotFoundException(orderId, OrderEntity)
@@ -212,5 +207,18 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     }
 
     await OrderEntity.update({ id: orderId }, { isActive: true })
+  }
+
+  /**
+   * Method that creates a new tracking code string
+   *
+   * @returns the generated tracking code
+   */
+  public generateTrackingCode(): string {
+    return 'xxxxxxxxxxxxx'.replace(/[x]/g, (c: string) => {
+      const r = (Math.random() * 16) | 0
+      const v = c == 'x' ? r : (r & 0x3) | 0x8
+      return v.toString(16).toUpperCase()
+    })
   }
 }

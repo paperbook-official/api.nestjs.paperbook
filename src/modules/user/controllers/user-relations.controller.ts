@@ -205,11 +205,12 @@ export class UserRelationsController {
   @HttpCode(200)
   public async finishMyShoppingCart(
     @RequestUser() requestUser: UserEntity
-  ): Promise<void> {
-    await this.userService.finishShoppingCartByUserId(
+  ): Promise<OrderDto> {
+    const entity = await this.userService.finishShoppingCartByUserId(
       requestUser.id,
       requestUser
     )
+    return entity.toDto()
   }
 
   /**
