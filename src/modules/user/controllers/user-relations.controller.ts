@@ -200,6 +200,18 @@ export class UserRelationsController {
     )
   }
 
+  /**
+   * Method that is called when the user access the "/users/me/shopping-cart/finish"
+   *
+   * @param requestUser stores the logged user data
+   * @returns the created order entity dto
+   */
+  @ApiOperation({
+    description: 'Creates the order entity based on the shopping cart data'
+  })
+  @ApiOkResponse({
+    description: 'Retrieves a the created order'
+  })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/finish')
   @HttpCode(200)
@@ -386,14 +398,31 @@ export class UserRelationsController {
     )
   }
 
+  /**
+   * Method that is called when the user access the "/users/:id/shopping-cart/finish"
+   *
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @returns the created order entity dto
+   */
+  @ApiOperation({
+    description: 'Creates the order entity based on the shopping cart data'
+  })
+  @ApiOkResponse({
+    description: 'Retrieves a the created order'
+  })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/finish')
   @HttpCode(200)
   public async finishShoppingCartByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity
-  ): Promise<void> {
-    await this.userService.finishShoppingCartByUserId(userId, requestUser)
+  ): Promise<OrderDto> {
+    const entity = await this.userService.finishShoppingCartByUserId(
+      userId,
+      requestUser
+    )
+    return entity.toDto()
   }
 
   /**

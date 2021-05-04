@@ -479,6 +479,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
   }
 
+  /**
+   * Method that creates a new order based on the shopping cart and
+   * deletes the shopping cart
+   *
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @returns the created order entity
+   */
   public async finishShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity
