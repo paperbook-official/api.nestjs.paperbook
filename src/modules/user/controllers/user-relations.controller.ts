@@ -269,7 +269,7 @@ export class UserRelationsController {
     description: 'Gets all the logged user orders',
     type: GetManyOrderDtoResponse
   })
-  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/orders')
   public async getMyOrders(
     @RequestUser() requestUser: UserEntity,
