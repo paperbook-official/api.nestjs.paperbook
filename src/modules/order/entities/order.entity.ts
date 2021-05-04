@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne } from 'typeorm'
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
 
 import { BaseEntity } from 'src/common/base.entity'
-import { ProductEntity } from 'src/modules/product/entities/product.entity'
+import { ProductGroupEntity } from 'src/modules/product-group/entities/product-group.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { OrderDto } from '../models/order.dto'
@@ -22,9 +22,10 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: false
+    nullable: true,
+    default: OrderStatus.Confirmed
   })
-  public status: OrderStatus
+  public status?: OrderStatus
 
   @ApiProperty()
   @Column({
@@ -42,13 +43,6 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
   })
   public userId: number
 
-  @ApiProperty()
-  @Column({
-    type: 'int',
-    nullable: false
-  })
-  public productId: number
-
   //#region Relations
 
   @ApiPropertyOptional({ type: () => UserEntity })
@@ -59,13 +53,15 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
   )
   public user?: UserEntity
 
-  @ApiPropertyOptional({ type: () => ProductEntity })
-  @ManyToOne(
-    () => ProductEntity,
-    product => product.orders,
-    { onDelete: 'CASCADE' }
+  @ApiPropertyOptional({
+    type: () => ProductGroupEntity,
+    isArray: true
+  })
+  @OneToMany(
+    () => ProductGroupEntity,
+    productGroup => productGroup.order
   )
-  public product?: ProductEntity
+  public productGroups?: ProductGroupEntity[]
 
   //#endregion
 

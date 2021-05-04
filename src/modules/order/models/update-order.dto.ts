@@ -1,7 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsEnum, IsOptional, IsString } from 'class-validator'
-import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+import { IsEnum, IsOptional } from 'class-validator'
 import { OrderStatus } from 'src/models/enums/order-status.enum'
 
 /**
@@ -16,9 +15,4 @@ export class UpdateOrderDto {
     message: 'It is required to send a valid order number'
   })
   public status?: OrderStatus
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString({ message: DefaultValidationMessages.IsString })
-  public trackingCode?: string
 }

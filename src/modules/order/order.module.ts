@@ -7,12 +7,10 @@ import { OrderService } from './services/order.service'
 
 import { OrderController } from './controllers/order.controller'
 
-import { ProductModule } from '../product/product.module'
 import { UserModule } from '../user/user.module'
 
 @Module({
   imports: [
-    forwardRef(() => ProductModule),
     forwardRef(() => UserModule),
     TypeOrmModule.forFeature([OrderEntity])
   ],

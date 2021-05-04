@@ -19,10 +19,10 @@ import { ProductGroupEntity } from 'src/modules/product-group/entities/product-g
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { ShoppingCartEntity } from 'src/modules/shopping-cart/entities/shopping-cart.entity'
 
-import { RemoveProductGroupDto } from '../../product-group/models/remove-product-group.dto'
+import { RemoveProductGroupDto } from '../../shopping-cart/models/remove-product-group.dto'
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
-import { AddProductGroupDto } from 'src/modules/product-group/models/add-product-group.dto'
+import { AddProductGroupDto } from 'src/modules/shopping-cart/models/add-product-group.dto'
 
 import { ProductGroupService } from '../../product-group/services/product-group.service'
 import { AddressService } from 'src/modules/address/services/address.service'
@@ -219,18 +219,29 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       throw new ForbiddenException()
     }
 
-    crudRequest.parsed.search = {
-      $and: [
-        ...crudRequest.parsed.search.$and,
-        {
-          userId: {
-            $eq: userId
+    let shoppingCart: ShoppingCartEntity
+
+    if (crudRequest) {
+      crudRequest.parsed.search = {
+        $and: [
+          ...crudRequest.parsed.search.$and,
+          {
+            userId: {
+              $eq: userId
+            }
           }
-        }
-      ]
+        ]
+      }
+      shoppingCart = await this.shoppingCartService.getOne(crudRequest)
+    } else {
+      shoppingCart = await ShoppingCartEntity.findOne({ userId })
     }
 
-    return await this.shoppingCartService.getOne(crudRequest)
+    if (!shoppingCart || !shoppingCart.isActive) {
+      throw new NotFoundException('This user has no shopping cart')
+    }
+
+    return shoppingCart
   }
 
   /**
@@ -403,6 +414,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         { id: userId },
         { shoppingCartId: shoppingCart.id }
       )
+      await user.reload()
     }
 
     let productGroup = await ProductGroupEntity.findOne({
@@ -465,6 +477,56 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         amount
       })
     }
+  }
+
+  /**
+   * Method that creates a new order based on the shopping cart and
+   * deletes the shopping cart
+   *
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @returns the created order entity
+   */
+  public async finishShoppingCartByUserId(
+    userId: number,
+    requestUser: UserEntity
+  ): Promise<OrderEntity> {
+    if (!this.hasPermissions(userId, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    const shoppingCart = await ShoppingCartEntity.findOne({ userId })
+
+    if (!shoppingCart || !shoppingCart.isActive) {
+      throw new NotFoundException(
+        'The user with identifier ${userId} has no shopping cart'
+      )
+    }
+
+    const productGroups = await ProductGroupEntity.find({
+      shoppingCartId: shoppingCart.id
+    })
+
+    // create a new order
+    const order = await new OrderEntity({
+      userId,
+      trackingCode: this.orderService.generateTrackingCode()
+    }).save()
+
+    // duplicate all the product group entities and relate them with the order entity
+    for (const productGroup of productGroups) {
+      const { amount, productId } = productGroup
+      await new ProductGroupEntity({
+        amount,
+        productId,
+        orderId: order.id
+      }).save()
+    }
+
+    await UserEntity.update({ id: userId }, { shoppingCartId: undefined })
+    await ShoppingCartEntity.delete({ id: shoppingCart.id })
+
+    return order
   }
 
   //#region Utils

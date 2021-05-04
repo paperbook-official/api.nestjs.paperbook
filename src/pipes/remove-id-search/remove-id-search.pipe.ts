@@ -25,6 +25,7 @@ export class RemoveIdSearchPipe implements PipeTransform {
 
   /**
    * Method that checks if the object has the "id" property
+   *
    * @param value stores the object that will be tested
    * @returns true if the object has the "id" property, otherwise false
    */
