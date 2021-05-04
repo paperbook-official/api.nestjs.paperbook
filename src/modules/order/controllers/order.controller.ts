@@ -52,7 +52,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
       user: {},
-      product: {}
+      productGroups: {}
     }
   },
   routes: {

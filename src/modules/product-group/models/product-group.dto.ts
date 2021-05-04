@@ -3,6 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ProductGroupEntity } from '../entities/product-group.entity'
 
 import { BaseResponseDto } from 'src/common/base-response.dto'
+import { OrderDto } from 'src/modules/order/models/order.dto'
 import { ProductDto } from 'src/modules/product/models/product.dto'
 import { ShoppingCartDto } from 'src/modules/shopping-cart/models/shopping-cart.dto'
 
@@ -16,10 +17,13 @@ export class ProductGroupDto extends BaseResponseDto {
   public amount: number
 
   @ApiProperty()
-  public shoppingCartId: number
-
-  @ApiProperty()
   public productId: number
+
+  @ApiPropertyOptional()
+  public shoppingCartId?: number
+
+  @ApiPropertyOptional()
+  public orderId?: number
 
   //#region Relations
 
@@ -29,11 +33,11 @@ export class ProductGroupDto extends BaseResponseDto {
   })
   public product?: ProductDto
 
-  @ApiPropertyOptional({
-    type: () => ShoppingCartDto,
-    isArray: true
-  })
+  @ApiPropertyOptional({ type: () => ShoppingCartDto })
   public shoppingCart?: ShoppingCartDto
+
+  @ApiPropertyOptional({ type: () => OrderDto })
+  public order?: OrderDto
 
   //#endregion
 
@@ -42,10 +46,13 @@ export class ProductGroupDto extends BaseResponseDto {
 
     this.amount = entity.amount
     this.productId = entity.productId
-    this.shoppingCartId = entity.shoppingCartId
+    this.orderId = entity?.orderId
+    this.shoppingCartId = entity?.shoppingCartId
+    this.orderId = entity?.orderId
 
     // relations
     this.product = entity.product?.toDto()
     this.shoppingCart = entity.shoppingCart?.toDto()
+    this.order = entity.order?.toDto()
   }
 }

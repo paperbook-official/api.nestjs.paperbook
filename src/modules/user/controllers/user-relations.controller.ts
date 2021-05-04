@@ -28,9 +28,8 @@ import { RequestUser } from 'src/decorators/user/user.decorator'
 
 import { UserEntity } from '../entities/user.entity'
 
-import { AddProductGroupDto } from '../../product-group/models/add-product-group.dto'
 import { ProductGroupDto } from '../../product-group/models/product-group.dto'
-import { RemoveProductGroupDto } from '../../product-group/models/remove-product-group.dto'
+import { RemoveProductGroupDto } from '../../shopping-cart/models/remove-product-group.dto'
 import { UserDto } from '../models/user.dto'
 import {
   AddressDto,
@@ -44,6 +43,7 @@ import {
   GetManyProductDtoResponse,
   ProductDto
 } from 'src/modules/product/models/product.dto'
+import { AddProductGroupDto } from 'src/modules/shopping-cart/models/add-product-group.dto'
 import { ShoppingCartDto } from 'src/modules/shopping-cart/models/shopping-cart.dto'
 
 import { UserService } from '../services/user.service'
@@ -198,6 +198,31 @@ export class UserRelationsController {
       requestUser,
       removeProductGroupDto
     )
+  }
+
+  /**
+   * Method that is called when the user access the "/users/me/shopping-cart/finish"
+   *
+   * @param requestUser stores the logged user data
+   * @returns the created order entity dto
+   */
+  @ApiOperation({
+    description: 'Creates the order entity based on the shopping cart data'
+  })
+  @ApiOkResponse({
+    description: 'Retrieves a the created order'
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Post('me/shopping-cart/finish')
+  @HttpCode(200)
+  public async finishMyShoppingCart(
+    @RequestUser() requestUser: UserEntity
+  ): Promise<OrderDto> {
+    const entity = await this.userService.finishShoppingCartByUserId(
+      requestUser.id,
+      requestUser
+    )
+    return entity.toDto()
   }
 
   /**
@@ -371,6 +396,33 @@ export class UserRelationsController {
       requestUser,
       removeProductGroupDto
     )
+  }
+
+  /**
+   * Method that is called when the user access the "/users/:id/shopping-cart/finish"
+   *
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   * @returns the created order entity dto
+   */
+  @ApiOperation({
+    description: 'Creates the order entity based on the shopping cart data'
+  })
+  @ApiOkResponse({
+    description: 'Retrieves a the created order'
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Post(':id/shopping-cart/finish')
+  @HttpCode(200)
+  public async finishShoppingCartByUserId(
+    @Param('id') userId: number,
+    @RequestUser() requestUser: UserEntity
+  ): Promise<OrderDto> {
+    const entity = await this.userService.finishShoppingCartByUserId(
+      userId,
+      requestUser
+    )
+    return entity.toDto()
   }
 
   /**
