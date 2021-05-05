@@ -44,6 +44,7 @@ import {
   ProductDto
 } from 'src/modules/product/models/product.dto'
 import { AddProductGroupDto } from 'src/modules/shopping-cart/models/add-product-group.dto'
+import { FinishShoppingCartDto } from 'src/modules/shopping-cart/models/finish-shopping-cart.dto'
 import { ShoppingCartDto } from 'src/modules/shopping-cart/models/shopping-cart.dto'
 
 import { UserService } from '../services/user.service'
@@ -72,7 +73,8 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       orders: {},
       ratings: {},
       product: {},
-      productGroups: {}
+      productGroups: {},
+      'productGroups.product': {}
     }
   },
   routes: {
@@ -210,17 +212,20 @@ export class UserRelationsController {
     description: 'Creates the order entity based on the shopping cart data'
   })
   @ApiOkResponse({
-    description: 'Retrieves a the created order'
+    description: 'Retrieves a the created order',
+    type: OrderDto
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/finish')
   @HttpCode(200)
   public async finishMyShoppingCart(
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
+    @Body() finishShoppingCartDto: FinishShoppingCartDto
   ): Promise<OrderDto> {
     const entity = await this.userService.finishShoppingCartByUserId(
       requestUser.id,
-      requestUser
+      requestUser,
+      finishShoppingCartDto
     )
     return entity.toDto()
   }
@@ -409,18 +414,21 @@ export class UserRelationsController {
     description: 'Creates the order entity based on the shopping cart data'
   })
   @ApiOkResponse({
-    description: 'Retrieves a the created order'
+    description: 'Retrieves a the created order',
+    type: OrderDto
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/finish')
   @HttpCode(200)
   public async finishShoppingCartByUserId(
     @Param('id') userId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
+    @Body() finishShoppingCartDto: FinishShoppingCartDto
   ): Promise<OrderDto> {
     const entity = await this.userService.finishShoppingCartByUserId(
       userId,
-      requestUser
+      requestUser,
+      finishShoppingCartDto
     )
     return entity.toDto()
   }
