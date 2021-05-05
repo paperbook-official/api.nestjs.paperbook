@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   forwardRef,
   Inject,
   Injectable,
@@ -23,6 +24,7 @@ import { RemoveProductGroupDto } from '../../shopping-cart/models/remove-product
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
 import { AddProductGroupDto } from 'src/modules/shopping-cart/models/add-product-group.dto'
+import { FinishShoppingCartDto } from 'src/modules/shopping-cart/models/finish-shopping-cart.dto'
 
 import { ProductGroupService } from '../../product-group/services/product-group.service'
 import { AddressService } from 'src/modules/address/services/address.service'
@@ -489,39 +491,80 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    */
   public async finishShoppingCartByUserId(
     userId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
+    finishShoppingCartDto: FinishShoppingCartDto
   ): Promise<OrderEntity> {
     if (!this.hasPermissions(userId, requestUser)) {
       throw new ForbiddenException()
     }
 
+    // validate if the shopping cart exists
     const shoppingCart = await ShoppingCartEntity.findOne({ userId })
-
     if (!shoppingCart || !shoppingCart.isActive) {
       throw new NotFoundException(
-        'The user with identifier ${userId} has no shopping cart'
+        `The user with identifier ${userId} has no shopping cart`
       )
+    }
+
+    const { addressId, shippingPrice } = finishShoppingCartDto
+
+    // validate if the address exists
+    const address = await AddressEntity.findOne({ id: addressId })
+    if (!address || !address.isActive) {
+      throw new EntityNotFoundException(addressId, AddressEntity)
     }
 
     const productGroups = await ProductGroupEntity.find({
       shoppingCartId: shoppingCart.id
     })
 
+    const products = await ProductEntity.findByIds(
+      productGroups.map(productGroup => productGroup.productId)
+    )
+
+    if (
+      products.some(
+        (product, index) =>
+          product.stockAmount - productGroups[index].amount < 0
+      )
+    ) {
+      throw new BadRequestException('The amount required is out of bounds')
+    }
+
+    const installmentAmount = products.reduce(
+      (previous, current) =>
+        (current.installmentAmount ?? 1) < (previous.installmentAmount ?? 1)
+          ? current
+          : previous,
+      products[0]
+    ).installmentAmount
+
     // create a new order
     const order = await new OrderEntity({
+      cep: address.cep,
+      houseNumber: address.houseNumber,
+      shippingPrice,
       userId,
+      installmentAmount,
       trackingCode: this.orderService.generateTrackingCode()
     }).save()
 
     // duplicate all the product group entities and relate them with the order entity
-    for (const productGroup of productGroups) {
+    productGroups.forEach(async productGroup => {
       const { amount, productId } = productGroup
+
       await new ProductGroupEntity({
         amount,
         productId,
         orderId: order.id
       }).save()
-    }
+    })
+
+    // removes from the stock the built products
+    products.forEach(async (product, index) => {
+      product.stockAmount -= productGroups[index].amount
+      await product.save()
+    })
 
     await UserEntity.update({ id: userId }, { shoppingCartId: undefined })
     await ShoppingCartEntity.delete({ id: shoppingCart.id })
