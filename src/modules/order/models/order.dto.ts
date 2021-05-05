@@ -22,10 +22,19 @@ export class OrderDto extends BaseResponseDto {
   public trackingCode: string
 
   @ApiProperty()
-  public userId: number
+  public cep: string
 
   @ApiProperty()
-  public productId: number
+  public houseNumber: number
+
+  @ApiPropertyOptional()
+  public installmentAmount?: number
+
+  @ApiProperty()
+  public shippingPrice: number
+
+  @ApiProperty()
+  public userId: number
 
   @ApiPropertyOptional({ type: () => UserDto })
   public user?: UserDto
@@ -38,6 +47,10 @@ export class OrderDto extends BaseResponseDto {
 
     this.status = entity.status
     this.trackingCode = entity.trackingCode
+    this.cep = entity.cep
+    this.houseNumber = entity.houseNumber
+    this.installmentAmount = entity.installmentAmount
+    this.shippingPrice = entity.shippingPrice ?? 0
     this.userId = entity.userId
 
     // relations

@@ -38,6 +38,36 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
 
   @ApiProperty()
   @Column({
+    type: 'varchar',
+    length: 8,
+    nullable: false
+  })
+  public cep: string
+
+  @ApiProperty()
+  @Column({
+    type: 'int',
+    nullable: false
+  })
+  public houseNumber: number
+
+  @ApiPropertyOptional()
+  @Column({
+    type: 'float',
+    nullable: true
+  })
+  public installmentAmount?: number
+
+  @ApiPropertyOptional()
+  @Column({
+    type: 'float',
+    nullable: true,
+    default: 0
+  })
+  public shippingPrice?: number
+
+  @ApiProperty()
+  @Column({
     type: 'int',
     nullable: false
   })
