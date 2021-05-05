@@ -27,8 +27,8 @@ export class OrderDto extends BaseResponseDto {
   @ApiProperty()
   public houseNumber: number
 
-  @ApiPropertyOptional()
-  public installmentAmount?: number
+  @ApiProperty()
+  public installmentAmount: number
 
   @ApiProperty()
   public shippingPrice: number
@@ -49,7 +49,7 @@ export class OrderDto extends BaseResponseDto {
     this.trackingCode = entity.trackingCode
     this.cep = entity.cep
     this.houseNumber = entity.houseNumber
-    this.installmentAmount = entity.installmentAmount
+    this.installmentAmount = entity.installmentAmount ?? 1
     this.shippingPrice = entity.shippingPrice ?? 0
     this.userId = entity.userId
 
