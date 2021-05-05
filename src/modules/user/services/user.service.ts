@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   forwardRef,
   Inject,
   Injectable,
@@ -517,18 +518,26 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       shoppingCartId: shoppingCart.id
     })
 
-    const installmentAmount = await ProductEntity.findByIds(
+    const products = await ProductEntity.findByIds(
       productGroups.map(productGroup => productGroup.productId)
-    ).then(
-      products =>
-        products.reduce(
-          (previous, current) =>
-            (current.installmentAmount ?? 1) < (previous.installmentAmount ?? 1)
-              ? current
-              : previous,
-          products[0]
-        ).installmentAmount
     )
+
+    if (
+      products.some(
+        (product, index) =>
+          product.stockAmount - productGroups[index].amount < 0
+      )
+    ) {
+      throw new BadRequestException('The amount required is out of bounds')
+    }
+
+    const installmentAmount = products.reduce(
+      (previous, current) =>
+        (current.installmentAmount ?? 1) < (previous.installmentAmount ?? 1)
+          ? current
+          : previous,
+      products[0]
+    ).installmentAmount
 
     // create a new order
     const order = await new OrderEntity({
@@ -541,14 +550,21 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }).save()
 
     // duplicate all the product group entities and relate them with the order entity
-    for (const productGroup of productGroups) {
+    productGroups.forEach(async productGroup => {
       const { amount, productId } = productGroup
+
       await new ProductGroupEntity({
         amount,
         productId,
         orderId: order.id
       }).save()
-    }
+    })
+
+    // removes from the stock the built products
+    products.forEach(async (product, index) => {
+      product.stockAmount -= productGroups[index].amount
+      await product.save()
+    })
 
     await UserEntity.update({ id: userId }, { shoppingCartId: undefined })
     await ShoppingCartEntity.delete({ id: shoppingCart.id })
