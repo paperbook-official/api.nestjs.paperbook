@@ -1,7 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  Logger,
   UnauthorizedException
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
@@ -23,18 +22,12 @@ export class RolesGuard implements CanActivate {
 
     const user: UserEntity = context.switchToHttp().getRequest().user
 
-    Logger.log(user)
-
     if (!user)
       throw new UnauthorizedException(
         'You have no permission to access those sources'
       )
 
-    Logger.log(user.roles)
-
     const hasRole = user.roles.split('|').some(role => roles.includes(role))
-
-    Logger.log(hasRole)
 
     if (user.roles && hasRole) return true
 

@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsDefined, IsNumber } from 'class-validator'
+import { IsDefined, IsNumber, IsOptional } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
@@ -16,6 +16,14 @@ export class FinishShoppingCartDto {
     { message: DefaultValidationMessages.IsNumber }
   )
   public shippingPrice: number
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber(
+    { maxDecimalPlaces: 0 },
+    { message: DefaultValidationMessages.IsNumber }
+  )
+  public installmentAmount?: number
 
   @ApiProperty()
   @IsDefined({ message: 'It is required to send the address id' })

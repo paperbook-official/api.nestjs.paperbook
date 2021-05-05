@@ -506,7 +506,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       )
     }
 
-    const { addressId, shippingPrice } = finishShoppingCartDto
+    const {
+      addressId,
+      shippingPrice,
+      installmentAmount
+    } = finishShoppingCartDto
 
     // validate if the address exists
     const address = await AddressEntity.findOne({ id: addressId })
@@ -530,14 +534,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     ) {
       throw new BadRequestException('The amount required is out of bounds')
     }
-
-    const installmentAmount = products.reduce(
-      (previous, current) =>
-        (current.installmentAmount ?? 1) < (previous.installmentAmount ?? 1)
-          ? current
-          : previous,
-      products[0]
-    ).installmentAmount
 
     // create a new order
     const order = await new OrderEntity({

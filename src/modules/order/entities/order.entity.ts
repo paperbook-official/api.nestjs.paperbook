@@ -54,7 +54,8 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
   @ApiPropertyOptional()
   @Column({
     type: 'float',
-    nullable: true
+    nullable: true,
+    default: 1
   })
   public installmentAmount?: number
 
