@@ -73,7 +73,8 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       orders: {},
       ratings: {},
       product: {},
-      productGroups: {}
+      productGroups: {},
+      'productGroups.product': {}
     }
   },
   routes: {
@@ -211,7 +212,8 @@ export class UserRelationsController {
     description: 'Creates the order entity based on the shopping cart data'
   })
   @ApiOkResponse({
-    description: 'Retrieves a the created order'
+    description: 'Retrieves a the created order',
+    type: OrderDto
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/finish')
@@ -412,7 +414,8 @@ export class UserRelationsController {
     description: 'Creates the order entity based on the shopping cart data'
   })
   @ApiOkResponse({
-    description: 'Retrieves a the created order'
+    description: 'Retrieves a the created order',
+    type: OrderDto
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/finish')

@@ -40,14 +40,14 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
   @Column({
     type: 'varchar',
     length: 8,
-    nullable: false
+    nullable: true
   })
   public cep: string
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: false
+    nullable: true
   })
   public houseNumber: number
 
