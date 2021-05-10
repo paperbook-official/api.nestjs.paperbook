@@ -23,7 +23,7 @@ export class OrderEntity extends BaseEntity implements ToDto<OrderDto> {
   @Column({
     type: 'int',
     nullable: true,
-    default: OrderStatus.Confirmed
+    default: OrderStatus.Pendent
   })
   public status?: OrderStatus
 
