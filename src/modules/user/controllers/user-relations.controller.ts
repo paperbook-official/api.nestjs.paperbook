@@ -5,7 +5,8 @@ import {
   Param,
   Post,
   UseInterceptors,
-  HttpCode
+  HttpCode,
+  Query
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
@@ -52,6 +53,7 @@ import { UserService } from '../services/user.service'
 import { map } from 'src/utils/crud'
 
 import { RolesEnum } from 'src/models/enums/roles.enum'
+import { ParseBoolOrUndefinedPipe } from 'src/pipes/parse-bool-or-undefined/parse-bool-or-undefined.pipe'
 import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 /**
@@ -152,7 +154,7 @@ export class UserRelationsController {
    * route with the "POST" method
    *
    * @param requestUser stores the logged user data
-   * @param addProductGroupDto stores the add product group dto
+   * @param addProductGroupDtos stores the add product group dto
    */
   @ApiOperation({
     summary: 'Adds a new product group in the user shopping cart'
@@ -165,14 +167,16 @@ export class UserRelationsController {
   @Post('me/shopping-cart/add')
   public async addProductInMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
-    @Body() addProductGroupDto: AddProductGroupDto
-  ): Promise<ProductGroupDto> {
-    const entity = await this.userService.addProductInShoppingCartByUserId(
+    @Body() addProductGroupDtos: AddProductGroupDto[],
+    @Query('clean') clean?: false
+  ): Promise<ProductGroupDto[]> {
+    const entities = await this.userService.addProductInShoppingCartByUserId(
       requestUser.id,
       requestUser,
-      addProductGroupDto
+      addProductGroupDtos,
+      clean
     )
-    return entity.toDto()
+    return entities.map(entity => entity.toDto())
   }
 
   /**
@@ -351,7 +355,7 @@ export class UserRelationsController {
    *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
-   * @param addProductGroupDto stores the add product group dto
+   * @param addProductGroupDtos stores the add product group dto
    */
   @ApiOperation({
     summary: 'Adds a new product group in the user shopping cart'
@@ -365,14 +369,16 @@ export class UserRelationsController {
   public async addProductInShoppingCartByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() addProductGroupDto: AddProductGroupDto
-  ): Promise<ProductGroupDto> {
-    const entity = await this.userService.addProductInShoppingCartByUserId(
+    @Body() addProductGroupDtos: AddProductGroupDto[],
+    @Query('clean', ParseBoolOrUndefinedPipe) clean?: false
+  ): Promise<ProductGroupDto[]> {
+    const entities = await this.userService.addProductInShoppingCartByUserId(
       userId,
       requestUser,
-      addProductGroupDto
+      addProductGroupDtos,
+      clean
     )
-    return entity.toDto()
+    return entities.map(entity => entity.toDto())
   }
 
   /**
