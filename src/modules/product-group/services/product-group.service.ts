@@ -14,9 +14,6 @@ import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-fou
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
 import { UpdateProductGroupDto } from '../models/update-product-group.dto'
 
-import { ProductService } from 'src/modules/product/services/product.service'
-import { ShoppingCartService } from 'src/modules/shopping-cart/services/shopping-cart.service'
-
 /**
  * The app's main product group service class
  *
