@@ -395,48 +395,70 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    *
    * @param userId stores the user id
    * @param requestUser store the logged user data
-   * @param addProductGroupDto stores the product group entity data
+   * @param addProductGroupDtos stores the product group entity data
    */
   public async addProductInShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity,
-    addProductGroupDto: AddProductGroupDto
-  ): Promise<ProductGroupEntity> {
+    addProductGroupDtos: AddProductGroupDto[],
+    clean: boolean
+  ): Promise<ProductGroupEntity[]> {
     const user = await this.get(userId, requestUser)
-    const { productId, amount } = addProductGroupDto
 
     let shoppingCart: ShoppingCartEntity
-    if (user.shoppingCartId !== undefined && user.shoppingCartId !== null) {
-      shoppingCart = await ShoppingCartEntity.findOne({
-        id: user.shoppingCartId
-      })
-    } else {
+    if (clean) {
+      if (user.shoppingCartId) {
+        await ShoppingCartEntity.delete(user.shoppingCartId)
+      }
+
       shoppingCart = await new ShoppingCartEntity({ userId, user }).save()
       await UserEntity.update(
         { id: userId },
         { shoppingCartId: shoppingCart.id }
       )
       await user.reload()
-    }
-
-    let productGroup = await ProductGroupEntity.findOne({
-      productId,
-      shoppingCartId: user.shoppingCartId
-    })
-    if (!productGroup) {
-      productGroup = await this.productGroupService.create({
-        shoppingCartId: shoppingCart.id,
-        amount,
-        productId
-      })
     } else {
-      await this.productGroupService.update(productGroup.id, {
-        amount: productGroup.amount + amount
-      })
-      await productGroup.reload()
+      if (user.shoppingCartId) {
+        shoppingCart = await ShoppingCartEntity.findOne({
+          id: user.shoppingCartId
+        })
+      } else {
+        shoppingCart = await new ShoppingCartEntity({ userId, user }).save()
+        await UserEntity.update(
+          { id: userId },
+          { shoppingCartId: shoppingCart.id }
+        )
+        await user.reload()
+      }
     }
 
-    return productGroup
+    const productGroups: ProductGroupEntity[] = []
+
+    for (const addProductGroupDto of addProductGroupDtos) {
+      const { productId, amount } = addProductGroupDto
+
+      let productGroup = await ProductGroupEntity.findOne({
+        productId,
+        shoppingCartId: user.shoppingCartId
+      })
+
+      if (!productGroup) {
+        productGroup = await this.productGroupService.create({
+          shoppingCartId: shoppingCart.id,
+          amount,
+          productId
+        })
+      } else {
+        await this.productGroupService.update(productGroup.id, {
+          amount: productGroup.amount + amount
+        })
+        await productGroup.reload()
+      }
+
+      productGroups.push(productGroup)
+    }
+
+    return productGroups
   }
 
   /**
