@@ -492,14 +492,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       throw new NotFoundException('User has no any product of this type')
     }
 
-    if (productGroup.amount - amount < 0) {
-      amount = 0
+    if (productGroup.amount - amount <= 0) {
       await this.productGroupService.delete(productGroup.id)
     } else {
       amount = productGroup.amount - amount
-      await this.productGroupService.update(productGroup.id, {
-        amount
-      })
+      await this.productGroupService.update(productGroup.id, { amount })
     }
   }
 
@@ -568,7 +565,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }).save()
 
     // duplicate all the product group entities and relate them with the order entity
-    productGroups.forEach(async productGroup => {
+    for (const productGroup of productGroups) {
       const { amount, productId } = productGroup
 
       await new ProductGroupEntity({
@@ -576,13 +573,15 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
         productId,
         orderId: order.id
       }).save()
-    })
+    }
 
-    // removes from the stock the built products
-    products.forEach(async (product, index) => {
+    // removes from the stock the selled products
+    let index = 0
+    for (const product of products) {
       product.stockAmount -= productGroups[index].amount
       await product.save()
-    })
+      index++
+    }
 
     await UserEntity.update({ id: userId }, { shoppingCartId: undefined })
     await ShoppingCartEntity.delete({ id: shoppingCart.id })

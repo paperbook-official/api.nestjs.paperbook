@@ -76,8 +76,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       ratings: {},
       product: {},
       productGroups: {},
-      'productGroups.product': {},
-      'productGroups.product.user': {}
+      'productGroups.product': {}
     }
   },
   routes: {
