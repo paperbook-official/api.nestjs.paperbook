@@ -297,7 +297,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     crudRequest.parsed.sort = [
       {
         field: 'createdAt',
-        order: 'ASC'
+        order: 'DESC'
       }
     ]
     return this.getMany(crudRequest)

@@ -21,8 +21,8 @@ export class AddressDto extends BaseResponseDto {
   @ApiProperty()
   public houseNumber: number
 
-  @ApiProperty()
-  public complement: string
+  @ApiPropertyOptional()
+  public complement?: string
 
   @ApiProperty()
   public district: string

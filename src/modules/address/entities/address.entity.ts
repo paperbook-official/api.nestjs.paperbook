@@ -42,9 +42,9 @@ export class AddressEntity extends BaseEntity implements ToDto<AddressDto> {
   @ApiProperty()
   @Column({
     type: 'text',
-    nullable: false
+    nullable: true
   })
-  public complement: string
+  public complement?: string
 
   @ApiProperty()
   @Column({
