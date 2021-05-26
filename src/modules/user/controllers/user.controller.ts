@@ -226,4 +226,44 @@ export class UserController {
   ): Promise<void> {
     await this.userService.enable(userId, requestUser)
   }
+
+  /**
+   * Method that is called when the user access the "users/:id/to-seller"
+   * route with "PUT" method
+   *
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Changes a single user role from "*" to "seller"' })
+  @ApiOkResponse({
+    description: 'Changes a single user role from "*" to "seller"'
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Put(':id/to-seller')
+  public async modifyUserRolesToSeller(
+    @Param('id') userId: number,
+    @RequestUser() requestUser: UserEntity
+  ): Promise<void> {
+    await this.userService.modifyUserRolesToSeller(userId, requestUser)
+  }
+
+  /**
+   * Method that is called when the user access the "users/:id/to-common"
+   * route with "PUT" method
+   *
+   * @param userId stores the target user id
+   * @param requestUser stores the logged user data
+   */
+  @ApiOperation({ summary: 'Changes a single user role from "*" to "common"' })
+  @ApiOkResponse({
+    description: 'Changes a single user role from "*" to "common"'
+  })
+  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @Put(':id/to-common')
+  public async modifyUserRolesToCommon(
+    @Param('id') userId: number,
+    @RequestUser() requestUser: UserEntity
+  ): Promise<void> {
+    await this.userService.modifyUserRolesToCommon(userId, requestUser)
+  }
 }

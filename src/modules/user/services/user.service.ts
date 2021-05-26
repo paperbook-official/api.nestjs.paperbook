@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   forwardRef,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   NotFoundException
@@ -587,6 +589,66 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     await ShoppingCartEntity.delete({ id: shoppingCart.id })
 
     return order
+  }
+
+  /**
+   * Method that changes the user roles from "*" to "seller"
+   *
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   */
+  public async modifyUserRolesToSeller(
+    userId: number,
+    requestUser: UserEntity
+  ): Promise<void> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(userId)
+    }
+
+    if (!this.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    if (entity.roles.includes(RolesEnum.Seller)) {
+      throw new HttpException(
+        `The entity identified by "${entity.id}" of type "${UserEntity.name}" has already the seller role`,
+        HttpStatus.CONFLICT
+      )
+    }
+
+    await UserEntity.update({ id: userId }, { roles: RolesEnum.Seller })
+  }
+
+  /**
+   * Method that changes the user roles from "*" to "user"
+   *
+   * @param userId stores the user id
+   * @param requestUser stores the logged user data
+   */
+  public async modifyUserRolesToCommon(
+    userId: number,
+    requestUser: UserEntity
+  ): Promise<void> {
+    const entity = await UserEntity.findOne({ id: userId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(userId)
+    }
+
+    if (!this.hasPermissions(entity.id, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    if (entity.roles.includes(RolesEnum.User)) {
+      throw new HttpException(
+        `The entity identified by "${entity.id}" of type "${UserEntity.name}" has already the common role`,
+        HttpStatus.CONFLICT
+      )
+    }
+
+    await UserEntity.update({ id: userId }, { roles: RolesEnum.User })
   }
 
   //#region Utils
