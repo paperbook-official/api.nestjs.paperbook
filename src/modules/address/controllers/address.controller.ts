@@ -82,7 +82,7 @@ export class AddressController {
     description: 'Gets the created address data',
     type: AddressDto
   })
-  @ProtectTo(RolesEnum.Admin, RolesEnum.Seller, RolesEnum.User)
+  @ProtectTo(RolesEnum.Admin, RolesEnum.Seller, RolesEnum.Common)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
@@ -104,7 +104,7 @@ export class AddressController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found address entity dto
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') addressId: number,
@@ -127,7 +127,7 @@ export class AddressController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found address entity dtos
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get()
   public async getMore(
     @RequestUser() requestUser: UserEntity,
@@ -147,7 +147,7 @@ export class AddressController {
    */
   @ApiOperation({ summary: 'Updates a single address' })
   @ApiOkResponse({ description: 'Updates the user' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
     @Param('id') addressId: number,
@@ -164,7 +164,7 @@ export class AddressController {
    * @param addressId stores the target user id
    * @param requestUser stores the logged user data
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Delete(':id')
   public async delete(
     @Param('id') addressId: number,
@@ -182,7 +182,7 @@ export class AddressController {
    */
   @ApiOperation({ summary: 'Disables a single address' })
   @ApiOkResponse({ description: 'Disables a single address' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/disable')
   public async disable(
     @Param('id') addressId: number,
@@ -200,7 +200,7 @@ export class AddressController {
    */
   @ApiOperation({ summary: 'Enables a single address' })
   @ApiOkResponse({ description: 'Enables a single address' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/enable')
   public async enable(
     @Param('id') addressId: number,

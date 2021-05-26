@@ -112,7 +112,7 @@ export class UserRelationsController {
     description: 'Gets all the logged user addresses',
     type: GetManyAddressDtoResponse
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/addresses')
   public async getMyAddresses(
     @RequestUser() requestUser: UserEntity,
@@ -178,7 +178,7 @@ export class UserRelationsController {
     type: AddProductGroupDto,
     isArray: true
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/add')
   public async addProductInMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
@@ -207,7 +207,7 @@ export class UserRelationsController {
   @ApiOkResponse({
     description: 'Removes the product group from the shopping cart'
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/remove')
   @HttpCode(200)
   public async removeProductFromMyShoppingCart(
@@ -234,7 +234,7 @@ export class UserRelationsController {
     description: 'Retrieves a the created order',
     type: OrderDto
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/finish')
   @HttpCode(200)
   public async finishMyShoppingCart(
@@ -265,7 +265,7 @@ export class UserRelationsController {
     description: 'Gets the logged user shopping carts',
     type: ShoppingCartDto
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/shopping-cart')
   public async getMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
@@ -293,7 +293,7 @@ export class UserRelationsController {
     description: 'Gets all the logged user orders',
     type: GetManyOrderDtoResponse
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/orders')
   public async getMyOrders(
     @RequestUser() requestUser: UserEntity,
@@ -322,7 +322,7 @@ export class UserRelationsController {
     description: 'Gets all the user addresses',
     type: GetManyAddressDtoResponse
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/addresses')
   public async getAddressesByUserId(
     @Param('id') userId: number,
@@ -351,7 +351,7 @@ export class UserRelationsController {
     description: 'Gets all the user products',
     type: GetManyProductDtoResponse
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/products')
   public async getProductsByUserId(
     @Param('id') userId: number,
@@ -390,7 +390,7 @@ export class UserRelationsController {
     type: AddProductGroupDto,
     isArray: true
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/add')
   public async addProductInShoppingCartByUserId(
     @Param('id') userId: number,
@@ -421,7 +421,7 @@ export class UserRelationsController {
   @ApiOkResponse({
     description: 'Removes the product group from the shopping cart'
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/remove')
   public async removeProductFromShoppingCartByUserId(
     @Param('id') userId: number,
@@ -449,7 +449,7 @@ export class UserRelationsController {
     description: 'Retrieves a the created order',
     type: OrderDto
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/finish')
   @HttpCode(200)
   public async finishShoppingCartByUserId(
@@ -482,7 +482,7 @@ export class UserRelationsController {
     description: 'Gets the logged user shopping carts',
     type: ShoppingCartDto
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/shopping-cart')
   public async getShoppingCartsByUserId(
     @Param('id') userId: number,
@@ -512,7 +512,7 @@ export class UserRelationsController {
     description: 'Gets all the user orders',
     type: GetManyOrderDtoResponse
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/orders')
   public async getOrdersByUserId(
     @Param('id') userId: number,

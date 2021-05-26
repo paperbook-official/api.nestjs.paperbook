@@ -83,7 +83,7 @@ export class RatingController {
     description: 'Gets the created rating data',
     type: RatingDto
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
@@ -134,7 +134,7 @@ export class RatingController {
    */
   @ApiOperation({ summary: 'Updates a single rating entity' })
   @ApiOkResponse({ description: 'Updates a single rating entity' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
     @Param('id') ratingId: number,
@@ -151,7 +151,7 @@ export class RatingController {
    * @param ratingId stores the rating id
    * @param requestUser stores the logged user data
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Delete(':id')
   public async delete(
     @Param('id') ratingId: number,
@@ -169,7 +169,7 @@ export class RatingController {
    */
   @ApiOperation({ summary: 'Disables a single rating entity' })
   @ApiOkResponse({ description: 'Disables a single rating entity' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/disable')
   public async disable(
     @Param('id') ratingId: number,
@@ -187,7 +187,7 @@ export class RatingController {
    */
   @ApiOperation({ summary: 'Enables a single rating entity' })
   @ApiOkResponse({ description: 'Enables a single rating entity' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/enable')
   public async enable(
     @Param('id') ratingId: number,

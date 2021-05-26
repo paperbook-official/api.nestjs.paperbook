@@ -54,7 +54,7 @@ export class CreateUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsEnum(RolesEnum, {
-    message: 'It is required to send "user", "admin" or "seller"'
+    message: 'It is required to send "common", "admin" or "seller"'
   })
   public roles?: RolesEnum
 

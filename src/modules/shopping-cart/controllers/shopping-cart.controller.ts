@@ -86,7 +86,7 @@ export class ShoppingCartController {
     description: 'Gets the created shopping cart entity data',
     type: ShoppingCartDto
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
@@ -108,7 +108,7 @@ export class ShoppingCartController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found shopping cart entity dto
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') shoppingCartId: number,
@@ -131,7 +131,7 @@ export class ShoppingCartController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found shopping cart entity proxies
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get()
   public async getMore(
     @RequestUser() requestUser: UserEntity,
@@ -172,7 +172,7 @@ export class ShoppingCartController {
    * @param shoppingCartId stores the shopping cart id
    * @param requestUser stores the logged user data
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Delete(':id')
   public async delete(
     @Param('id') shoppingCartId: number,

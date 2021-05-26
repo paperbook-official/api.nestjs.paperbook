@@ -105,7 +105,7 @@ export class UserController {
   @ApiPropertyGet()
   @ApiOperation({ summary: 'Gets the logged user' })
   @ApiOkResponse({ description: 'Gets the logged user data', type: UserDto })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me')
   public async getMe(
     @RequestUser() requestUser: UserEntity,
@@ -128,7 +128,7 @@ export class UserController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found user data
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') userId: number,
@@ -165,7 +165,7 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Updates a single user' })
   @ApiOkResponse({ description: 'Updates user' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
     @Param('id') userId: number,
@@ -238,7 +238,7 @@ export class UserController {
   @ApiOkResponse({
     description: 'Changes a single user role from "*" to "seller"'
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/to-seller')
   public async modifyUserRolesToSeller(
     @Param('id') userId: number,
@@ -258,7 +258,7 @@ export class UserController {
   @ApiOkResponse({
     description: 'Changes a single user role from "*" to "common"'
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/to-common')
   public async modifyUserRolesToCommon(
     @Param('id') userId: number,

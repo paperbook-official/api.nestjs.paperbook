@@ -73,7 +73,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     entity.password = await this.passwordService.encryptPassword(
       entity.password
     )
-    entity.roles = entity.roles ?? RolesEnum.User
+    entity.roles = entity.roles ?? RolesEnum.Common
 
     return await entity.save()
   }
@@ -622,7 +622,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   }
 
   /**
-   * Method that changes the user roles from "*" to "user"
+   * Method that changes the user roles from "*" to "common"
    *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
@@ -641,14 +641,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       throw new ForbiddenException()
     }
 
-    if (entity.roles.includes(RolesEnum.User)) {
+    if (entity.roles.includes(RolesEnum.Common)) {
       throw new HttpException(
         `The entity identified by "${entity.id}" of type "${UserEntity.name}" has already the common role`,
         HttpStatus.CONFLICT
       )
     }
 
-    await UserEntity.update({ id: userId }, { roles: RolesEnum.User })
+    await UserEntity.update({ id: userId }, { roles: RolesEnum.Common })
   }
 
   //#region Utils

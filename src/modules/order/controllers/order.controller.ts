@@ -84,7 +84,7 @@ export class OrderController {
     description: 'Gets the created order data',
     type: OrderDto
   })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
@@ -106,7 +106,7 @@ export class OrderController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found order entity dto
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id')
   public async get(
     @Param('id') orderId: number,
@@ -129,7 +129,7 @@ export class OrderController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found order entity dtos
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get()
   public async getMore(
     @RequestUser() requestUser: UserEntity,
@@ -149,7 +149,7 @@ export class OrderController {
    */
   @ApiOperation({ summary: 'Updates a single product' })
   @ApiOkResponse({ description: 'Updates a single order' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Patch(':id')
   public async update(
     @Param('id') orderId: number,
@@ -166,7 +166,7 @@ export class OrderController {
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    */
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Delete(':id')
   public async delete(
     @Param('id') orderId: number,
@@ -184,7 +184,7 @@ export class OrderController {
    */
   @ApiOperation({ summary: 'Disables a single order' })
   @ApiOkResponse({ description: 'Disables a single order' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/disable')
   public async disable(
     @Param('id') orderId: number,
@@ -202,7 +202,7 @@ export class OrderController {
    */
   @ApiOperation({ summary: 'Enables a single order' })
   @ApiOkResponse({ description: 'Enables a single order' })
-  @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/enable')
   public async enable(
     @Param('id') orderId: number,
