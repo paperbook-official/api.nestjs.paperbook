@@ -9,9 +9,11 @@ import {
   Query
 } from '@nestjs/common'
 import {
+  ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags
 } from '@nestjs/swagger'
 import {
@@ -157,11 +159,22 @@ export class UserRelationsController {
    * @param addProductGroupDtos stores the add product group dto
    */
   @ApiOperation({
-    summary: 'Adds a new product group in the user shopping cart'
+    summary: 'Adds product groups in the user shopping cart'
   })
   @ApiCreatedResponse({
-    description: 'Gets the created product group entity dto',
-    type: ProductGroupDto
+    description: 'Gets the created product group entity dtos',
+    type: AddProductGroupDto,
+    isArray: true
+  })
+  @ApiQuery({
+    required: false,
+    name: 'clean',
+    type: 'boolean',
+    description: 'Says if the shopping cart must be clean'
+  })
+  @ApiBody({
+    type: AddProductGroupDto,
+    isArray: true
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/add')
@@ -358,11 +371,22 @@ export class UserRelationsController {
    * @param addProductGroupDtos stores the add product group dto
    */
   @ApiOperation({
-    summary: 'Adds a new product group in the user shopping cart'
+    summary: 'Adds a new product groups in the user shopping cart'
+  })
+  @ApiQuery({
+    required: false,
+    name: 'clean',
+    type: 'boolean',
+    description: 'Says if the shopping cart must be clean'
+  })
+  @ApiBody({
+    type: AddProductGroupDto,
+    isArray: true
   })
   @ApiCreatedResponse({
-    description: 'Gets the created product group entity dto',
-    type: ProductGroupDto
+    description: 'Gets the created product group entity dtos',
+    type: AddProductGroupDto,
+    isArray: true
   })
   @ProtectTo(RolesEnum.User, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/add')
