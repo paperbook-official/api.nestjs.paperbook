@@ -8,13 +8,10 @@ import {
 } from '@nestjs/swagger'
 
 import { ApiFile } from 'src/decorators/api-file/api-file.decorator'
-import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
 import { MediaDto } from '../models/media.dto'
 
 import { FirebaseService } from 'src/modules/firebase/services/firebase.service'
-
-import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main media controller class
@@ -40,7 +37,6 @@ export class MediaController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiFile('file')
-  @ProtectTo(RolesEnum.Admin, RolesEnum.Seller)
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload')
   public async upload(
