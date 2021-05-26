@@ -25,22 +25,26 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       '*.entity.js'
     )
 
-    switch (this.configService.get<'sqlite' | 'postgres'>('DB_TYPE')) {
+    switch (this.configService.get<'sqlite' | 'postgres'>('DATABASE_TYPE')) {
       case 'sqlite':
         return {
           type: 'sqlite',
-          synchronize: this.configService.get<boolean>('DB_SYNCHRONIZE'),
-          database: this.configService.get<string>('DB_DATABASE'),
-          migrationsRun: this.configService.get<boolean>('DB_MIGRATIONS_RUN'),
+          synchronize: this.configService.get<boolean>('DATABASE_SYNCHRONIZE'),
+          database: this.configService.get<string>('DATABASE_DATABASE'),
+          migrationsRun: this.configService.get<boolean>(
+            'DATABASE_MIGRATIONS_RUN'
+          ),
           entities: [entitiesPath]
         }
       case 'postgres':
         return {
           type: 'postgres',
-          url: this.configService.get<string>('DB_URL'),
-          synchronize: this.configService.get<boolean>('DB_SYNCHRONIZE'),
-          migrationsRun: this.configService.get<boolean>('DB_MIGRATIONS_RUN'),
-          ssl: this.configService.get<boolean>('DB_SSL'),
+          url: this.configService.get<string>('DATABASE_URL'),
+          synchronize: this.configService.get<boolean>('DATABASE_SYNCHRONIZE'),
+          migrationsRun: this.configService.get<boolean>(
+            'DATABASE_MIGRATIONS_RUN'
+          ),
+          ssl: this.configService.get<boolean>('DATABASE_SSL'),
           entities: [entitiesPath]
         }
     }
