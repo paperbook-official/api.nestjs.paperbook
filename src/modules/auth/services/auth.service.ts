@@ -26,7 +26,7 @@ export class AuthService {
    * Method that signs the user based in him data
    *
    * @param requestUser stores the user data
-   * @returns the token
+   * @returns the token data
    */
   public async signIn(requestUser: UserEntity): Promise<TokenDto> {
     const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN')
@@ -38,6 +38,17 @@ export class AuthService {
       { expiresIn }
     )
     return { token, expiresIn }
+  }
+
+  /**
+   * Method that refreshes the logged user token
+   *
+   * @param requestUser stores the logged user data
+   * @returns the token data
+   */
+  public async refresh(requestUser: UserEntity): Promise<TokenDto> {
+    const user = await UserEntity.findOne({ id: requestUser.id })
+    return await this.signIn(user)
   }
 
   /**
