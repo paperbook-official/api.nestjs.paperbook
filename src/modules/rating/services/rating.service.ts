@@ -149,7 +149,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
       throw new EntityNotFoundException(ratingId, RatingEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -172,7 +172,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
       throw new EntityNotFoundException(ratingId, RatingEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -195,7 +195,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
       throw new EntityNotFoundException(ratingId, RatingEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -222,7 +222,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
       throw new EntityNotFoundException(ratingId, RatingEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 

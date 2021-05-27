@@ -26,189 +26,190 @@ import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception
  */
 @Injectable()
 export class AddressService extends TypeOrmCrudService<AddressEntity> {
-  public constructor(
-    @InjectRepository(AddressEntity)
-    repository: Repository<AddressEntity>,
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService
-  ) {
-    super(repository)
-  }
-
-  /**
-   * Method that can save some entity in the database
-   *
-   * @param requestUser stores the logged user data
-   * @param createAddressDto stores the new address data
-   * @returns the created address entity
-   */
-  public async create(
-    requestUser: UserEntity,
-    createAddressDto: CreateAddressDto
-  ): Promise<AddressEntity> {
-    const { userId } = createAddressDto
-
-    const user = await this.userService.get(userId, requestUser)
-
-    const entity = new AddressEntity({
-      ...createAddressDto,
-      user
-    })
-
-    return await entity.save()
-  }
-
-  /**
-   * Method that can get one address entity
-   *
-   * @param addressId stores the address id
-   * @param requestUser stores the logged user data
-   * @param crudRequest stores the joins, filters, etc
-   * @returns the found address entity
-   */
-  public async get(
-    addressId: number,
-    requestUser: UserEntity,
-    crudRequest?: CrudRequest
-  ): Promise<AddressEntity> {
-    const entity: AddressEntity = crudRequest
-      ? await super.getOne(crudRequest).catch(() => undefined)
-      : await AddressEntity.findOne({ id: addressId })
-
-    if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(addressId, AddressEntity)
-    }
-
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException()
-    }
-
-    return entity
-  }
-
-  /**
-   * Method that can get some addresses entities
-   *
-   * @param requestUser stores the logged user data
-   * @param crudRequest stores the joins, filters, etc
-   * @returns the found address entities
-   */
-  public async getMore(
-    requestUser: UserEntity,
-    crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
-    const entities = await super.getMany(crudRequest)
-
-    if (
-      (isGetMany(entities) ? entities.data : entities).some(
-        entity => !this.userService.hasPermissions(entity.userId, requestUser)
-      )
+    public constructor(
+        @InjectRepository(AddressEntity)
+        repository: Repository<AddressEntity>,
+        @Inject(forwardRef(() => UserService))
+        private readonly userService: UserService
     ) {
-      throw new ForbiddenException()
+        super(repository)
     }
 
-    return entities
-  }
+    /**
+     * Method that can save some entity in the database
+     *
+     * @param requestUser stores the logged user data
+     * @param createAddressDto stores the new address data
+     * @returns the created address entity
+     */
+    public async create(
+        requestUser: UserEntity,
+        createAddressDto: CreateAddressDto
+    ): Promise<AddressEntity> {
+        const { userId } = createAddressDto
 
-  /**
-   * Method that can update some address
-   *
-   * @param addressId stores the address id
-   * @param requestUser stores the logged user data
-   * @param updatedAddressDto stores the new address data
-   */
-  public async update(
-    addressId: number,
-    requestUser: UserEntity,
-    updatedAddressDto: UpdatedAddressDto
-  ): Promise<void> {
-    const entity = await AddressEntity.findOne({ id: addressId })
+        const user = await this.userService.get(userId, requestUser)
 
-    if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(addressId, AddressEntity)
+        const entity = new AddressEntity({
+            ...createAddressDto,
+            user
+        })
+
+        return await entity.save()
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException()
+    /**
+     * Method that can get one address entity
+     *
+     * @param addressId stores the address id
+     * @param requestUser stores the logged user data
+     * @param crudRequest stores the joins, filters, etc
+     * @returns the found address entity
+     */
+    public async get(
+        addressId: number,
+        requestUser: UserEntity,
+        crudRequest?: CrudRequest
+    ): Promise<AddressEntity> {
+        const entity: AddressEntity = crudRequest
+            ? await super.getOne(crudRequest).catch(() => undefined)
+            : await AddressEntity.findOne({ id: addressId })
+
+        if (!entity || !entity.isActive) {
+            throw new EntityNotFoundException(addressId, AddressEntity)
+        }
+
+        if (!UserService.hasPermissions(entity.userId, requestUser)) {
+            throw new ForbiddenException()
+        }
+
+        return entity
     }
 
-    await AddressEntity.update({ id: addressId }, updatedAddressDto)
-  }
+    /**
+     * Method that can get some addresses entities
+     *
+     * @param requestUser stores the logged user data
+     * @param crudRequest stores the joins, filters, etc
+     * @returns the found address entities
+     */
+    public async getMore(
+        requestUser: UserEntity,
+        crudRequest?: CrudRequest
+    ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
+        const entities = await super.getMany(crudRequest)
 
-  /**
-   * Method that can delete some address
-   *
-   * @param addressId stores the address id
-   * @param requestUser stores the logged user data
-   */
-  public async delete(
-    addressId: number,
-    requestUser: UserEntity
-  ): Promise<void> {
-    const entity = await AddressEntity.findOne({ id: addressId })
+        if (
+            (isGetMany(entities) ? entities.data : entities).some(
+                entity =>
+                    !UserService.hasPermissions(entity.userId, requestUser)
+            )
+        ) {
+            throw new ForbiddenException()
+        }
 
-    if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(addressId, AddressEntity)
+        return entities
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException()
+    /**
+     * Method that can update some address
+     *
+     * @param addressId stores the address id
+     * @param requestUser stores the logged user data
+     * @param updatedAddressDto stores the new address data
+     */
+    public async update(
+        addressId: number,
+        requestUser: UserEntity,
+        updatedAddressDto: UpdatedAddressDto
+    ): Promise<void> {
+        const entity = await AddressEntity.findOne({ id: addressId })
+
+        if (!entity || !entity.isActive) {
+            throw new EntityNotFoundException(addressId, AddressEntity)
+        }
+
+        if (!UserService.hasPermissions(entity.userId, requestUser)) {
+            throw new ForbiddenException()
+        }
+
+        await AddressEntity.update({ id: addressId }, updatedAddressDto)
     }
 
-    await AddressEntity.delete({ id: addressId })
-  }
+    /**
+     * Method that can delete some address
+     *
+     * @param addressId stores the address id
+     * @param requestUser stores the logged user data
+     */
+    public async delete(
+        addressId: number,
+        requestUser: UserEntity
+    ): Promise<void> {
+        const entity = await AddressEntity.findOne({ id: addressId })
 
-  /**
-   * Method that can disable some address
-   *
-   * @param addressId stores the address id
-   * @param requestUser stores the logged user data
-   */
-  public async disable(
-    addressId: number,
-    requestUser: UserEntity
-  ): Promise<void> {
-    const entity = await AddressEntity.findOne({ id: addressId })
+        if (!entity || !entity.isActive) {
+            throw new EntityNotFoundException(addressId, AddressEntity)
+        }
 
-    if (!entity) {
-      throw new EntityNotFoundException(addressId, AddressEntity)
+        if (!UserService.hasPermissions(entity.userId, requestUser)) {
+            throw new ForbiddenException()
+        }
+
+        await AddressEntity.delete({ id: addressId })
     }
 
-    if (!entity.isActive) {
-      throw new EntityAlreadyDisabledException(addressId, AddressEntity)
+    /**
+     * Method that can disable some address
+     *
+     * @param addressId stores the address id
+     * @param requestUser stores the logged user data
+     */
+    public async disable(
+        addressId: number,
+        requestUser: UserEntity
+    ): Promise<void> {
+        const entity = await AddressEntity.findOne({ id: addressId })
+
+        if (!entity) {
+            throw new EntityNotFoundException(addressId, AddressEntity)
+        }
+
+        if (!entity.isActive) {
+            throw new EntityAlreadyDisabledException(addressId, AddressEntity)
+        }
+
+        if (!UserService.hasPermissions(entity.userId, requestUser)) {
+            throw new ForbiddenException()
+        }
+
+        await AddressEntity.update({ id: addressId }, { isActive: false })
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException()
+    /**
+     * Method that can enable some address
+     *
+     * @param addressId stores the address id
+     * @param requestUser stores the logged user data
+     */
+    public async enable(
+        addressId: number,
+        requestUser: UserEntity
+    ): Promise<void> {
+        const entity = await AddressEntity.findOne({ id: addressId })
+
+        if (!entity) {
+            throw new EntityNotFoundException(addressId, AddressEntity)
+        }
+
+        if (entity.isActive) {
+            throw new EntityAlreadyEnabledException(addressId, AddressEntity)
+        }
+
+        if (!UserService.hasPermissions(entity.userId, requestUser)) {
+            throw new ForbiddenException()
+        }
+
+        await AddressEntity.update({ id: addressId }, { isActive: true })
     }
-
-    await AddressEntity.update({ id: addressId }, { isActive: false })
-  }
-
-  /**
-   * Method that can enable some address
-   *
-   * @param addressId stores the address id
-   * @param requestUser stores the logged user data
-   */
-  public async enable(
-    addressId: number,
-    requestUser: UserEntity
-  ): Promise<void> {
-    const entity = await AddressEntity.findOne({ id: addressId })
-
-    if (!entity) {
-      throw new EntityNotFoundException(addressId, AddressEntity)
-    }
-
-    if (entity.isActive) {
-      throw new EntityAlreadyEnabledException(addressId, AddressEntity)
-    }
-
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
-      throw new ForbiddenException()
-    }
-
-    await AddressEntity.update({ id: addressId }, { isActive: true })
-  }
 }

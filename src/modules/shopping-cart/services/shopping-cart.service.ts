@@ -83,7 +83,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
       throw new EntityNotFoundException(shoppingCartId, ShoppingCartEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -107,7 +107,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
 
     if (
       !some(entities, entity =>
-        this.userService.hasPermissions(entity.userId, requestUser)
+        UserService.hasPermissions(entity.userId, requestUser)
       )
     ) {
       throw new ForbiddenException()
@@ -154,7 +154,7 @@ export class ShoppingCartService extends TypeOrmCrudService<
       throw new EntityNotFoundException(shoppingCartId, ShoppingCartEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 

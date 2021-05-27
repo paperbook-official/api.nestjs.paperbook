@@ -81,7 +81,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
       throw new EntityNotFoundException(orderId, OrderEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -104,7 +104,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     if (
       some(
         entities,
-        entity => !this.userService.hasPermissions(entity.userId, requestUser)
+        entity => !UserService.hasPermissions(entity.userId, requestUser)
       )
     ) {
       throw new ForbiddenException()
@@ -131,7 +131,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
       throw new EntityNotFoundException(orderId, OrderEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -151,7 +151,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
       throw new EntityNotFoundException(orderId, OrderEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -178,7 +178,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
       throw new EntityAlreadyDisabledException(orderId, OrderEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -202,7 +202,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
       throw new EntityAlreadyEnabledException(orderId, OrderEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 

@@ -387,7 +387,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       throw new EntityNotFoundException(productId, ProductEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -419,7 +419,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       throw new EntityNotFoundException(productId, ProductEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -446,7 +446,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       throw new EntityAlreadyDisabledException(productId, ProductEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
@@ -473,7 +473,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       throw new EntityAlreadyEnabledException(productId, ProductEntity)
     }
 
-    if (!this.userService.hasPermissions(entity.userId, requestUser)) {
+    if (!UserService.hasPermissions(entity.userId, requestUser)) {
       throw new ForbiddenException()
     }
 
