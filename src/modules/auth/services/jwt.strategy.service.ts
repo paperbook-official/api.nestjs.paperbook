@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { JwtSignOptions } from '@nestjs/jwt'
 import { PassportStrategy } from '@nestjs/passport'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
@@ -18,7 +19,7 @@ export class JwtStrategyService extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET_KEY')
-    })
+    } as JwtSignOptions)
   }
 
   /**
