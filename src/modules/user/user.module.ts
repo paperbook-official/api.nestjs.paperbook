@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { UserEntity } from './entities/user.entity'
 
+import { UserRelationsService } from './services/user-relations.service'
 import { UserService } from './services/user.service'
 
 import { UserRelationsController } from './controllers/user-relations.controller'
@@ -26,7 +27,7 @@ import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
     TypeOrmModule.forFeature([UserEntity])
   ],
   controllers: [UserController, UserRelationsController],
-  providers: [UserService],
+  providers: [UserService, UserRelationsService],
   exports: [UserService]
 })
 export class UserModule {}

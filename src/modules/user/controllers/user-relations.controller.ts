@@ -50,7 +50,7 @@ import { AddProductGroupDto } from 'src/modules/shopping-cart/models/add-product
 import { FinishShoppingCartDto } from 'src/modules/shopping-cart/models/finish-shopping-cart.dto'
 import { ShoppingCartDto } from 'src/modules/shopping-cart/models/shopping-cart.dto'
 
-import { UserService } from '../services/user.service'
+import { UserRelationsService } from '../services/user-relations.service'
 
 import { map } from 'src/utils/crud'
 
@@ -96,7 +96,9 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
 @ApiTags('users')
 @Controller('users')
 export class UserRelationsController {
-  public constructor(private readonly userService: UserService) {}
+  public constructor(
+    private readonly userRelationsService: UserRelationsService
+  ) {}
 
   /**
    * Method that is called when the user access the "/user/me/addresses" route
@@ -118,7 +120,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
-    const entities = await this.userService.getAddressesByUserId(
+    const entities = await this.userRelationsService.getAddressesByUserId(
       requestUser.id,
       requestUser,
       crudRequest
@@ -146,7 +148,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.userService.getProductsByUserId(
+    const entities = await this.userRelationsService.getProductsByUserId(
       requestUser.id,
       crudRequest
     )
@@ -185,7 +187,7 @@ export class UserRelationsController {
     @Body() addProductGroupDtos: AddProductGroupDto[],
     @Query('clean') clean?: false
   ): Promise<ProductGroupDto[]> {
-    const entities = await this.userService.addProductInShoppingCartByUserId(
+    const entities = await this.userRelationsService.addProductInShoppingCartByUserId(
       requestUser.id,
       requestUser,
       addProductGroupDtos,
@@ -214,7 +216,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @Body() removeProductGroupDto: RemoveProductGroupDto
   ): Promise<void> {
-    await this.userService.removeProductFromShoppingCartByUserId(
+    await this.userRelationsService.removeProductFromShoppingCartByUserId(
       requestUser.id,
       requestUser,
       removeProductGroupDto
@@ -241,7 +243,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @Body() finishShoppingCartDto: FinishShoppingCartDto
   ): Promise<OrderDto> {
-    const entity = await this.userService.finishShoppingCartByUserId(
+    const entity = await this.userRelationsService.finishShoppingCartByUserId(
       requestUser.id,
       requestUser,
       finishShoppingCartDto
@@ -271,7 +273,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<ShoppingCartDto> {
-    const entity = await this.userService.getShoppingCartByUserId(
+    const entity = await this.userRelationsService.getShoppingCartByUserId(
       requestUser.id,
       requestUser,
       crudRequest
@@ -299,7 +301,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderDto> | OrderDto[]> {
-    const entities = await this.userService.getOrdersByUserId(
+    const entities = await this.userRelationsService.getOrdersByUserId(
       requestUser.id,
       requestUser,
       crudRequest
@@ -329,7 +331,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
-    const entities = await this.userService.getAddressesByUserId(
+    const entities = await this.userRelationsService.getAddressesByUserId(
       userId,
       requestUser,
       crudRequest
@@ -357,7 +359,7 @@ export class UserRelationsController {
     @Param('id') userId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.userService.getProductsByUserId(
+    const entities = await this.userRelationsService.getProductsByUserId(
       userId,
       crudRequest
     )
@@ -398,7 +400,7 @@ export class UserRelationsController {
     @Body() addProductGroupDtos: AddProductGroupDto[],
     @Query('clean', ParseBoolOrUndefinedPipe) clean?: false
   ): Promise<ProductGroupDto[]> {
-    const entities = await this.userService.addProductInShoppingCartByUserId(
+    const entities = await this.userRelationsService.addProductInShoppingCartByUserId(
       userId,
       requestUser,
       addProductGroupDtos,
@@ -428,7 +430,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @Body() removeProductGroupDto: RemoveProductGroupDto
   ): Promise<void> {
-    await this.userService.removeProductFromShoppingCartByUserId(
+    await this.userRelationsService.removeProductFromShoppingCartByUserId(
       userId,
       requestUser,
       removeProductGroupDto
@@ -457,7 +459,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @Body() finishShoppingCartDto: FinishShoppingCartDto
   ): Promise<OrderDto> {
-    const entity = await this.userService.finishShoppingCartByUserId(
+    const entity = await this.userRelationsService.finishShoppingCartByUserId(
       userId,
       requestUser,
       finishShoppingCartDto
@@ -489,7 +491,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<ShoppingCartDto> {
-    const entity = await this.userService.getShoppingCartByUserId(
+    const entity = await this.userRelationsService.getShoppingCartByUserId(
       userId,
       requestUser,
       crudRequest
@@ -519,7 +521,7 @@ export class UserRelationsController {
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<OrderDto> | OrderDto[]> {
-    const entities = await this.userService.getOrdersByUserId(
+    const entities = await this.userRelationsService.getOrdersByUserId(
       userId,
       requestUser,
       crudRequest
