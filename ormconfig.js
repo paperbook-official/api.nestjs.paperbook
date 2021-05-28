@@ -1,8 +1,6 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm'
+let options
 
-let options: TypeOrmModuleOptions
-
-switch (process.env.DATABASE_TYPE as 'sqlite' | 'postgres') {
+switch (process.env.DATABASE_TYPE) {
   case 'sqlite':
     options = {
       type: 'sqlite',
