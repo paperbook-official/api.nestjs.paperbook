@@ -4,7 +4,5 @@ services:
     image: 'paperbook'
     env_file:
       - .env
-    environment:
-      - NODE_ENV=production
     ports:
       - 3000:3000
