@@ -304,6 +304,39 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   }
 
   /**
+   * Method that can get some products added recently
+   *
+   * @param crudRequest stores the joins, filters, etc.
+   * @returns all the found elements
+   */
+  public async getMostBought(
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
+    // crudRequest.parsed.filter = [
+    //   {
+    //     field: 'ordersAmount',
+    //     operator: '$gt',
+    //     value: 0
+    //   }
+    // ]
+    crudRequest.parsed.search.$and = [
+      ...crudRequest.parsed.search.$and,
+      {
+        ordersAmount: {
+          $gt: 0
+        }
+      }
+    ]
+    crudRequest.parsed.sort = [
+      {
+        field: 'ordersAmount',
+        order: 'DESC'
+      }
+    ]
+    return this.getMany(crudRequest)
+  }
+
+  /**
    * Method that can get all the categories of some product
    *
    * @param productId stores the product id

@@ -353,7 +353,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
    * @param requestUser stores the logged user data
    * @returns the created order entity
    */
-  public async finishShoppingCartByUserId(
+   public async finishShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity,
     finishShoppingCartDto: FinishShoppingCartDto
@@ -424,6 +424,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
     let index = 0
     for (const product of products) {
       product.stockAmount -= productGroups[index].amount
+      product.ordersAmount++
       await product.save()
       index++
     }

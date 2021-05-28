@@ -79,6 +79,14 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
   })
   public stockAmount: number
 
+  @ApiPropertyOptional()
+  @Column({
+    type: 'int',
+    nullable: false,
+    default: 0
+  })
+  public ordersAmount?: number
+
   @ApiProperty()
   @Column({
     type: 'integer',

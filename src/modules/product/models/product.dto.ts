@@ -40,6 +40,9 @@ export class ProductDto extends BaseResponseDto {
   public stockAmount: number
 
   @ApiProperty()
+  public ordersAmount: number
+
+  @ApiProperty()
   public userId: number
 
   @ApiPropertyOptional({
@@ -76,6 +79,7 @@ export class ProductDto extends BaseResponseDto {
     this.installmentAmount = entity.installmentAmount
     this.discount = entity.discount
     this.stockAmount = entity.stockAmount
+    this.ordersAmount = entity.ordersAmount
     this.userId = entity.userId
 
     // relations

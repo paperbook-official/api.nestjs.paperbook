@@ -211,6 +211,29 @@ export class ProductController {
   }
 
   /**
+   * Method that is called when the user access the "products/most-bought" route
+   * with "GET" method
+   *
+   * @param crudRequest stores the joins, filter, etc
+   * @returns all the found elements
+   */
+  @ApiOperation({
+    summary: 'Retrieves all the products organized by "ordersAmount" field'
+  })
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOkResponse({
+    description: 'Gets all the products organized by "ordersAmount" field',
+    type: GetManyProductDtoResponse
+  })
+  @Get('most-bought')
+  public async getMostBought(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
+    const entities = await this.productService.getMostBought(crudRequest)
+    return map(entities, entity => entity.toDto())
+  }
+
+  /**
    * Method that is called when the user access the "/products/:id" route
    * with the "GET" method
    *
