@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "deploy:heroku": "git push heroku master",
     "husky": "npx husky install",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig.json",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig.ts",
     "typeorm:migrate": "npm run typeorm migration:generate -- -d src/migrations -n",
     "typeorm:run": "npm run typeorm migration:run"
   },
