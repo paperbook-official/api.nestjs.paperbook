@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm'
 
-import * as fs from 'fs'
 import * as path from 'path'
 
 /**
@@ -26,10 +25,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       '*.entity.js'
     )
 
-    let options: TypeOrmModuleOptions
     switch (this.configService.get<'sqlite' | 'postgres'>('DATABASE_TYPE')) {
       case 'sqlite':
-        options = {
+        return {
           type: 'sqlite',
           synchronize: this.configService.get<boolean>('DATABASE_SYNCHRONIZE'),
           database: this.configService.get<string>('DATABASE_DATABASE'),
@@ -40,7 +38,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         }
         break
       case 'postgres':
-        options = {
+        return {
           type: 'postgres',
           url: this.configService.get<string>('DATABASE_URL'),
           synchronize: this.configService.get<boolean>('DATABASE_SYNCHRONIZE'),
@@ -52,32 +50,5 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         }
         break
     }
-
-    this.loadConfig(options)
-
-    return options
-  }
-
-  /**
-   * Method that generates a file with the migration settings
-   *
-   * @param options stores the database current config data
-   */
-  private loadConfig(options: TypeOrmModuleOptions): void {
-    try {
-      fs.unlinkSync('ormconfig.json')
-    } catch {}
-    fs.writeFileSync(
-      'ormconfig.json',
-      JSON.stringify(
-        {
-          ...options,
-          entities: ['**/*.entity.ts'],
-          migrations: ['src/migrations/*.ts']
-        },
-        null,
-        4
-      )
-    )
   }
 }

@@ -19,8 +19,6 @@ public
 # Database
 /src/database
 
-ormconfig.json
-
 # OS
 .DS_Store
 
