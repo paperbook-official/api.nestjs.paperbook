@@ -41,7 +41,7 @@ export class AuthController {
   public async signIn(
     @RequestUser() requestUser: UserEntity
   ): Promise<TokenDto> {
-    return await this.authService.signIn(requestUser)
+    return await this.authService.login(requestUser)
   }
 
   /**

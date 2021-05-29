@@ -28,7 +28,7 @@ export class AuthService {
    * @param requestUser stores the user data
    * @returns the token data
    */
-  public async signIn(requestUser: UserEntity): Promise<TokenDto> {
+  public async login(requestUser: UserEntity): Promise<TokenDto> {
     const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN')
 
     const { id, email, name, roles, cpf, isActive } = requestUser
@@ -48,7 +48,7 @@ export class AuthService {
    */
   public async refresh(requestUser: UserEntity): Promise<TokenDto> {
     const user = await UserEntity.findOne({ id: requestUser.id })
-    return await this.signIn(user)
+    return await this.login(user)
   }
 
   /**
@@ -57,16 +57,18 @@ export class AuthService {
    * saved
    *
    * @param loginPayload stores the data that will be tested
+   * @returns the found user entity
    */
   public async authenticate(loginPayload: LoginDto): Promise<UserEntity> {
     const { email, password } = loginPayload
 
     const entity = await UserEntity.findOne({ email })
 
-    if (!entity)
+    if (!entity) {
       throw new UnauthorizedException(
         'You have no permission to access those sources'
       )
+    }
 
     const passwordMatches = await this.passwordService.comparePassword(
       password,
@@ -77,6 +79,25 @@ export class AuthService {
       throw new UnauthorizedException(
         'You have no permission to access those sources'
       )
+
+    return entity
+  }
+
+  /**
+   * Method that validates the jwt request user and ensures that this user
+   * exists and he is not disabled
+   *
+   * @param user stores the jwt request user
+   * @returns the user himself if exists and he is not disabled
+   */
+  public async validateJwtUser(user: UserEntity): Promise<UserEntity> {
+    const entity = await UserEntity.findOne({ id: user.id })
+
+    if (!entity || !entity.isActive) {
+      throw new UnauthorizedException(
+        'You have no permission to access those sources'
+      )
+    }
 
     return entity
   }
