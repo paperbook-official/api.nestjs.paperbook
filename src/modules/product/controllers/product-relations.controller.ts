@@ -20,7 +20,7 @@ import {
 } from 'src/modules/category/models/category.dto'
 import { RatingDto } from 'src/modules/rating/models/rating.dto'
 
-import { ProductService } from '../services/product.service'
+import { ProductRelationsService } from '../services/protuct-relations.service'
 
 import { map } from 'src/utils/crud'
 
@@ -62,7 +62,9 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
 @ApiTags('products')
 @Controller('products')
 export class ProductRelationsController {
-  public constructor(private readonly productService: ProductService) {}
+  public constructor(
+    private readonly productRelationsService: ProductRelationsService
+  ) {}
 
   /**
    * Method that is called when the user access the "/products/:id/categories"
@@ -85,7 +87,7 @@ export class ProductRelationsController {
     @Param('id') productId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<CategoryDto> | CategoryDto[]> {
-    const entities = await this.productService.getCategoriesByProductId(
+    const entities = await this.productRelationsService.getCategoriesByProductId(
       productId,
       crudRequest
     )
@@ -113,7 +115,7 @@ export class ProductRelationsController {
     @Param('id') productId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<RatingDto> | RatingDto[]> {
-    const entities = await this.productService.getRatingsByProductId(
+    const entities = await this.productRelationsService.getRatingsByProductId(
       productId,
       crudRequest
     )
@@ -138,6 +140,6 @@ export class ProductRelationsController {
   public async getReviewByProductId(
     @Param('id') productId: number
   ): Promise<ProductReviewDto> {
-    return await this.productService.getReviewByProductId(productId)
+    return await this.productRelationsService.getReviewByProductId(productId)
   }
 }

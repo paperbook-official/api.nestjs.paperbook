@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ProductEntity } from './entities/product.entity'
 
 import { ProductService } from './services/product.service'
+import { ProductRelationsService } from './services/protuct-relations.service'
 
 import { ProductRelationsController } from './controllers/product-relations.controller'
 import { ProductController } from './controllers/product.controller'
@@ -20,7 +21,7 @@ import { UserModule } from '../user/user.module'
     TypeOrmModule.forFeature([ProductEntity])
   ],
   controllers: [ProductController, ProductRelationsController],
-  providers: [ProductService],
+  providers: [ProductService, ProductRelationsService],
   exports: [ProductService]
 })
 export class ProductModule {}

@@ -10,15 +10,12 @@ import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-a
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
-import { RatingEntity } from 'src/modules/rating/entities/rating.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductDto } from '../models/create-product.dto'
-import { ProductReviewDto } from '../models/product-review.dto'
 import { UpdateProductDto } from '../models/update-product.dto'
 
 import { CategoryService } from 'src/modules/category/services/category.service'
-import { RatingService } from 'src/modules/rating/services/rating.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
@@ -37,9 +34,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     @Inject(forwardRef(() => CategoryService))
-    private readonly categoryService: CategoryService,
-    @Inject(forwardRef(() => RatingService))
-    private readonly ratingService: RatingService
+    private readonly categoryService: CategoryService
   ) {
     super(repository)
   }
@@ -81,18 +76,6 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       categories,
       user
     }).save()
-  }
-
-  /**
-   * Method that can get a review of the product ratings
-   *
-   * @param productId stores the product id
-   * @returns the product review
-   */
-  public async getReviewByProductId(
-    productId: number
-  ): Promise<ProductReviewDto> {
-    return await this.ratingService.getReviewByProductId(productId)
   }
 
   /**
@@ -334,72 +317,6 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       }
     ]
     return this.getMany(crudRequest)
-  }
-
-  /**
-   * Method that can get all the categories of some product
-   *
-   * @param productId stores the product id
-   * @param crudRequest stores the joins, filters, etc
-   * @returns all the found categories
-   */
-  public async getCategoriesByProductId(
-    productId: number,
-    crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
-    const entity = await ProductEntity.findOne({ id: productId })
-
-    if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(productId, ProductEntity)
-    }
-
-    crudRequest.parsed.paramsFilter = []
-    crudRequest.parsed.join = [
-      ...crudRequest.parsed.join,
-      {
-        field: 'products',
-        select: ['id']
-      }
-    ]
-    crudRequest.parsed.search.$and = [
-      ...crudRequest.parsed.search.$and,
-      {
-        'products.id': { $eq: productId }
-      }
-    ]
-
-    return await this.categoryService.getMany(crudRequest)
-  }
-
-  /**
-   * Method that can get the ratings of some product
-   *
-   * @param productId stores the product id
-   * @param crudRequest stores the joins, filters, etc
-   * @returns all the found rating entities
-   */
-  public async getRatingsByProductId(
-    productId: number,
-    crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<RatingEntity> | RatingEntity[]> {
-    const entity = await ProductEntity.findOne({ id: productId })
-
-    if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(productId, ProductEntity)
-    }
-
-    crudRequest.parsed.search = {
-      $and: [
-        ...crudRequest.parsed.search.$and,
-        {
-          productId: {
-            $eq: productId
-          }
-        }
-      ]
-    }
-
-    return await this.ratingService.getMany(crudRequest)
   }
 
   /**
