@@ -19,11 +19,11 @@ import { ShoppingCartModule } from '../shopping-cart/shopping-cart.module'
 @Module({
   imports: [
     PasswordModule,
+    ProductGroupModule,
     forwardRef(() => ProductModule),
     forwardRef(() => AddressModule),
     forwardRef(() => OrderModule),
     forwardRef(() => ShoppingCartModule),
-    ProductGroupModule,
     TypeOrmModule.forFeature([UserEntity])
   ],
   controllers: [UserController, UserRelationsController],

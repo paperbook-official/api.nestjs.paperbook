@@ -16,16 +16,16 @@ import {
   ProductDto
 } from 'src/modules/product/models/product.dto'
 
-import { CategoryService } from '../services/category.service'
+import { CategoryRelationsService } from '../services/category-relations.service'
 
 import { map } from 'src/utils/crud'
 
 import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 /**
- * The app's main category controller class
+ * The app's main category relations controller class
  *
- * Class that deals with the category routes
+ * Class that deals with the category relations routes
  */
 @Crud({
   model: {
@@ -52,7 +52,9 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
 @ApiTags('categories')
 @Controller('categories')
 export class CategoryRelationsController {
-  public constructor(private readonly categoryService: CategoryService) {}
+  public constructor(
+    private readonly categoryRelationsService: CategoryRelationsService
+  ) {}
 
   /** Method that is called when the user access the "/categories/:id/products"
    * route with "GET" method
@@ -74,7 +76,7 @@ export class CategoryRelationsController {
     @Param('id') categoryId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.categoryService.getProductsByCategoryId(
+    const entities = await this.categoryRelationsService.getProductsByCategoryId(
       categoryId,
       crudRequest
     )

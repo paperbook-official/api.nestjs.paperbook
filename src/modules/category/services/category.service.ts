@@ -1,7 +1,5 @@
 import {
   ConflictException,
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException
 } from '@nestjs/common'
@@ -10,15 +8,10 @@ import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
-import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
-import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { CreateCategoryDto } from '../models/create-category.dto'
 import { UpdatedCategoryDto } from '../models/update-category.dto'
-
-import { ProductService } from 'src/modules/product/services/product.service'
-import { UserService } from 'src/modules/user/services/user.service'
 
 /**
  * The app's main category service class
@@ -29,11 +22,7 @@ import { UserService } from 'src/modules/user/services/user.service'
 export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   public constructor(
     @InjectRepository(CategoryEntity)
-    private readonly repository: Repository<CategoryEntity>,
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService,
-    @Inject(forwardRef(() => ProductService))
-    private readonly productService: ProductService
+    repository: Repository<CategoryEntity>
   ) {
     super(repository)
   }
@@ -87,41 +76,6 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
     return await super.getMany(crudRequest)
-  }
-
-  /**
-   * Method that can get all the products related to some category
-   *
-   * @param categoryId store the category id
-   * @param crudRequest stores the joins, filters, etc
-   * @returns all the found products
-   */
-  public async getProductsByCategoryId(
-    categoryId: number,
-    crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
-    const entity = await CategoryEntity.findOne({ id: categoryId })
-
-    if (!entity || !entity.isActive) {
-      throw new EntityNotFoundException(categoryId, CategoryEntity)
-    }
-
-    crudRequest.parsed.paramsFilter = []
-    crudRequest.parsed.join = [
-      ...crudRequest.parsed.join,
-      {
-        field: 'categories',
-        select: ['id']
-      }
-    ]
-    crudRequest.parsed.search.$and = [
-      ...crudRequest.parsed.search.$and,
-      {
-        'categories.id': { $eq: categoryId }
-      }
-    ]
-
-    return await this.productService.getMany(crudRequest)
   }
 
   /**
