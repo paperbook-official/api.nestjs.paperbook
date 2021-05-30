@@ -29,6 +29,7 @@ module.exports = {
           '/.types/',
           '/.decorator/',
           '/.guard/',
+          '/.exception/',
           '/.entity/',
           '/.dto/',
           '/.service/',
