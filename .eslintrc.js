@@ -31,7 +31,7 @@ module.exports = {
           '/.guard/',
           '/.exception/',
           '/.entity/',
-          '/.dto/',
+          '/.dto|.enum/',
           '/.service/',
           '/.controller/',
           '/utils/',

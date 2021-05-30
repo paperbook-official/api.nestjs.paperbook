@@ -38,6 +38,11 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    *
    * @param requestUser stores the logged user data
    * @param createAddressDto stores the new address data
+   *
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   *
    * @returns the created address entity
    */
   public async create(
@@ -70,9 +75,14 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
+   *
+   * @throws {EntityNotFoundException} if the address was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   *
    * @returns the found address entity
    */
-  public async get(
+  public async list(
     addressId: number,
     requestUser: UserEntity,
     crudRequest?: CrudRequest
@@ -97,9 +107,13 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
+   *
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   *
    * @returns the found address entities
    */
-  public async getMore(
+  public async listMany(
     requestUser: UserEntity,
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
@@ -122,6 +136,10 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
    * @param updatedAddressDto stores the new address data
+   *
+   * @throws {EntityNotFoundException} if the address was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    */
   public async update(
     addressId: number,
@@ -146,6 +164,10 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    *
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
+   *
+   * @throws {EntityNotFoundException} if the address was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    */
   public async delete(
     addressId: number,
@@ -169,6 +191,11 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    *
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
+   *
+   * @throws {EntityNotFoundException} if the address was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyDisabledException} if the address is already disabled
    */
   public async disable(
     addressId: number,
@@ -196,6 +223,11 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
    *
    * @param addressId stores the address id
    * @param requestUser stores the logged user data
+   *
+   * @throws {EntityNotFoundException} if the address was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyEnabledException} if the address is already enabled
    */
   public async enable(
     addressId: number,

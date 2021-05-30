@@ -98,9 +98,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
+   *
    * @throws {EntityNotFoundException} if the user was not found
-   * @throws {ForbiddenException} if the request user has no
-   * permission to execute this action
+   * @throws {ForbiddenException} if the request user has no permission
+   * to execute this action
    */
   public async update(
     userId: number,
