@@ -4,17 +4,18 @@ import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
-import { UserEntity } from '../entities/user.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+
+import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
 
 import { PasswordService } from 'src/modules/password/services/password.service'
 
-import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**

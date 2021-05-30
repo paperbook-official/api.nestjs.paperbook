@@ -1,14 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { forwardRef } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
-import { OrderEntity } from '../entities/order.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+
+import { OrderEntity } from '../entities/order.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateOrderDto } from '../models/create-order.dto'
@@ -17,8 +18,6 @@ import { UpdateOrderDto } from '../models/update-order.dto'
 import { UserService } from 'src/modules/user/services/user.service'
 
 import { some } from 'src/utils/crud'
-
-import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
 /**
  * The app's main order service class
@@ -29,9 +28,7 @@ import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception
 export class OrderService extends TypeOrmCrudService<OrderEntity> {
   public constructor(
     @InjectRepository(OrderEntity)
-    repository: Repository<OrderEntity>,
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService
+    repository: Repository<OrderEntity>
   ) {
     super(repository)
   }
@@ -49,8 +46,15 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
   ): Promise<OrderEntity> {
     const { userId } = createOrderPayload
 
-    const user = await this.userService.get(userId, requestUser)
+    const user = await UserEntity.findOne({ id: userId })
 
+    if (!user) {
+      throw new EntityNotFoundException(userId, UserEntity)
+    }
+
+    if (!UserService.hasPermissions(userId, requestUser)) {
+      throw new ForbiddenException()
+    }
     const entity = new OrderEntity({
       ...createOrderPayload,
       trackingCode: this.generateTrackingCode(),

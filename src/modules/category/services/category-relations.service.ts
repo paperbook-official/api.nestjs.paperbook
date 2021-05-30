@@ -4,8 +4,9 @@ import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
-import { CategoryEntity } from '../entities/category.entity'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+
+import { CategoryEntity } from '../entities/category.entity'
 import { ProductEntity } from 'src/modules/product/entities/product.entity'
 
 import { ProductService } from 'src/modules/product/services/product.service'

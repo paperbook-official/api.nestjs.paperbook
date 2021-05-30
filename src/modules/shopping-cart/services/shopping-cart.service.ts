@@ -1,13 +1,15 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
-import { ShoppingCartEntity } from '../entities/shopping-cart.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+
+import { ShoppingCartEntity } from '../entities/shopping-cart.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateShoppingCartDto } from '../models/create-shopping-cart.dto'
@@ -17,17 +19,13 @@ import { UserService } from 'src/modules/user/services/user.service'
 
 import { some } from 'src/utils/crud'
 
-import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
-
 @Injectable()
 export class ShoppingCartService extends TypeOrmCrudService<
   ShoppingCartEntity
 > {
   public constructor(
     @InjectRepository(ShoppingCartEntity)
-    repository: Repository<ShoppingCartEntity>,
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService
+    repository: Repository<ShoppingCartEntity>
   ) {
     super(repository)
   }
@@ -46,11 +44,15 @@ export class ShoppingCartService extends TypeOrmCrudService<
   ): Promise<ShoppingCartEntity> {
     const { userId } = createShoppingCartDto
 
-    /* If there are no products or users with the passed id those
-    services will throw "EntityNotFoundException", if the request
-    user has no permission the "UserService" will throw "ForbiddenException" */
+    const user = await UserEntity.findOne({ id: userId })
 
-    const user = await this.userService.get(userId, requestUser)
+    if (!user) {
+      throw new EntityNotFoundException(userId, UserEntity)
+    }
+
+    if (!UserService.hasPermissions(userId, requestUser)) {
+      throw new ForbiddenException()
+    }
 
     return await new ShoppingCartEntity({
       ...createShoppingCartDto,

@@ -5,10 +5,12 @@ import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
-import { ProductEntity } from '../entities/product.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+
+import { ProductEntity } from '../entities/product.entity'
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
@@ -18,7 +20,6 @@ import { UpdateProductDto } from '../models/update-product.dto'
 import { CategoryService } from 'src/modules/category/services/category.service'
 import { UserService } from 'src/modules/user/services/user.service'
 
-import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
 
 /**
@@ -31,8 +32,6 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   public constructor(
     @InjectRepository(ProductEntity)
     private readonly repository: Repository<ProductEntity>,
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService,
     @Inject(forwardRef(() => CategoryService))
     private readonly categoryService: CategoryService
   ) {
@@ -53,12 +52,17 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     requestUser: UserEntity,
     createProductPayload: CreateProductDto
   ): Promise<ProductEntity> {
-    // If the user not exists the service will throw an exception
+    const { userId } = createProductPayload
 
-    const user = await this.userService.get(
-      createProductPayload.userId,
-      requestUser
-    )
+    const user = await UserEntity.findOne({ id: userId })
+
+    if (!user) {
+      throw new EntityNotFoundException(userId, UserEntity)
+    }
+
+    if (!UserService.hasPermissions(userId, requestUser)) {
+      throw new ForbiddenException()
+    }
 
     const { categoryIds, ...rest } = createProductPayload
 

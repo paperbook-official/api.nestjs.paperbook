@@ -11,8 +11,9 @@ import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
-import { UserEntity } from '../entities/user.entity'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+
+import { UserEntity } from '../entities/user.entity'
 import { AddressEntity } from 'src/modules/address/entities/address.entity'
 import { OrderEntity } from 'src/modules/order/entities/order.entity'
 import { ProductGroupEntity } from 'src/modules/product-group/entities/product-group.entity'
@@ -353,7 +354,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
    * @param requestUser stores the logged user data
    * @returns the created order entity
    */
-   public async finishShoppingCartByUserId(
+  public async finishShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity,
     finishShoppingCartDto: FinishShoppingCartDto

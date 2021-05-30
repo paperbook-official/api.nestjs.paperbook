@@ -1,23 +1,23 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
 
-import { RatingEntity } from '../entities/rating.entity'
 import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
 import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
+
+import { RatingEntity } from '../entities/rating.entity'
+import { ProductEntity } from 'src/modules/product/entities/product.entity'
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateRatingDto } from '../models/create-rating.dto'
 import { UpdateRatingDto } from '../models/update-rating.dto'
 import { ProductReviewDto } from 'src/modules/product/models/product-review.dto'
 
-import { ProductService } from 'src/modules/product/services/product.service'
 import { UserService } from 'src/modules/user/services/user.service'
-
-import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
 
 /**
  * The app's main rating service class
@@ -28,11 +28,7 @@ import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception
 export class RatingService extends TypeOrmCrudService<RatingEntity> {
   public constructor(
     @InjectRepository(RatingEntity)
-    private readonly repository: Repository<RatingEntity>,
-    @Inject(forwardRef(() => ProductService))
-    private readonly productService: ProductService,
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService
+    private readonly repository: Repository<RatingEntity>
   ) {
     super(repository)
   }
@@ -50,12 +46,21 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
   ): Promise<RatingEntity> {
     const { userId, productId } = createRatingPayload
 
-    /* If there are no products or users with the passed id those
-    services will throw "EntityNotFoundException", if the request
-    user has no permission the "UserService" will throw "ForbiddenException" */
+    const user = await UserEntity.findOne({ id: userId })
 
-    const user = await this.userService.get(userId, requestUser)
-    const product = await this.productService.get(productId)
+    if (!user) {
+      throw new EntityNotFoundException(userId, UserEntity)
+    }
+
+    if (!UserService.hasPermissions(userId, requestUser)) {
+      throw new ForbiddenException()
+    }
+
+    const product = await ProductEntity.findOne({ id: productId })
+
+    if (!product) {
+      throw new EntityNotFoundException(productId, ProductEntity)
+    }
 
     return await new RatingEntity({
       ...createRatingPayload,
