@@ -83,11 +83,9 @@ export class AddressController {
    *
    * @param requestUser stores the logged user data
    * @param createAddressDto stores the new address data
-   *
    * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no permission
    * to access those sources
-   *
    * @returns the created address entity dto
    */
   @ProtectTo(RolesEnum.Admin, RolesEnum.Seller, RolesEnum.Common)
@@ -119,11 +117,9 @@ export class AddressController {
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   *
    * @throws {EntityNotFoundException} if the address was not found
    * @throws {ForbiddenException} if the request user has no permission
    * to access those sources
-   *
    * @returns the found address entity dto
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
@@ -157,10 +153,8 @@ export class AddressController {
    *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   *
    * @throws {ForbiddenException} if the request user has no permission
    * to access those sources
-   *
    * @returns the found address entity dtos
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
@@ -192,7 +186,6 @@ export class AddressController {
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
    * @param updatedAddressDto stores the new address data
-   *
    * @throws {EntityNotFoundException} if the address was not found
    * @throws {ForbiddenException} if the request user has no permission
    * to access those sources
@@ -219,7 +212,6 @@ export class AddressController {
    *
    * @param addressId stores the target user id
    * @param requestUser stores the logged user data
-   *
    * @throws {EntityNotFoundException} if the address was not found
    * @throws {ForbiddenException} if the request user has no permission
    * to access those sources
@@ -245,7 +237,6 @@ export class AddressController {
    *
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
-   *
    * @throws {EntityNotFoundException} if the address was not found
    * @throws {ForbiddenException} if the request user has no permission
    * to access those sources
@@ -273,7 +264,6 @@ export class AddressController {
    *
    * @param addressId stores the target address id
    * @param requestUser stores the logged user data
-   *
    * @throws {EntityNotFoundException} if the address was not found
    * @throws {ForbiddenException} if the request user has no permission
    * to access those sources
