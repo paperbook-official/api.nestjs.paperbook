@@ -28,7 +28,11 @@ bootstrap()
  * @param app stores the application instance
  */
 function setupPipes(app: INestApplication): void {
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true
+    })
+  )
 }
 
 /**
