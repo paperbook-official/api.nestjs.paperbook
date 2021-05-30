@@ -32,6 +32,7 @@ export class JwtStrategyService extends PassportStrategy(Strategy) {
    * Method that extracts from the request the user data
    *
    * @param user stores the user data
+   * @throws {UnauthorizedException} if the informed token has no valid user or the entity is disabled
    * @returns the user data
    */
   public async validate(user: UserEntity): Promise<UserEntity> {

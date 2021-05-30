@@ -57,6 +57,7 @@ export class AuthService {
    * saved
    *
    * @param loginPayload stores the data that will be tested
+   * @throws {UnauthorizedException} if the user passed the wrong username or password
    * @returns the found user entity
    */
   public async authenticate(loginPayload: LoginDto): Promise<UserEntity> {
@@ -66,7 +67,7 @@ export class AuthService {
 
     if (!entity) {
       throw new UnauthorizedException(
-        'You have no permission to access those sources'
+        "The username or password are wrong, or you don't have access to that kind of sources"
       )
     }
 
@@ -77,7 +78,7 @@ export class AuthService {
 
     if (!passwordMatches)
       throw new UnauthorizedException(
-        'You have no permission to access those sources'
+        "The username or password are wrong, or you don't have access to that kind of sources"
       )
 
     return entity
@@ -88,15 +89,14 @@ export class AuthService {
    * exists and he is not disabled
    *
    * @param user stores the jwt request user
+   * @throws {UnauthorizedException} if the informed token has no valid user or the entity is disabled
    * @returns the user himself if exists and he is not disabled
    */
   public async validateJwtUser(user: UserEntity): Promise<UserEntity> {
     const entity = await UserEntity.findOne({ id: user.id })
 
     if (!entity || !entity.isActive) {
-      throw new UnauthorizedException(
-        'You have no permission to access those sources'
-      )
+      throw new UnauthorizedException('The informed token is no longer valid')
     }
 
     return entity

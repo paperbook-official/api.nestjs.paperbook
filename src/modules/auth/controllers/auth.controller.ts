@@ -26,7 +26,6 @@ export class AuthController {
   /**
    * Method that is called when the user access the "/auth/local" route
    *
-   * @param _loginPayload stores the username and the password values
    * @param requestUser stores the user data who is accessing the route
    * @returns the token data
    */

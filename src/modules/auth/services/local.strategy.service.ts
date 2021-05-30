@@ -26,12 +26,13 @@ export class LocalStrategyService extends PassportStrategy(Strategy) {
    *
    * @param username stores the email data
    * @param password stores the password data
+   * @throws {UnauthorizedException} if the user passed the wrong username or password
    * @returns the user data
    */
   public async validate(
     username: string,
     password: string
   ): Promise<UserEntity> {
-    return this.authService.authenticate({ password, email: username })
+    return this.authService.authenticate({ email: username, password })
   }
 }
