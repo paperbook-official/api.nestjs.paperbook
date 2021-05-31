@@ -5,7 +5,7 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { AuthService } from './auth.service'
 
-import { Strategy } from 'passport-local'
+import { Strategy, IStrategyOptions } from 'passport-local'
 
 /**
  * The app's main local strategy service class
@@ -18,7 +18,7 @@ export class LocalStrategyService extends PassportStrategy(Strategy) {
     super({
       usernameField: 'email',
       passwordField: 'password'
-    })
+    } as IStrategyOptions)
   }
 
   /**

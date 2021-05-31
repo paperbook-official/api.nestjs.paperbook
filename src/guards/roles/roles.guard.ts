@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 
-import { UserEntity } from 'src/modules/user/entities/user.entity'
-
 import { ForbiddenException } from 'src/exceptions/forbidden/forbidden.exception'
+
+import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 /**
  * The app's main roles guard class

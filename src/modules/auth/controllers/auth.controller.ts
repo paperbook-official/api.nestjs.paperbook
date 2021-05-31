@@ -1,5 +1,11 @@
 import { Controller, Post, UseGuards } from '@nestjs/common'
-import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse
+} from '@nestjs/swagger'
 
 import { RequestUser } from 'src/decorators/user/user.decorator'
 
@@ -35,6 +41,7 @@ export class AuthController {
     type: TokenDto
   })
   @ApiBody({ type: LoginDto })
+  @ApiUnauthorizedResponse({ description: 'User is not authenticated' })
   @UseGuards(LocalGuard)
   @Post('local')
   public async signIn(
@@ -55,6 +62,7 @@ export class AuthController {
     type: TokenDto
   })
   @UseGuards(JwtGuard)
+  @ApiUnauthorizedResponse({ description: 'User is not authenticated' })
   @Post('refresh')
   public async refresh(
     @RequestUser() requestUser: UserEntity
