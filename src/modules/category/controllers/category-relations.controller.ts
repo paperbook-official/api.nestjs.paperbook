@@ -1,5 +1,10 @@
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
@@ -10,6 +15,8 @@ import {
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 
+import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
+
 import { CategoryDto } from '../models/category.dto'
 import {
   GetManyProductDtoResponse,
@@ -19,8 +26,6 @@ import {
 import { CategoryRelationsService } from '../services/category-relations.service'
 
 import { map } from 'src/utils/crud'
-
-import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 /**
  * The app's main category relations controller class
@@ -44,7 +49,10 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       'createManyBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
+      'replaceOneBase',
+      'recoverOneBase',
+      'getOneBase',
+      'getManyBase'
     ]
   }
 })
@@ -63,14 +71,15 @@ export class CategoryRelationsController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found product entity dtos
    */
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({
     summary: 'Retrieves all the products of a single category'
   })
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products of a single category',
     type: GetManyProductDtoResponse
   })
+  @ApiNotFoundResponse({ description: 'Category was not found' })
   @Get(':id/products')
   public async getProductsByCategoryId(
     @Param('id') categoryId: number,

@@ -96,7 +96,7 @@ export class AddressController {
   })
   @ApiNotFoundResponse({ description: 'User not found' })
   @ApiForbiddenResponse({
-    description: 'The user has not permission to access those sources'
+    description: 'The user has no permission to access those sources'
   })
   @Post()
   public async create(
@@ -131,7 +131,7 @@ export class AddressController {
   })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has not permission to access those sources'
+    description: 'The user has no permission to access those sources'
   })
   @Get(':id')
   public async list(
@@ -165,7 +165,7 @@ export class AddressController {
     type: GetManyAddressDtoResponse
   })
   @ApiForbiddenResponse({
-    description: 'The user has not permission to access those sources'
+    description: 'The user has no permission to access those sources'
   })
   @Get()
   public async listMany(
@@ -195,7 +195,7 @@ export class AddressController {
   @ApiOkResponse({ description: 'Updates the user' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has not permission to access those sources'
+    description: 'The user has no permission to access those sources'
   })
   @Patch(':id')
   public async update(
@@ -221,7 +221,7 @@ export class AddressController {
   @ApiOkResponse({ description: 'Delete one base response' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has not permission to access those sources'
+    description: 'The user has no permission to access those sources'
   })
   @Delete(':id')
   public async delete(
@@ -247,9 +247,9 @@ export class AddressController {
   @ApiOkResponse({ description: 'Disables a single address' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has not permission to access those sources'
+    description: 'The user has no permission to access those sources'
   })
-  @ApiConflictResponse({ description: 'The user is already disabled' })
+  @ApiConflictResponse({ description: 'The address is already disabled' })
   @Put(':id/disable')
   public async disable(
     @Param('id') addressId: number,
@@ -274,9 +274,9 @@ export class AddressController {
   @ApiOkResponse({ description: 'Enables a single address' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has not permission to access those sources'
+    description: 'The user has no permission to access those sources'
   })
-  @ApiConflictResponse({ description: 'The user is already enabled' })
+  @ApiConflictResponse({ description: 'The address is already enabled' })
   @Put(':id/enable')
   public async enable(
     @Param('id') addressId: number,

@@ -1,12 +1,12 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
 import { Repository } from 'typeorm'
+
+import { EntityAlreadyDisabledException } from 'src/exceptions/conflict/entity-already-disabled.exception'
+import { EntityAlreadyEnabledException } from 'src/exceptions/conflict/entity-already-enabled.exception'
+import { EntityNotFoundException } from 'src/exceptions/not-found/entity-not-found.exception'
 
 import { CategoryEntity } from 'src/modules/category/entities/category.entity'
 
@@ -36,11 +36,9 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   public async create(
     createCategoryDto: CreateCategoryDto
   ): Promise<CategoryEntity> {
-    const entity = new CategoryEntity({
+    return await new CategoryEntity({
       ...createCategoryDto
-    })
-
-    return await entity.save()
+    }).save()
   }
 
   /**
@@ -48,9 +46,10 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    *
    * @param categoryId stores the category id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the category entity was not found
    * @returns the found category entity
    */
-  public async get(
+  public async list(
     categoryId: number,
     crudRequest?: CrudRequest
   ): Promise<CategoryEntity> {
@@ -59,10 +58,9 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
       : await CategoryEntity.findOne({ id: categoryId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${categoryId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(categoryId, CategoryEntity)
     }
+
     return entity
   }
 
@@ -72,7 +70,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found category entities
    */
-  public async getMore(
+  public async listMany(
     crudRequest?: CrudRequest
   ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
     return await super.getMany(crudRequest)
@@ -83,6 +81,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    *
    * @param categoryId stores the category id
    * @param updateCategoryPayload stores the new category data
+   * @throws {EntityNotFoundException} if the category entity was not found
    */
   public async update(
     categoryId: number,
@@ -91,9 +90,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${categoryId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(categoryId, CategoryEntity)
     }
 
     await CategoryEntity.update({ id: categoryId }, updateCategoryPayload)
@@ -103,14 +100,13 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * Method that can delete some category
    *
    * @param categoryId stores the category id
+   * @throws {EntityNotFoundException} if the category entity was not found
    */
   public async delete(categoryId: number): Promise<void> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 
     if (!entity || !entity.isActive) {
-      throw new NotFoundException(
-        `The entity identified by "${categoryId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(categoryId, CategoryEntity)
     }
 
     await CategoryEntity.delete({ id: categoryId })
@@ -120,20 +116,18 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * Method that can disable some category
    *
    * @param categoryId stores the category id
+   * @throws {EntityNotFoundException} if the category entity was not found
+   * @throws {EntityAlreadyDisabledException} if the category entity is already disabled
    */
   public async disable(categoryId: number): Promise<void> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${categoryId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(categoryId, CategoryEntity)
     }
 
     if (!entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${categoryId}" is already disabled`
-      )
+      throw new EntityAlreadyDisabledException(categoryId, CategoryEntity)
     }
 
     await CategoryEntity.update({ id: categoryId }, { isActive: false })
@@ -143,20 +137,18 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * Method that can enable some category
    *
    * @param categoryId stores the category id
+   * @throws {EntityNotFoundException} if the category entity was not found
+   * @throws {EntityAlreadyEnabledException} if the category entity is already enabled
    */
   public async enable(categoryId: number): Promise<void> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 
     if (!entity) {
-      throw new NotFoundException(
-        `The entity identified by "${categoryId}" does not exist or is disabled`
-      )
+      throw new EntityNotFoundException(categoryId, CategoryEntity)
     }
 
     if (entity.isActive) {
-      throw new ConflictException(
-        `The entity identified by "${categoryId}" is already enabled`
-      )
+      throw new EntityAlreadyEnabledException(categoryId, CategoryEntity)
     }
 
     await CategoryEntity.update({ id: categoryId }, { isActive: true })

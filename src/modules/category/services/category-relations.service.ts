@@ -34,6 +34,7 @@ export class CategoryRelationsService extends TypeOrmCrudService<
    *
    * @param categoryId store the category id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the category was not found
    * @returns all the found products
    */
   public async getProductsByCategoryId(

@@ -16,11 +16,10 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductDto } from '../models/create-product.dto'
 import { UpdateProductDto } from '../models/update-product.dto'
+import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
 
 import { CategoryService } from 'src/modules/category/services/category.service'
 import { UserService } from 'src/modules/user/services/user.service'
-
-import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
 
 /**
  * The app's main product service class
@@ -70,7 +69,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
     if (categoryIds) {
       for (const id of categoryIds) {
-        const category = await this.categoryService.get(id)
+        const category = await this.categoryService.list(id)
         categories.push(category)
       }
     }
@@ -350,7 +349,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     const categories: CategoryEntity[] = []
 
     for (const id of categoryIds) {
-      const category = await this.categoryService.get(id)
+      const category = await this.categoryService.list(id)
       categories.push(category)
     }
 
