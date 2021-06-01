@@ -44,7 +44,7 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'User is not authenticated' })
   @UseGuards(LocalGuard)
   @Post('local')
-  public async signIn(
+  public async login(
     @RequestUser() requestUser: UserEntity
   ): Promise<TokenDto> {
     return await this.authService.login(requestUser)

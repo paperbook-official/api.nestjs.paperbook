@@ -38,6 +38,8 @@
     "@nestjsx/crud-request": "^5.0.0-alpha.3",
     "@nestjsx/crud-typeorm": "^5.0.0-alpha.3",
     "@nestjsx/util": "^5.0.0-alpha.3",
+    "@sentry/node": "^6.5.0",
+    "@sentry/tracing": "^6.5.0",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
