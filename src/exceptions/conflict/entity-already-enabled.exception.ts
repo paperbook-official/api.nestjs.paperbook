@@ -3,12 +3,11 @@ import { HttpException, HttpStatus, Type } from '@nestjs/common'
 import { BaseEntity } from 'src/common/base.entity'
 
 /**
- * *
  * Instantiate a EntityAlreadyEnabledException Exception.
  *
  * @example
  * ```typescript
- * throw new EntityAlreadyEnabledException()
+ * throw new EntityAlreadyEnabledException(1, EntityType)
  * ```
  *
  * @param identifier stores the entity id or unique identifier value

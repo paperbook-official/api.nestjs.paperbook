@@ -15,21 +15,34 @@ import { UserEntity } from 'src/modules/user/entities/user.entity'
  * Guard that protects some route testing the roles saved in the metadata
  */
 export class RolesGuard implements CanActivate {
+  /**
+   * Method that is called before the route be accessed
+   *
+   * @param context stores the current execution context
+   * @returns true if the can be accessed, otherwise false
+   */
   public canActivate(context: ExecutionContext): boolean {
     const roles = new Reflector().get<string[]>('roles', context.getHandler())
 
-    if (!roles) return true
+    if (!roles) {
+      return true
+    }
 
-    const user: UserEntity = context.switchToHttp().getRequest().user
+    const user: UserEntity = context
+      .switchToHttp()
+      .getRequest<Request & { user: UserEntity }>().user
 
-    if (!user)
+    if (!user) {
       throw new UnauthorizedException(
         'You have no permission to access those sources'
       )
+    }
 
     const hasRole = user.roles.split('|').some(role => roles.includes(role))
 
-    if (user.roles && hasRole) return true
+    if (user.roles && hasRole) {
+      return true
+    }
 
     throw new ForbiddenException()
   }

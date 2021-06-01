@@ -5,7 +5,7 @@ import { HttpException, HttpStatus } from '@nestjs/common'
  *
  * @example
  * ```typescript
- * throw new ForbiddenException()
+ * throw new ForbiddenException(1, EntityType)
  * ```
  */
 export class ForbiddenException extends HttpException {
