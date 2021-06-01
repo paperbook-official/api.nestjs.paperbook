@@ -5,7 +5,7 @@ import {
   Param,
   Post,
   Put,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common'
 import { Patch } from '@nestjs/common'
 import { Delete } from '@nestjs/common'
@@ -16,20 +16,20 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
@@ -49,14 +49,14 @@ import { map } from 'src/utils/crud'
  */
 @Crud({
   model: {
-    type: AddressDto
+    type: AddressDto,
   },
   query: {
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
-      user: {}
-    }
+      user: {},
+    },
   },
   routes: {
     exclude: [
@@ -67,9 +67,9 @@ import { map } from 'src/utils/crud'
       'getOneBase',
       'recoverOneBase',
       'getManyBase',
-      'deleteOneBase'
-    ]
-  }
+      'deleteOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('addresses')
@@ -92,20 +92,20 @@ export class AddressController {
   @ApiOperation({ summary: 'Creates a new address' })
   @ApiCreatedResponse({
     description: 'Retrieves the created address entity',
-    type: AddressDto
+    type: AddressDto,
   })
   @ApiNotFoundResponse({ description: 'User not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createAddressDto: CreateAddressDto
+    @Body() createAddressDto: CreateAddressDto,
   ): Promise<AddressDto> {
     const entity = await this.addressService.create(
       requestUser,
-      createAddressDto
+      createAddressDto,
     )
     return entity.toDto()
   }
@@ -125,19 +125,19 @@ export class AddressController {
   @ApiOperation({ summary: 'Retrieves multiple AddressDto' })
   @ApiOkResponse({
     description: 'Get many base response',
-    type: GetManyAddressDtoResponse
+    type: GetManyAddressDtoResponse,
   })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Get()
   public async listMany(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
     const entities = await this.addressService.listMany(
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -159,22 +159,22 @@ export class AddressController {
   @ApiOperation({ summary: 'Retrieves a single AddressDto' })
   @ApiOkResponse({
     description: 'Retrieve a single AddressDto',
-    type: AddressDto
+    type: AddressDto,
   })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Get(':id')
   public async list(
     @Param('id') addressId: number,
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<AddressDto> {
     const entity = await this.addressService.list(
       addressId,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return entity.toDto()
   }
@@ -195,13 +195,13 @@ export class AddressController {
   @ApiOkResponse({ description: 'Updates the user' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Patch(':id')
   public async update(
     @Param('id') addressId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updatedAddressDto: UpdatedAddressDto
+    @Body() updatedAddressDto: UpdatedAddressDto,
   ): Promise<void> {
     await this.addressService.update(addressId, requestUser, updatedAddressDto)
   }
@@ -221,12 +221,12 @@ export class AddressController {
   @ApiOkResponse({ description: 'Delete one base response' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Delete(':id')
   public async delete(
     @Param('id') addressId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.addressService.delete(addressId, requestUser)
   }
@@ -247,13 +247,13 @@ export class AddressController {
   @ApiOkResponse({ description: 'Disables a single address' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @ApiConflictResponse({ description: 'The address is already disabled' })
   @Put(':id/disable')
   public async disable(
     @Param('id') addressId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.addressService.disable(addressId, requestUser)
   }
@@ -274,13 +274,13 @@ export class AddressController {
   @ApiOkResponse({ description: 'Enables a single address' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @ApiConflictResponse({ description: 'The address is already enabled' })
   @Put(':id/enable')
   public async enable(
     @Param('id') addressId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.addressService.enable(addressId, requestUser)
   }

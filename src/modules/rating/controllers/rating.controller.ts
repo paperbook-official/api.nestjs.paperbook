@@ -7,36 +7,35 @@ import {
   Patch,
   Post,
   Put,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateRatingDto } from '../models/create-rating.dto'
 import { RatingDto } from '../models/rating.dto'
 import { UpdateRatingDto } from '../models/update-rating.dto'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 import { RatingService } from '../services/rating.service'
 
 import { map } from 'src/utils/crud'
-
-import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main rating controller class
@@ -45,24 +44,24 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: RatingDto
+    type: RatingDto,
   },
   query: {
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
       product: {},
-      user: {}
-    }
+      user: {},
+    },
   },
   routes: {
     exclude: [
       'createManyBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
-    ]
-  }
+      'replaceOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('ratings')
@@ -81,13 +80,13 @@ export class RatingController {
   @ApiOperation({ summary: 'Creates a new rating' })
   @ApiCreatedResponse({
     description: 'Gets the created rating data',
-    type: RatingDto
+    type: RatingDto,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createRatingDto: CreateRatingDto
+    @Body() createRatingDto: CreateRatingDto,
   ): Promise<RatingDto> {
     const entity = await this.ratingService.create(requestUser, createRatingDto)
     return entity.toDto()
@@ -104,7 +103,7 @@ export class RatingController {
   @Get(':id')
   public async get(
     @Param('id') ratingId: number,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<RatingDto> {
     const entity = await this.ratingService.get(ratingId, crudRequest)
     return entity.toDto()
@@ -118,7 +117,7 @@ export class RatingController {
    */
   @Get()
   public async getMore(
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<RatingDto> | RatingDto[]> {
     const entities = await this.ratingService.getMany(crudRequest)
     return map(entities, entity => entity.toDto())
@@ -139,7 +138,7 @@ export class RatingController {
   public async update(
     @Param('id') ratingId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updateRatingDto: UpdateRatingDto
+    @Body() updateRatingDto: UpdateRatingDto,
   ): Promise<void> {
     await this.ratingService.update(ratingId, requestUser, updateRatingDto)
   }
@@ -155,7 +154,7 @@ export class RatingController {
   @Delete(':id')
   public async delete(
     @Param('id') ratingId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.ratingService.delete(ratingId, requestUser)
   }
@@ -173,7 +172,7 @@ export class RatingController {
   @Put(':id/disable')
   public async disable(
     @Param('id') ratingId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.ratingService.disable(ratingId, requestUser)
   }
@@ -191,7 +190,7 @@ export class RatingController {
   @Put(':id/enable')
   public async enable(
     @Param('id') ratingId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.ratingService.enable(ratingId, requestUser)
   }

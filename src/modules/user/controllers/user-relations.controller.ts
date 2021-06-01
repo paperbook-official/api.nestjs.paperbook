@@ -6,7 +6,7 @@ import {
   Post,
   UseInterceptors,
   HttpCode,
-  Query
+  Query,
 } from '@nestjs/common'
 import {
   ApiBody,
@@ -14,37 +14,41 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
+
+import { ParseBoolOrUndefinedPipe } from 'src/pipes/parse-bool-or-undefined/parse-bool-or-undefined.pipe'
+import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 import { UserEntity } from '../entities/user.entity'
 
 import { ProductGroupDto } from '../../product-group/models/product-group.dto'
 import { RemoveProductGroupDto } from '../../shopping-cart/models/remove-product-group.dto'
 import { UserDto } from '../models/user.dto'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 import {
   AddressDto,
-  GetManyAddressDtoResponse
+  GetManyAddressDtoResponse,
 } from 'src/modules/address/models/address.dto'
 import {
   GetManyOrderDtoResponse,
-  OrderDto
+  OrderDto,
 } from 'src/modules/order/models/order.dto'
 import {
   GetManyProductDtoResponse,
-  ProductDto
+  ProductDto,
 } from 'src/modules/product/models/product.dto'
 import { AddProductGroupDto } from 'src/modules/shopping-cart/models/add-product-group.dto'
 import { FinishShoppingCartDto } from 'src/modules/shopping-cart/models/finish-shopping-cart.dto'
@@ -54,10 +58,6 @@ import { UserRelationsService } from '../services/user-relations.service'
 
 import { map } from 'src/utils/crud'
 
-import { RolesEnum } from 'src/models/enums/roles.enum'
-import { ParseBoolOrUndefinedPipe } from 'src/pipes/parse-bool-or-undefined/parse-bool-or-undefined.pipe'
-import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
-
 /**
  * The app's main user relation controller class
  *
@@ -65,7 +65,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
  */
 @Crud({
   model: {
-    type: UserDto
+    type: UserDto,
   },
   query: {
     persist: ['id', 'isActive'],
@@ -80,24 +80,24 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       ratings: {},
       product: {},
       productGroups: {},
-      'productGroups.product': {}
-    }
+      'productGroups.product': {},
+    },
   },
   routes: {
     exclude: [
       'createManyBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
-    ]
-  }
+      'replaceOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('users')
 @Controller('users')
 export class UserRelationsController {
   public constructor(
-    private readonly userRelationsService: UserRelationsService
+    private readonly userRelationsService: UserRelationsService,
   ) {}
 
   /**
@@ -112,18 +112,18 @@ export class UserRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user addresses',
-    type: GetManyAddressDtoResponse
+    type: GetManyAddressDtoResponse,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/addresses')
   public async getMyAddresses(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
     const entities = await this.userRelationsService.getAddressesByUserId(
       requestUser.id,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -140,17 +140,17 @@ export class UserRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user products',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/products')
   public async getMyProducts(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.userRelationsService.getProductsByUserId(
       requestUser.id,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -163,35 +163,35 @@ export class UserRelationsController {
    * @param addProductGroupDtos stores the add product group dto
    */
   @ApiOperation({
-    summary: 'Adds product groups in the user shopping cart'
+    summary: 'Adds product groups in the user shopping cart',
   })
   @ApiCreatedResponse({
     description: 'Gets the created product group entity dtos',
     type: AddProductGroupDto,
-    isArray: true
+    isArray: true,
   })
   @ApiQuery({
     required: false,
     name: 'clean',
     type: 'boolean',
-    description: 'Says if the shopping cart must be clean'
+    description: 'Says if the shopping cart must be clean',
   })
   @ApiBody({
     type: AddProductGroupDto,
-    isArray: true
+    isArray: true,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/add')
   public async addProductInMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
     @Body() addProductGroupDtos: AddProductGroupDto[],
-    @Query('clean') clean?: false
+    @Query('clean') clean?: false,
   ): Promise<ProductGroupDto[]> {
     const entities = await this.userRelationsService.addProductInShoppingCartByUserId(
       requestUser.id,
       requestUser,
       addProductGroupDtos,
-      clean
+      clean,
     )
     return entities.map(entity => entity.toDto())
   }
@@ -204,22 +204,22 @@ export class UserRelationsController {
    * @param removeProductGroupDto stores the remove product group dto
    */
   @ApiOperation({
-    summary: 'Removes some product group from the shopping cart'
+    summary: 'Removes some product group from the shopping cart',
   })
   @ApiOkResponse({
-    description: 'Removes the product group from the shopping cart'
+    description: 'Removes the product group from the shopping cart',
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/remove')
   @HttpCode(200)
   public async removeProductFromMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
-    @Body() removeProductGroupDto: RemoveProductGroupDto
+    @Body() removeProductGroupDto: RemoveProductGroupDto,
   ): Promise<void> {
     await this.userRelationsService.removeProductFromShoppingCartByUserId(
       requestUser.id,
       requestUser,
-      removeProductGroupDto
+      removeProductGroupDto,
     )
   }
 
@@ -230,23 +230,23 @@ export class UserRelationsController {
    * @returns the created order entity dto
    */
   @ApiOperation({
-    description: 'Creates the order entity based on the shopping cart data'
+    description: 'Creates the order entity based on the shopping cart data',
   })
   @ApiOkResponse({
     description: 'Retrieves a the created order',
-    type: OrderDto
+    type: OrderDto,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post('me/shopping-cart/finish')
   @HttpCode(200)
   public async finishMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
-    @Body() finishShoppingCartDto: FinishShoppingCartDto
+    @Body() finishShoppingCartDto: FinishShoppingCartDto,
   ): Promise<OrderDto> {
     const entity = await this.userRelationsService.finishShoppingCartByUserId(
       requestUser.id,
       requestUser,
-      finishShoppingCartDto
+      finishShoppingCartDto,
     )
     return entity.toDto()
   }
@@ -260,23 +260,23 @@ export class UserRelationsController {
    * @returns the found shopping cart entity dto
    */
   @ApiOperation({
-    summary: 'Retrieves the logged user shopping carts'
+    summary: 'Retrieves the logged user shopping carts',
   })
   @ApiPropertyGet()
   @ApiOkResponse({
     description: 'Gets the logged user shopping carts',
-    type: ShoppingCartDto
+    type: ShoppingCartDto,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/shopping-cart')
   public async getMyShoppingCart(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<ShoppingCartDto> {
     const entity = await this.userRelationsService.getShoppingCartByUserId(
       requestUser.id,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return entity.toDto()
   }
@@ -293,18 +293,18 @@ export class UserRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the logged user orders',
-    type: GetManyOrderDtoResponse
+    type: GetManyOrderDtoResponse,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get('me/orders')
   public async getMyOrders(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<OrderDto> | OrderDto[]> {
     const entities = await this.userRelationsService.getOrdersByUserId(
       requestUser.id,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -322,19 +322,19 @@ export class UserRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user addresses',
-    type: GetManyAddressDtoResponse
+    type: GetManyAddressDtoResponse,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/addresses')
   public async getAddressesByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
     const entities = await this.userRelationsService.getAddressesByUserId(
       userId,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -351,17 +351,17 @@ export class UserRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user products',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/products')
   public async getProductsByUserId(
     @Param('id') userId: number,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.userRelationsService.getProductsByUserId(
       userId,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -375,22 +375,22 @@ export class UserRelationsController {
    * @param addProductGroupDtos stores the add product group dto
    */
   @ApiOperation({
-    summary: 'Adds a new product groups in the user shopping cart'
+    summary: 'Adds a new product groups in the user shopping cart',
   })
   @ApiQuery({
     required: false,
     name: 'clean',
     type: 'boolean',
-    description: 'Says if the shopping cart must be clean'
+    description: 'Says if the shopping cart must be clean',
   })
   @ApiBody({
     type: AddProductGroupDto,
-    isArray: true
+    isArray: true,
   })
   @ApiCreatedResponse({
     description: 'Gets the created product group entity dtos',
     type: AddProductGroupDto,
-    isArray: true
+    isArray: true,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/add')
@@ -398,13 +398,13 @@ export class UserRelationsController {
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
     @Body() addProductGroupDtos: AddProductGroupDto[],
-    @Query('clean', ParseBoolOrUndefinedPipe) clean?: false
+    @Query('clean', ParseBoolOrUndefinedPipe) clean?: false,
   ): Promise<ProductGroupDto[]> {
     const entities = await this.userRelationsService.addProductInShoppingCartByUserId(
       userId,
       requestUser,
       addProductGroupDtos,
-      clean
+      clean,
     )
     return entities.map(entity => entity.toDto())
   }
@@ -418,22 +418,22 @@ export class UserRelationsController {
    * @param removeProductGroupDto stores the remove product group dto
    */
   @ApiOperation({
-    summary: 'Removes some product group from the shopping cart'
+    summary: 'Removes some product group from the shopping cart',
   })
   @ApiOkResponse({
-    description: 'Removes the product group from the shopping cart'
+    description: 'Removes the product group from the shopping cart',
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/remove')
   public async removeProductFromShoppingCartByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() removeProductGroupDto: RemoveProductGroupDto
+    @Body() removeProductGroupDto: RemoveProductGroupDto,
   ): Promise<void> {
     await this.userRelationsService.removeProductFromShoppingCartByUserId(
       userId,
       requestUser,
-      removeProductGroupDto
+      removeProductGroupDto,
     )
   }
 
@@ -445,11 +445,11 @@ export class UserRelationsController {
    * @returns the created order entity dto
    */
   @ApiOperation({
-    description: 'Creates the order entity based on the shopping cart data'
+    description: 'Creates the order entity based on the shopping cart data',
   })
   @ApiOkResponse({
     description: 'Retrieves a the created order',
-    type: OrderDto
+    type: OrderDto,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post(':id/shopping-cart/finish')
@@ -457,12 +457,12 @@ export class UserRelationsController {
   public async finishShoppingCartByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() finishShoppingCartDto: FinishShoppingCartDto
+    @Body() finishShoppingCartDto: FinishShoppingCartDto,
   ): Promise<OrderDto> {
     const entity = await this.userRelationsService.finishShoppingCartByUserId(
       userId,
       requestUser,
-      finishShoppingCartDto
+      finishShoppingCartDto,
     )
     return entity.toDto()
   }
@@ -477,24 +477,24 @@ export class UserRelationsController {
    * @returns all the found shopping cart entity dtos
    */
   @ApiOperation({
-    summary: 'Retrieves all the user shopping carts'
+    summary: 'Retrieves all the user shopping carts',
   })
   @ApiPropertyGet()
   @ApiOkResponse({
     description: 'Gets the logged user shopping carts',
-    type: ShoppingCartDto
+    type: ShoppingCartDto,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/shopping-cart')
   public async getShoppingCartsByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<ShoppingCartDto> {
     const entity = await this.userRelationsService.getShoppingCartByUserId(
       userId,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return entity.toDto()
   }
@@ -512,19 +512,19 @@ export class UserRelationsController {
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the user orders',
-    type: GetManyOrderDtoResponse
+    type: GetManyOrderDtoResponse,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Get(':id/orders')
   public async getOrdersByUserId(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<OrderDto> | OrderDto[]> {
     const entities = await this.userRelationsService.getOrdersByUserId(
       userId,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }

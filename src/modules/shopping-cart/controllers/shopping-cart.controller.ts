@@ -7,36 +7,35 @@ import {
   Patch,
   Post,
   Put,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateShoppingCartDto } from '../models/create-shopping-cart.dto'
 import { ShoppingCartDto } from '../models/shopping-cart.dto'
 import { UpdateShoppingCartDto } from '../models/update-shopping-cart.dto'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 import { ShoppingCartService } from '../services/shopping-cart.service'
 
 import { map } from 'src/utils/crud'
-
-import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main shopping cart controller class
@@ -45,31 +44,31 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: ShoppingCartDto
+    type: ShoppingCartDto,
   },
   query: {
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
       user: {},
-      productGroups: {}
-    }
+      productGroups: {},
+    },
   },
   routes: {
     exclude: [
       'createManyBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
-    ]
-  }
+      'replaceOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('shopping-carts')
 @Controller('shopping-carts')
 export class ShoppingCartController {
   public constructor(
-    private readonly shoppingCartService: ShoppingCartService
+    private readonly shoppingCartService: ShoppingCartService,
   ) {}
 
   /**
@@ -84,17 +83,17 @@ export class ShoppingCartController {
   @ApiOperation({ summary: 'Creates a new shopping cart entity' })
   @ApiCreatedResponse({
     description: 'Gets the created shopping cart entity data',
-    type: ShoppingCartDto
+    type: ShoppingCartDto,
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createShoppingCartPayload: CreateShoppingCartDto
+    @Body() createShoppingCartPayload: CreateShoppingCartDto,
   ): Promise<ShoppingCartDto> {
     const entity = await this.shoppingCartService.create(
       requestUser,
-      createShoppingCartPayload
+      createShoppingCartPayload,
     )
     return entity.toDto()
   }
@@ -113,12 +112,12 @@ export class ShoppingCartController {
   public async get(
     @Param('id') shoppingCartId: number,
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<ShoppingCartDto> {
     const entity = await this.shoppingCartService.get(
       shoppingCartId,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return entity.toDto()
   }
@@ -135,11 +134,11 @@ export class ShoppingCartController {
   @Get()
   public async getMore(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ShoppingCartDto> | ShoppingCartDto[]> {
     const entities = await this.shoppingCartService.getMore(
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -157,11 +156,11 @@ export class ShoppingCartController {
   @Patch(':id')
   public async update(
     @Param('id') shoppingCartId: number,
-    @Body() updateShoppingCartPayload: UpdateShoppingCartDto
+    @Body() updateShoppingCartPayload: UpdateShoppingCartDto,
   ): Promise<void> {
     await this.shoppingCartService.update(
       shoppingCartId,
-      updateShoppingCartPayload
+      updateShoppingCartPayload,
     )
   }
 
@@ -176,7 +175,7 @@ export class ShoppingCartController {
   @Delete(':id')
   public async delete(
     @Param('id') shoppingCartId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.shoppingCartService.delete(shoppingCartId, requestUser)
   }

@@ -7,37 +7,36 @@ import {
   Patch,
   Post,
   Put,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
 import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
 import { UserDto } from '../models/user.dto'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 import { UserService } from '../services/user.service'
 
 import { map } from 'src/utils/crud'
-
-import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main user controller class
@@ -46,7 +45,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: UserDto
+    type: UserDto,
   },
   query: {
     persist: ['id', 'isActive'],
@@ -56,17 +55,17 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
       addresses: {},
       products: {},
       orders: {},
-      ratings: {}
-    }
+      ratings: {},
+    },
   },
   routes: {
     exclude: [
       'createManyBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
-    ]
-  }
+      'replaceOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('users')
@@ -84,11 +83,11 @@ export class UserController {
   @ApiOperation({ summary: 'Creates a new user' })
   @ApiCreatedResponse({
     description: 'Gets the created user data',
-    type: UserDto
+    type: UserDto,
   })
   @Post()
   public async create(
-    @Body() createdUserPayload: CreateUserDto
+    @Body() createdUserPayload: CreateUserDto,
   ): Promise<UserDto> {
     const entity = await this.userService.create(createdUserPayload)
     return entity.toDto()
@@ -109,12 +108,12 @@ export class UserController {
   @Get('me')
   public async getMe(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<UserDto> {
     const entity = await this.userService.get(
       requestUser.id,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return entity.toDto()
   }
@@ -133,7 +132,7 @@ export class UserController {
   public async get(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<UserDto> {
     const entity = await this.userService.get(userId, requestUser, crudRequest)
     return entity.toDto()
@@ -149,7 +148,7 @@ export class UserController {
   @ProtectTo(RolesEnum.Admin)
   @Get()
   public async getMore(
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<UserDto> | UserDto[]> {
     const getManyDefaultResponse = await this.userService.getMany(crudRequest)
     return map(getManyDefaultResponse, entity => entity.toDto())
@@ -170,7 +169,7 @@ export class UserController {
   public async update(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updatedUserPayload: UpdateUserDto
+    @Body() updatedUserPayload: UpdateUserDto,
   ): Promise<void> {
     await this.userService.update(userId, requestUser, updatedUserPayload)
   }
@@ -186,7 +185,7 @@ export class UserController {
   @Delete(':id')
   public async delete(
     @Param('id') userId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.userService.delete(userId, requestUser)
   }
@@ -204,7 +203,7 @@ export class UserController {
   @Put(':id/disable')
   public async disable(
     @Param('id') userId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.userService.disable(userId, requestUser)
   }
@@ -222,7 +221,7 @@ export class UserController {
   @Put(':id/enable')
   public async enable(
     @Param('id') userId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.userService.enable(userId, requestUser)
   }
@@ -236,13 +235,13 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Changes a single user role from "*" to "seller"' })
   @ApiOkResponse({
-    description: 'Changes a single user role from "*" to "seller"'
+    description: 'Changes a single user role from "*" to "seller"',
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/to-seller')
   public async modifyUserRolesToSeller(
     @Param('id') userId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.userService.modifyUserRolesToSeller(userId, requestUser)
   }
@@ -256,13 +255,13 @@ export class UserController {
    */
   @ApiOperation({ summary: 'Changes a single user role from "*" to "common"' })
   @ApiOkResponse({
-    description: 'Changes a single user role from "*" to "common"'
+    description: 'Changes a single user role from "*" to "common"',
   })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/to-common')
   public async modifyUserRolesToCommon(
     @Param('id') userId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.userService.modifyUserRolesToCommon(userId, requestUser)
   }

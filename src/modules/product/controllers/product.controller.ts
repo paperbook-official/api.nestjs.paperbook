@@ -9,38 +9,37 @@ import {
   Post,
   Put,
   Query,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
 import { CreateProductDto } from '../models/create-product.dto'
 import { GetManyProductDtoResponse, ProductDto } from '../models/product.dto'
 import { UpdateProductDto } from '../models/update-product.dto'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 import { ProductService } from '../services/product.service'
 
 import { map } from 'src/utils/crud'
-
-import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main products controller class
@@ -49,7 +48,7 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
  */
 @Crud({
   model: {
-    type: ProductDto
+    type: ProductDto,
   },
   query: {
     persist: ['id', 'isActive'],
@@ -62,17 +61,17 @@ import { RolesEnum } from 'src/models/enums/roles.enum'
       shoppingCarts: {},
       ratings: {},
       product: {},
-      'user.addresses': {}
-    }
+      'user.addresses': {},
+    },
   },
   routes: {
     exclude: [
       'createManyBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
-    ]
-  }
+      'replaceOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('products')
@@ -91,17 +90,17 @@ export class ProductController {
   @ApiOperation({ summary: 'Creates a new product' })
   @ApiCreatedResponse({
     description: 'Gets the created product data',
-    type: ProductDto
+    type: ProductDto,
   })
   @ProtectTo(RolesEnum.Admin, RolesEnum.Seller)
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createProductDto: CreateProductDto
+    @Body() createProductDto: CreateProductDto,
   ): Promise<ProductDto> {
     const entity = await this.productService.create(
       requestUser,
-      createProductDto
+      createProductDto,
     )
     return entity.toDto()
   }
@@ -115,28 +114,28 @@ export class ProductController {
    * @returns all the found elements
    */
   @ApiOperation({
-    summary: 'Retrieves all the products with price less than "maxPrice" value'
+    summary: 'Retrieves all the products with price less than "maxPrice" value',
   })
   @ApiQuery({
     required: true,
     name: 'maxPrice',
     type: 'integer',
     description:
-      'Selects products with full Price parameter less than this value.'
+      'Selects products with full Price parameter less than this value.',
   })
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with price less than "maxPrice" value',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @Get('less-than')
   public async getLessThan(
     @Query('maxPrice', ParseIntPipe) maxPrice: number,
-    @ParsedRequest() crudRequest: CrudRequest
+    @ParsedRequest() crudRequest: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getLessThan(
       maxPrice,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -149,16 +148,16 @@ export class ProductController {
    * @returns all the found products
    */
   @ApiOperation({
-    summary: 'Retrieves all the products with discount greater than 0'
+    summary: 'Retrieves all the products with discount greater than 0',
   })
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with discount greater than 0',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @Get('on-sale')
   public async getOnSale(
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getOnSale(crudRequest)
     return map(entities, entity => entity.toDto())
@@ -172,16 +171,16 @@ export class ProductController {
    * @returns all the found products
    */
   @ApiOperation({
-    summary: 'Retrieves all the products with no installment price'
+    summary: 'Retrieves all the products with no installment price',
   })
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with no installment price',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @Get('free-of-interests')
   public async getFreeOfInterests(
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getFreeOfInterests(crudRequest)
     return map(entities, entity => entity.toDto())
@@ -195,16 +194,16 @@ export class ProductController {
    * @returns all the found elements
    */
   @ApiOperation({
-    summary: 'Retrieves all the products organized by "createdAt" field'
+    summary: 'Retrieves all the products organized by "createdAt" field',
   })
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products organized by "createdAt" field',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @Get('recent')
   public async getRecent(
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getRecent(crudRequest)
     return map(entities, entity => entity.toDto())
@@ -218,16 +217,16 @@ export class ProductController {
    * @returns all the found elements
    */
   @ApiOperation({
-    summary: 'Retrieves all the products organized by "ordersAmount" field'
+    summary: 'Retrieves all the products organized by "ordersAmount" field',
   })
   @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products organized by "ordersAmount" field',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @Get('most-bought')
   public async getMostBought(
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getMostBought(crudRequest)
     return map(entities, entity => entity.toDto())
@@ -244,7 +243,7 @@ export class ProductController {
   @Get(':id')
   public async get(
     @Param('id') productId: number,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<ProductDto> {
     const entity = await this.productService.get(productId, crudRequest)
     return entity.toDto()
@@ -259,7 +258,7 @@ export class ProductController {
    */
   @Get()
   public async getMore(
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getMany(crudRequest)
     return map(entities, entity => entity.toDto())
@@ -280,12 +279,12 @@ export class ProductController {
   public async update(
     @Param('id') productId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updateProductPayload: UpdateProductDto
+    @Body() updateProductPayload: UpdateProductDto,
   ): Promise<void> {
     await this.productService.update(
       productId,
       requestUser,
-      updateProductPayload
+      updateProductPayload,
     )
   }
 
@@ -300,7 +299,7 @@ export class ProductController {
   @Delete(':id')
   public async delete(
     @Param('id') productId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.productService.delete(productId, requestUser)
   }
@@ -318,7 +317,7 @@ export class ProductController {
   @Put(':id/disable')
   public async disable(
     @Param('id') productId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.productService.disable(productId, requestUser)
   }
@@ -336,7 +335,7 @@ export class ProductController {
   @Put(':id/enable')
   public async enable(
     @Param('id') productId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.productService.enable(productId, requestUser)
   }

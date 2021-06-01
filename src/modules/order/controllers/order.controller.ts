@@ -6,7 +6,7 @@ import {
   Patch,
   Post,
   Put,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common'
 import { Get } from '@nestjs/common'
 import {
@@ -16,20 +16,20 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
 import { UserEntity } from 'src/modules/user/entities/user.entity'
 
@@ -49,7 +49,7 @@ import { map } from 'src/utils/crud'
  */
 @Crud({
   model: {
-    type: OrderDto
+    type: OrderDto,
   },
   query: {
     persist: ['id', 'isActive'],
@@ -57,8 +57,8 @@ import { map } from 'src/utils/crud'
     join: {
       user: {},
       productGroups: {},
-      'productGroups.product': {}
-    }
+      'productGroups.product': {},
+    },
   },
   routes: {
     exclude: [
@@ -69,9 +69,9 @@ import { map } from 'src/utils/crud'
       'recoverOneBase',
       'getOneBase',
       'getManyBase',
-      'deleteOneBase'
-    ]
-  }
+      'deleteOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('orders')
@@ -94,20 +94,20 @@ export class OrderController {
   @ApiOperation({ summary: 'Creates a new order' })
   @ApiCreatedResponse({
     description: 'Gets the created order data',
-    type: OrderDto
+    type: OrderDto,
   })
   @ApiNotFoundResponse({ description: 'Order not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
-    @Body() createOrderPayload: CreateOrderDto
+    @Body() createOrderPayload: CreateOrderDto,
   ): Promise<OrderDto> {
     const entity = await this.orderService.create(
       requestUser,
-      createOrderPayload
+      createOrderPayload,
     )
     return entity.toDto()
   }
@@ -127,15 +127,15 @@ export class OrderController {
   @ApiOperation({ summary: 'Retrieves multiple OrderDto' })
   @ApiOkResponse({
     description: 'Get many base response',
-    type: GetManyOrderDtoResponse
+    type: GetManyOrderDtoResponse,
   })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Get()
   public async listMany(
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<OrderDto> | OrderDto[]> {
     const entities = await this.orderService.listMany(requestUser, crudRequest)
     return map(entities, entity => entity.toDto())
@@ -158,22 +158,22 @@ export class OrderController {
   @ApiOperation({ summary: 'Retrieves a single OrderDto' })
   @ApiOkResponse({
     description: 'Retrieve a single OrderDto',
-    type: OrderDto
+    type: OrderDto,
   })
   @ApiNotFoundResponse({ description: 'Order not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Get(':id')
   public async list(
     @Param('id') orderId: number,
     @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<OrderDto> {
     const entity = await this.orderService.list(
       orderId,
       requestUser,
-      crudRequest
+      crudRequest,
     )
     return entity.toDto()
   }
@@ -194,13 +194,13 @@ export class OrderController {
   @ApiOkResponse({ description: 'Updates a single order' })
   @ApiNotFoundResponse({ description: 'Order not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Patch(':id')
   public async update(
     @Param('id') orderId: number,
     @RequestUser() requestUser: UserEntity,
-    @Body() updateOrderPayload: UpdateOrderDto
+    @Body() updateOrderPayload: UpdateOrderDto,
   ): Promise<void> {
     await this.orderService.update(orderId, requestUser, updateOrderPayload)
   }
@@ -220,12 +220,12 @@ export class OrderController {
   @ApiOkResponse({ description: 'Delete one base response' })
   @ApiNotFoundResponse({ description: 'Order not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @Delete(':id')
   public async delete(
     @Param('id') orderId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.orderService.delete(orderId, requestUser)
   }
@@ -246,13 +246,13 @@ export class OrderController {
   @ApiOkResponse({ description: 'Disables a single order' })
   @ApiNotFoundResponse({ description: 'Order not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @ApiConflictResponse({ description: 'The order is already disabled' })
   @Put(':id/disable')
   public async disable(
     @Param('id') orderId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.orderService.disable(orderId, requestUser)
   }
@@ -273,13 +273,13 @@ export class OrderController {
   @ApiOkResponse({ description: 'Enables a single order' })
   @ApiNotFoundResponse({ description: 'Order not found' })
   @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
+    description: 'The user has no permission to access those sources',
   })
   @ApiConflictResponse({ description: 'The order is already enabled' })
   @Put(':id/enable')
   public async enable(
     @Param('id') orderId: number,
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<void> {
     await this.orderService.enable(orderId, requestUser)
   }

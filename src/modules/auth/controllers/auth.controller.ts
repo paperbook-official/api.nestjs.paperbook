@@ -4,10 +4,10 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 
-import { RequestUser } from 'src/decorators/user/user.decorator'
+import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
 import { JwtGuard } from 'src/guards/jwt/jwt.guard'
 import { LocalGuard } from 'src/guards/local/local.guard'
@@ -38,14 +38,14 @@ export class AuthController {
   @ApiOperation({ summary: 'Authenticates the user' })
   @ApiOkResponse({
     description: 'Gets the token value',
-    type: TokenDto
+    type: TokenDto,
   })
   @ApiBody({ type: LoginDto })
   @ApiUnauthorizedResponse({ description: 'User is not authenticated' })
   @UseGuards(LocalGuard)
   @Post('local')
   public async login(
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<TokenDto> {
     return await this.authService.login(requestUser)
   }
@@ -59,13 +59,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Refreshes the user token' })
   @ApiOkResponse({
     description: 'Gets the token value',
-    type: TokenDto
+    type: TokenDto,
   })
   @UseGuards(JwtGuard)
   @ApiUnauthorizedResponse({ description: 'User is not authenticated' })
   @Post('refresh')
   public async refresh(
-    @RequestUser() requestUser: UserEntity
+    @RequestUser() requestUser: UserEntity,
   ): Promise<TokenDto> {
     return await this.authService.refresh(requestUser)
   }
