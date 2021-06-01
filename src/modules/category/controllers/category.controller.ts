@@ -98,6 +98,27 @@ export class CategoryController {
   }
 
   /**
+   * Method that is called when the user access the "/category" route
+   * with "GET" method
+   *
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found category entity dtos
+   */
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves multiple CategoryDto' })
+  @ApiOkResponse({
+    description: 'Get many base response',
+    type: GetManyCategoryDtoResponse
+  })
+  @Get()
+  public async listMany(
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<CategoryDto> | CategoryDto[]> {
+    const entities = await this.categoryService.listMany(crudRequest)
+    return map(entities, entity => entity.toDto())
+  }
+
+  /**
    * Method that is called when the user access the "/category/:id"
    * route with "GET" method
    *
@@ -119,27 +140,6 @@ export class CategoryController {
   ): Promise<CategoryDto> {
     const entity = await this.categoryService.list(categoryId, crudRequest)
     return entity.toDto()
-  }
-
-  /**
-   * Method that is called when the user access the "/category" route
-   * with "GET" method
-   *
-   * @param crudRequest stores the joins, filters, etc
-   * @returns the found category entity dtos
-   */
-  @ApiPropertyGetManyDefaultResponse()
-  @ApiOperation({ summary: 'Retrieves multiple CategoryDto' })
-  @ApiOkResponse({
-    description: 'Get many base response',
-    type: GetManyCategoryDtoResponse
-  })
-  @Get()
-  public async listMany(
-    @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<CategoryDto> | CategoryDto[]> {
-    const entities = await this.categoryService.listMany(crudRequest)
-    return map(entities, entity => entity.toDto())
   }
 
   /**

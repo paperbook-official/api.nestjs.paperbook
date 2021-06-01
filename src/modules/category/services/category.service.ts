@@ -42,6 +42,18 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   }
 
   /**
+   * Method that can get some category entities
+   *
+   * @param crudRequest stores the joins, filters, etc
+   * @returns the found category entities
+   */
+  public async listMany(
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
+    return await super.getMany(crudRequest)
+  }
+
+  /**
    * Method that can get one category entity
    *
    * @param categoryId stores the category id
@@ -62,18 +74,6 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
     }
 
     return entity
-  }
-
-  /**
-   * Method that can get some category entities
-   *
-   * @param crudRequest stores the joins, filters, etc
-   * @returns the found category entities
-   */
-  public async listMany(
-    crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
-    return await super.getMany(crudRequest)
   }
 
   /**
