@@ -19,7 +19,7 @@ export class AuthService {
   public constructor(
     private readonly passwordService: PasswordService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -35,7 +35,7 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(
       { id, email, name, roles, cpf, isActive },
-      { expiresIn }
+      { expiresIn },
     )
     return { token, expiresIn }
   }
@@ -67,18 +67,18 @@ export class AuthService {
 
     if (!entity) {
       throw new UnauthorizedException(
-        "The username or password are wrong, or you don't have access to that kind of sources"
+        'The username or password are wrong, or you do not have permission to that kind of sources',
       )
     }
 
     const passwordMatches = await this.passwordService.comparePassword(
       password,
-      entity.password
+      entity.password,
     )
 
     if (!passwordMatches)
       throw new UnauthorizedException(
-        "The username or password are wrong, or you don't have access to that kind of sources"
+        'The username or password are wrong, or you do not have permission to that kind of sources',
       )
 
     return entity

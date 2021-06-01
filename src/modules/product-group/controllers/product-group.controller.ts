@@ -28,12 +28,11 @@ import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
 import { ProductGroupDto } from '../models/product-group.dto'
 import { UpdateProductGroupDto } from '../models/update-product-group.dto'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 import { ProductGroupService } from '../services/product-group.service'
 
 import { map } from 'src/utils/crud'
-
-import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main product group controller class

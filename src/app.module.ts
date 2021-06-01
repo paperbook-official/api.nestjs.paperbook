@@ -35,13 +35,13 @@ import { UserModule } from './modules/user/user.module'
     FirebaseModule,
     ProductGroupModule,
     ConfigModule.forRoot({
-      envFilePath: ['.env']
+      envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [TypeOrmConfigModule],
       inject: [TypeOrmConfigService],
-      useExisting: TypeOrmConfigService
-    })
-  ]
+      useExisting: TypeOrmConfigService,
+    }),
+  ],
 })
 export class AppModule {}
