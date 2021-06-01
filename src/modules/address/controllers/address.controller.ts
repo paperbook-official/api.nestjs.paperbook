@@ -111,6 +111,38 @@ export class AddressController {
   }
 
   /**
+   * Method that is called when the user access the "/addresses" route
+   * with "GET" method
+   *
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @returns the found address entity dtos
+   */
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves multiple AddressDto' })
+  @ApiOkResponse({
+    description: 'Get many base response',
+    type: GetManyAddressDtoResponse
+  })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources'
+  })
+  @Get()
+  public async listMany(
+    @RequestUser() requestUser: UserEntity,
+    @ParsedRequest() crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
+    const entities = await this.addressService.listMany(
+      requestUser,
+      crudRequest
+    )
+    return map(entities, entity => entity.toDto())
+  }
+
+  /**
    * Method that is called when the user access the "/addresses/:id"
    * route with "GET" method
    *
@@ -145,38 +177,6 @@ export class AddressController {
       crudRequest
     )
     return entity.toDto()
-  }
-
-  /**
-   * Method that is called when the user access the "/addresses" route
-   * with "GET" method
-   *
-   * @param requestUser stores the logged user data
-   * @param crudRequest stores the joins, filters, etc
-   * @throws {ForbiddenException} if the request user has no permission
-   * to access those sources
-   * @returns the found address entity dtos
-   */
-  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
-  @ApiPropertyGetManyDefaultResponse()
-  @ApiOperation({ summary: 'Retrieves multiple AddressDto' })
-  @ApiOkResponse({
-    description: 'Get many base response',
-    type: GetManyAddressDtoResponse
-  })
-  @ApiForbiddenResponse({
-    description: 'The user has no permission to access those sources'
-  })
-  @Get()
-  public async listMany(
-    @RequestUser() requestUser: UserEntity,
-    @ParsedRequest() crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<AddressDto> | AddressDto[]> {
-    const entities = await this.addressService.listMany(
-      requestUser,
-      crudRequest
-    )
-    return map(entities, entity => entity.toDto())
   }
 
   /**

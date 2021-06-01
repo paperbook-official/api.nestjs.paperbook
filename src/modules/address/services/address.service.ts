@@ -68,6 +68,32 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
   }
 
   /**
+   * Method that can get some addresses entities
+   *
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @returns the found address entities
+   */
+  public async listMany(
+    requestUser: UserEntity,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
+    const entities = await super.getMany(crudRequest)
+
+    if (
+      (isGetMany(entities) ? entities.data : entities).some(
+        entity => !UserService.hasPermissions(entity.userId, requestUser)
+      )
+    ) {
+      throw new ForbiddenException()
+    }
+
+    return entities
+  }
+
+  /**
    * Method that can get one address entity
    *
    * @param addressId stores the address id
@@ -96,32 +122,6 @@ export class AddressService extends TypeOrmCrudService<AddressEntity> {
     }
 
     return entity
-  }
-
-  /**
-   * Method that can get some addresses entities
-   *
-   * @param requestUser stores the logged user data
-   * @param crudRequest stores the joins, filters, etc
-   * @throws {ForbiddenException} if the request user has no permission
-   * to access those sources
-   * @returns the found address entities
-   */
-  public async listMany(
-    requestUser: UserEntity,
-    crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
-    const entities = await super.getMany(crudRequest)
-
-    if (
-      (isGetMany(entities) ? entities.data : entities).some(
-        entity => !UserService.hasPermissions(entity.userId, requestUser)
-      )
-    ) {
-      throw new ForbiddenException()
-    }
-
-    return entities
   }
 
   /**
