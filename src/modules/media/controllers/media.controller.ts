@@ -43,8 +43,6 @@ export class MediaController {
     @UploadedFile() file: Express.Multer.File
   ): Promise<MediaDto> {
     const url = await this.firebaseService.upload(file)
-    return {
-      url
-    }
+    return { url }
   }
 }

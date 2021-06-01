@@ -39,7 +39,7 @@ export class FirebaseService implements OnModuleInit {
   /**
    * Method that can upload some file to the firebase storage
    * @param multerFile stores the multer file data
-   * @returns the created
+   * @returns the created file url
    */
   public async upload(multerFile: Express.Multer.File): Promise<string> {
     return new Promise<string>((res, err) => {

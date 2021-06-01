@@ -38,7 +38,10 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    *
    * @param requestUser stores the logged user data
    * @param createOrderPayload stores the order new data
-   * @returns the created order
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the logged user has no permission to access
+   * those sources
+   * @returns the created order entity
    */
   public async create(
     requestUser: UserEntity,
@@ -55,13 +58,41 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     if (!UserService.hasPermissions(userId, requestUser)) {
       throw new ForbiddenException()
     }
+
     const entity = new OrderEntity({
       ...createOrderPayload,
-      trackingCode: this.generateTrackingCode(),
+      trackingCode: OrderService.generateTrackingCode(),
       user
     })
 
     return await entity.save()
+  }
+
+  /**
+   * Method that can get some orders entities
+   *
+   * @param requestUser stores the logged user data
+   * @param crudRequest stores the joins, filters, etc
+   * @throws {ForbiddenException} if the logged user has no permission to access
+   * those sources
+   * @returns the found elements
+   */
+  public async listMany(
+    requestUser: UserEntity,
+    crudRequest?: CrudRequest
+  ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
+    const entities = await super.getMany(crudRequest)
+
+    if (
+      some(
+        entities,
+        entity => !UserService.hasPermissions(entity.userId, requestUser)
+      )
+    ) {
+      throw new ForbiddenException()
+    }
+
+    return entities
   }
 
   /**
@@ -70,9 +101,12 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
-   * @returns the found entity
+   * @throws {EntityNotFoundException} if the order was not found
+   * @throws {ForbiddenException} if the logged user has no permission to access
+   * those sources
+   * @returns the found order entity
    */
-  public async get(
+  public async list(
     orderId: number,
     requestUser: UserEntity,
     crudRequest?: CrudRequest
@@ -93,36 +127,14 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
   }
 
   /**
-   * Method that can get some orders entities
-   *
-   * @param requestUser stores the logged user data
-   * @param crudRequest stores the joins, filters, etc
-   * @returns the found elements
-   */
-  public async getMore(
-    requestUser: UserEntity,
-    crudRequest?: CrudRequest
-  ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
-    const entities = await super.getMany(crudRequest)
-
-    if (
-      some(
-        entities,
-        entity => !UserService.hasPermissions(entity.userId, requestUser)
-      )
-    ) {
-      throw new ForbiddenException()
-    }
-
-    return entities
-  }
-
-  /**
    * Method that can change some data of some entity
    *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
    * @param updateOrderPayload stores the new order data
+   * @throws {EntityNotFoundException} if the order was not found
+   * @throws {ForbiddenException} if the logged user has no permission to access
+   * those sources
    */
   public async update(
     orderId: number,
@@ -147,6 +159,9 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the order was not found
+   * @throws {ForbiddenException} if the logged user has no permission to access
+   * those sources
    */
   public async delete(orderId: number, requestUser: UserEntity): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
@@ -167,7 +182,10 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    *
    * @param orderId stores the order id
    * @param requestUser stores the logged user data
-   */
+   * @throws {EntityNotFoundException} if the order was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyDisabledException} if the order is already disabled   */
   public async disable(
     orderId: number,
     requestUser: UserEntity
@@ -194,6 +212,10 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    *
    * @param orderId stores the order id
    * @param requestUser stores the logged user
+   * @throws {EntityNotFoundException} if the order was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyEnabledException} if the order is already enabled
    */
   public async enable(orderId: number, requestUser: UserEntity): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
@@ -218,7 +240,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    *
    * @returns the generated tracking code
    */
-  public generateTrackingCode(): string {
+  public static generateTrackingCode(): string {
     return 'xxxxxxxxxxxxx'.replace(/[x]/g, (c: string) => {
       const r = (Math.random() * 16) | 0
       const v = c == 'x' ? r : (r & 0x3) | 0x8

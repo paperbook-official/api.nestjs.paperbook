@@ -407,7 +407,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
       shippingPrice,
       userId,
       installmentAmount,
-      trackingCode: this.orderService.generateTrackingCode()
+      trackingCode: OrderService.generateTrackingCode()
     }).save()
 
     // duplicate all the product group entities and relate them with the order entity
