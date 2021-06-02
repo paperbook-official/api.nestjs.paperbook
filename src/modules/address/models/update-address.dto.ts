@@ -1,13 +1,14 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
+import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+
 import {
   IsNumber,
   IsNumberString,
   IsOptional,
   IsString,
-  Length
+  Length,
 } from 'class-validator'
-import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
  * The app's main update address dto class

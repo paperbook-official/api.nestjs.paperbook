@@ -32,8 +32,8 @@ bootstrap()
 function setupPipes(app: INestApplication): void {
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true
-    })
+      whitelist: true,
+    }),
   )
 }
 
@@ -45,7 +45,7 @@ function setupPipes(app: INestApplication): void {
  */
 function setupFilters(
   app: INestApplication,
-  configService: ConfigService
+  configService: ConfigService,
 ): void {
   app.useGlobalFilters(new SentryFilter(configService))
 }
@@ -58,7 +58,7 @@ function setupFilters(
  */
 function setupSwagger(
   app: INestApplication,
-  configService: ConfigService
+  configService: ConfigService,
 ): void {
   const config = new DocumentBuilder()
     .setTitle(configService.get<string>('SWAGGER_TITLE'))

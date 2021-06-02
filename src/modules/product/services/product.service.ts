@@ -32,7 +32,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     @InjectRepository(ProductEntity)
     private readonly repository: Repository<ProductEntity>,
     @Inject(forwardRef(() => CategoryService))
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
   ) {
     super(repository)
   }
@@ -49,7 +49,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    */
   public async create(
     requestUser: UserEntity,
-    createProductPayload: CreateProductDto
+    createProductPayload: CreateProductDto,
   ): Promise<ProductEntity> {
     const { userId } = createProductPayload
 
@@ -77,7 +77,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     return await new ProductEntity({
       ...rest,
       categories,
-      user
+      user,
     }).save()
   }
 
@@ -89,9 +89,9 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @throws {EntityNotFoundException} if the product was not found
    * @returns the found product entity
    */
-  public async get(
+  public async list(
     productId: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<ProductEntity> {
     let entity: ProductEntity
 
@@ -118,7 +118,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    */
   public async getLessThan(
     maxPrice: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     const { parsed, options } = crudRequest
     const builder = await this.createBuilder(parsed, options)
@@ -126,7 +126,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     return await this.doGetMany(
       builder.andWhere(`price * (1 - discount) <= ${maxPrice}`),
       parsed,
-      options
+      options,
     )
   }
 
@@ -152,7 +152,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     state?: string,
     freeOfInterests?: boolean,
     sortBy?: SortBySearchEnum,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     const { parsed, options } = crudRequest
 
@@ -161,22 +161,22 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       ...crudRequest.parsed.join,
       { field: 'categories', select: ['id'] },
       { field: 'user' },
-      { field: 'user.addresses', select: ['state'] }
+      { field: 'user.addresses', select: ['state'] },
     ]
 
     if (categoryId !== undefined) {
       crudRequest.parsed.search.$and.push({
         'categories.id': {
-          $eq: categoryId
-        }
+          $eq: categoryId,
+        },
       })
     }
 
     if (name !== undefined) {
       crudRequest.parsed.search.$and.push({
         name: {
-          $contL: name
-        }
+          $contL: name,
+        },
       })
     }
 
@@ -184,14 +184,14 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
       if (freeOfInterests) {
         crudRequest.parsed.search.$and.push({
           installmentPrice: {
-            $isnull: true
-          }
+            $isnull: true,
+          },
         })
       } else {
         crudRequest.parsed.search.$and.push({
           installmentPrice: {
-            $ne: 0
-          }
+            $ne: 0,
+          },
         })
       }
     }
@@ -199,8 +199,8 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     if (state !== undefined) {
       crudRequest.parsed.search.$and.push({
         'user.addresses.street': {
-          $contL: state
-        }
+          $contL: state,
+        },
       })
     }
 
@@ -236,15 +236,15 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @returns all the found products
    */
   public async getOnSale(
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.search.$and = [
       ...crudRequest.parsed.search.$and,
       {
         discount: {
-          $gt: 0
-        }
-      }
+          $gt: 0,
+        },
+      },
     ]
     return this.getMany(crudRequest)
   }
@@ -256,17 +256,17 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @returns all the found products
    */
   public async getFreeOfInterests(
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.search.$and = [
       ...crudRequest.parsed.search.$and,
       {
         installmentPrice: {
           $or: {
-            $isnull: true
-          }
-        }
-      }
+            $isnull: true,
+          },
+        },
+      },
     ]
     return this.getMany(crudRequest)
   }
@@ -278,13 +278,13 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @returns all the found elements
    */
   public async getRecent(
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.sort = [
       {
         field: 'createdAt',
-        order: 'DESC'
-      }
+        order: 'DESC',
+      },
     ]
     return this.getMany(crudRequest)
   }
@@ -296,28 +296,21 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @returns all the found elements
    */
   public async getMostBought(
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
-    // crudRequest.parsed.filter = [
-    //   {
-    //     field: 'ordersAmount',
-    //     operator: '$gt',
-    //     value: 0
-    //   }
-    // ]
     crudRequest.parsed.search.$and = [
       ...crudRequest.parsed.search.$and,
       {
         ordersAmount: {
-          $gt: 0
-        }
-      }
+          $gt: 0,
+        },
+      },
     ]
     crudRequest.parsed.sort = [
       {
         field: 'ordersAmount',
-        order: 'DESC'
-      }
+        order: 'DESC',
+      },
     ]
     return this.getMany(crudRequest)
   }
@@ -328,11 +321,14 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    * @param updateProductPayload stores the product new data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    */
   public async update(
     productId: number,
     requestUser: UserEntity,
-    updateProductPayload: UpdateProductDto
+    updateProductPayload: UpdateProductDto,
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 
@@ -361,10 +357,13 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    */
   public async delete(
     productId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 
@@ -384,10 +383,14 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {EntityAlreadyDisabledException} if the product entity is already disabled
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    */
   public async disable(
     productId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 
@@ -411,10 +414,14 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {EntityAlreadyEnabledException} if the product entity is already enabled
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    */
   public async enable(
     productId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await ProductEntity.findOne({ id: productId })
 

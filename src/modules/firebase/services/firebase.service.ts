@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config'
 import admin from 'firebase-admin'
 import { v4 as uuidv4 } from 'uuid'
 
+// TODO: remove "onModuleInit" and place that logic in constructor
+
 /**
  * The app's firebase service class
  *
@@ -30,8 +32,8 @@ export class FirebaseService implements OnModuleInit {
           privateKey: this.configService
             .get<string>('FB_PRIVATE_KEY')
             .replace(/\\n/g, '\n'),
-          projectId: this.configService.get<string>('FB_PROJECT_ID')
-        })
+          projectId: this.configService.get<string>('FB_PROJECT_ID'),
+        }),
       })
       .storage()
   }
@@ -49,8 +51,8 @@ export class FirebaseService implements OnModuleInit {
         .file(filename)
         .createWriteStream({
           metadata: {
-            contentType: multerFile.mimetype
-          }
+            contentType: multerFile.mimetype,
+          },
         })
         .on('finish', async () => {
           res(
@@ -58,7 +60,7 @@ export class FirebaseService implements OnModuleInit {
               .bucket()
               .file(filename)
               .getSignedUrl({ action: 'read', expires: '01-01-2100' })
-              .then(values => values[0])
+              .then(values => values[0]),
           )
         })
         .on('error', err)

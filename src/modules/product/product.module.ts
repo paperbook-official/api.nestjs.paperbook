@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { ProductEntity } from './entities/product.entity'
 
+import { ProductRelationsService } from './services/product-relations.service'
 import { ProductService } from './services/product.service'
-import { ProductRelationsService } from './services/protuct-relations.service'
 
 import { ProductRelationsController } from './controllers/product-relations.controller'
 import { ProductController } from './controllers/product.controller'
@@ -18,10 +18,10 @@ import { UserModule } from '../user/user.module'
     forwardRef(() => UserModule),
     forwardRef(() => CategoryModule),
     forwardRef(() => RatingModule),
-    TypeOrmModule.forFeature([ProductEntity])
+    TypeOrmModule.forFeature([ProductEntity]),
   ],
   controllers: [ProductController, ProductRelationsController],
   providers: [ProductService, ProductRelationsService],
-  exports: [ProductService]
+  exports: [ProductService],
 })
 export class ProductModule {}

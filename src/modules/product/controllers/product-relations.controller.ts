@@ -1,14 +1,21 @@
 import { Controller, Get, Param, UseInterceptors } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
+
+import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 import { GetManyRatingDtoResponse } from 'src/modules/rating/entities/rating.entity'
 
@@ -16,15 +23,13 @@ import { ProductReviewDto } from '../models/product-review.dto'
 import { ProductDto } from '../models/product.dto'
 import {
   CategoryDto,
-  GetManyCategoryDtoResponse
+  GetManyCategoryDtoResponse,
 } from 'src/modules/category/models/category.dto'
 import { RatingDto } from 'src/modules/rating/models/rating.dto'
 
-import { ProductRelationsService } from '../services/protuct-relations.service'
+import { ProductRelationsService } from '../services/product-relations.service'
 
 import { map } from 'src/utils/crud'
-
-import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
 /**
  * The app's main products relations controller class
@@ -33,7 +38,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
  */
 @Crud({
   model: {
-    type: ProductDto
+    type: ProductDto,
   },
   query: {
     persist: ['id', 'isActive'],
@@ -46,24 +51,24 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
       shoppingCarts: {},
       ratings: {},
       products: {},
-      product: {}
-    }
+      product: {},
+    },
   },
   routes: {
     exclude: [
       'createManyBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
-    ]
-  }
+      'replaceOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('products')
 @Controller('products')
 export class ProductRelationsController {
   public constructor(
-    private readonly productRelationsService: ProductRelationsService
+    private readonly productRelationsService: ProductRelationsService,
   ) {}
 
   /**
@@ -72,24 +77,26 @@ export class ProductRelationsController {
    *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found category entities proxies
    */
-  @ApiOperation({
-    summary: 'Retrieves all the categories of a single product'
-  })
   @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({
+    summary: 'Retrieves all the categories of a single product',
+  })
   @ApiOkResponse({
     description: 'Gets all the categories of a single product',
-    type: GetManyCategoryDtoResponse
+    type: GetManyCategoryDtoResponse,
   })
+  @ApiNotFoundResponse({ description: 'Product not found' })
   @Get(':id/categories')
   public async getCategoriesByProductId(
     @Param('id') productId: number,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<CategoryDto> | CategoryDto[]> {
     const entities = await this.productRelationsService.getCategoriesByProductId(
       productId,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -100,24 +107,26 @@ export class ProductRelationsController {
    *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found rating entities proxies
    */
-  @ApiOperation({
-    summary: 'Retrieves all the ratings of a single product'
-  })
   @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({
+    summary: 'Retrieves all the ratings of a single product',
+  })
   @ApiOkResponse({
     description: 'Gets all the ratings of a single product',
-    type: GetManyRatingDtoResponse
+    type: GetManyRatingDtoResponse,
   })
+  @ApiNotFoundResponse({ description: 'Product not found' })
   @Get(':id/ratings')
   public async getRatingsByProductId(
     @Param('id') productId: number,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<RatingDto> | RatingDto[]> {
     const entities = await this.productRelationsService.getRatingsByProductId(
       productId,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }
@@ -127,18 +136,20 @@ export class ProductRelationsController {
    * route with "GET" method
    *
    * @param productId stores the product id
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found rating entities proxies
    */
   @ApiOperation({
-    summary: 'Retrieves rating review of a single product'
+    summary: 'Retrieves rating review of a single product',
   })
   @ApiOkResponse({
     description: 'Gets rating review of a single product',
-    type: ProductReviewDto
+    type: ProductReviewDto,
   })
+  @ApiNotFoundResponse({ description: 'Product not found' })
   @Get(':id/review')
   public async getReviewByProductId(
-    @Param('id') productId: number
+    @Param('id') productId: number,
   ): Promise<ProductReviewDto> {
     return await this.productRelationsService.getReviewByProductId(productId)
   }

@@ -46,25 +46,25 @@ export class ProductDto extends BaseResponseDto {
   public userId: number
 
   @ApiPropertyOptional({
-    type: () => UserDto
+    type: () => UserDto,
   })
   public user?: UserDto
 
   @ApiPropertyOptional({
     type: () => CategoryDto,
-    isArray: true
+    isArray: true,
   })
   public categories?: CategoryDto[]
 
   @ApiPropertyOptional({
     type: () => RatingDto,
-    isArray: true
+    isArray: true,
   })
   public ratings?: RatingDto[]
 
   @ApiPropertyOptional({
     type: () => ProductGroupDto,
-    isArray: true
+    isArray: true,
   })
   public productGroups?: ProductGroupDto[]
 
@@ -85,11 +85,11 @@ export class ProductDto extends BaseResponseDto {
     // relations
     this.user = entity.user?.toDto()
     this.categories = entity.categories?.map(productCategory =>
-      productCategory.toDto()
+      productCategory.toDto(),
     )
     this.ratings = entity.ratings?.map(rating => rating.toDto())
     this.productGroups = entity.productGroups?.map(shoppingCart =>
-      shoppingCart.toDto()
+      shoppingCart.toDto(),
     )
   }
 }

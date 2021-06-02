@@ -25,7 +25,7 @@
       {
         "newlinesBetween": "always",
         "groups": [
-          "/@nestjs|^typeorm/",
+          "/@nestjs|^typeorm|@sentry/",
           "/.types/",
           "/.decorator/",
           "/.guard/",

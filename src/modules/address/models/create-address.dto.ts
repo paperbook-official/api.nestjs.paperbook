@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger'
 
+import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+
 import {
   IsDefined,
   IsNumber,
   IsNumberString,
   IsString,
   Length,
-  Min
+  Min,
 } from 'class-validator'
-import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
  * The app's main create address dto class
@@ -57,7 +58,7 @@ export class CreateAddressDto {
   @IsDefined({ message: 'It is required to send the user id' })
   @IsNumber(
     { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
+    { message: DefaultValidationMessages.IsNumber },
   )
   @Min(1)
   public userId: number

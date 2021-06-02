@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import { IsDefined, IsNumber } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+
+import { IsDefined, IsNumber } from 'class-validator'
 
 /**
  * The app's main create order dto class
@@ -13,7 +14,7 @@ export class CreateOrderDto {
   @IsDefined({ message: 'It is required to send the shipping price' })
   @IsNumber(
     { maxDecimalPlaces: 2 },
-    { message: DefaultValidationMessages.IsNumber }
+    { message: DefaultValidationMessages.IsNumber },
   )
   public shippingPrice: number
 
@@ -21,7 +22,7 @@ export class CreateOrderDto {
   @IsDefined({ message: 'It is required to send the user id' })
   @IsNumber(
     { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
+    { message: DefaultValidationMessages.IsNumber },
   )
   public userId: number
 
@@ -29,7 +30,7 @@ export class CreateOrderDto {
   @IsDefined({ message: 'It is required to send the address id' })
   @IsNumber(
     { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
+    { message: DefaultValidationMessages.IsNumber },
   )
   public addressId: number
 }

@@ -4,10 +4,9 @@ import { OrderEntity } from '../entities/order.entity'
 
 import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
 import { BaseResponseDto } from 'src/common/base-response.dto'
+import { OrderStatus } from 'src/models/enums/order-status.enum'
 import { ProductGroupDto } from 'src/modules/product-group/models/product-group.dto'
 import { UserDto } from 'src/modules/user/models/user.dto'
-
-import { OrderStatus } from 'src/models/enums/order-status.enum'
 
 /**
  * The app's main order dto class

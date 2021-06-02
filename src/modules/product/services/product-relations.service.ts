@@ -28,7 +28,7 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
     @Inject(forwardRef(() => CategoryService))
     private readonly categoryService: CategoryService,
     @Inject(forwardRef(() => RatingService))
-    private readonly ratingService: RatingService
+    private readonly ratingService: RatingService,
   ) {
     super(repository)
   }
@@ -38,11 +38,12 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
    *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found categories
    */
   public async getCategoriesByProductId(
     productId: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
     const entity = await ProductEntity.findOne({ id: productId })
 
@@ -55,14 +56,14 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
       ...crudRequest.parsed.join,
       {
         field: 'products',
-        select: ['id']
-      }
+        select: ['id'],
+      },
     ]
     crudRequest.parsed.search.$and = [
       ...crudRequest.parsed.search.$and,
       {
-        'products.id': { $eq: productId }
-      }
+        'products.id': { $eq: productId },
+      },
     ]
 
     return await this.categoryService.getMany(crudRequest)
@@ -72,11 +73,12 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
    *
    * @param productId stores the product id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found rating entities
    */
   public async getRatingsByProductId(
     productId: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<RatingEntity> | RatingEntity[]> {
     const entity = await ProductEntity.findOne({ id: productId })
 
@@ -89,10 +91,10 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
         ...crudRequest.parsed.search.$and,
         {
           productId: {
-            $eq: productId
-          }
-        }
-      ]
+            $eq: productId,
+          },
+        },
+      ],
     }
 
     return await this.ratingService.getMany(crudRequest)
@@ -102,11 +104,18 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
    * Method that can get a review of the product ratings
    *
    * @param productId stores the product id
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns the product review
    */
   public async getReviewByProductId(
-    productId: number
+    productId: number,
   ): Promise<ProductReviewDto> {
+    const entity = await ProductEntity.findOne({ id: productId })
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(productId, ProductEntity)
+    }
+
     return await this.ratingService.getReviewByProductId(productId)
   }
 }

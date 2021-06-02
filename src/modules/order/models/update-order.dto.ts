@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsEnum, IsOptional } from 'class-validator'
 import { OrderStatus } from 'src/models/enums/order-status.enum'
+
+import { IsEnum, IsOptional } from 'class-validator'
 
 /**
  * The app's main update order dto class
@@ -12,7 +13,7 @@ export class UpdateOrderDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsEnum(OrderStatus, {
-    message: 'It is required to send a valid order number'
+    message: 'It is required to send a valid order number',
   })
   public status?: OrderStatus
 }

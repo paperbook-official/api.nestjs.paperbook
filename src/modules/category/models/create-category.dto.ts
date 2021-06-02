@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import { IsDefined, IsString } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+
+import { IsDefined, IsString } from 'class-validator'
 
 /**
  * The app's main create address dto class

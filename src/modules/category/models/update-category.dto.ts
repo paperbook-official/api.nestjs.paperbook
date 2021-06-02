@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
-import { IsOptional, IsString } from 'class-validator'
 import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+
+import { IsOptional, IsString } from 'class-validator'
 
 /**
  * The app's main update category dto class

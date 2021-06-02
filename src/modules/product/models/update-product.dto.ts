@@ -1,5 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 
+import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
+
 import {
   IsArray,
   IsNotEmpty,
@@ -7,9 +9,8 @@ import {
   IsOptional,
   IsString,
   Max,
-  Min
+  Min,
 } from 'class-validator'
-import { DefaultValidationMessages } from 'src/models/enums/default-validation-messages.enum'
 
 /**
  * The app's main create product dto class
@@ -50,7 +51,7 @@ export class UpdateProductDto {
   @IsOptional()
   @IsNumber(
     { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
+    { message: DefaultValidationMessages.IsNumber },
   )
   @Min(0)
   public installmentAmount?: number
@@ -66,7 +67,7 @@ export class UpdateProductDto {
   @IsOptional()
   @IsNumber(
     { maxDecimalPlaces: 0 },
-    { message: DefaultValidationMessages.IsNumber }
+    { message: DefaultValidationMessages.IsNumber },
   )
   @Min(1)
   public stockAmount?: number

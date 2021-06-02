@@ -12,7 +12,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import {
+  ApiConflictResponse,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
@@ -27,6 +30,7 @@ import {
 } from '@nestjsx/crud'
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
+import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
@@ -70,6 +74,10 @@ import { map } from 'src/utils/crud'
       'createOneBase',
       'updateOneBase',
       'replaceOneBase',
+      'getOneBase',
+      'recoverOneBase',
+      'getManyBase',
+      'deleteOneBase',
     ],
   },
 })
@@ -85,14 +93,21 @@ export class ProductController {
    *
    * @param requestUser stores the logged user data
    * @param createProductDto stores the new product data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    * @returns the created product data
    */
+  @ProtectTo(RolesEnum.Admin, RolesEnum.Seller)
   @ApiOperation({ summary: 'Creates a new product' })
   @ApiCreatedResponse({
     description: 'Gets the created product data',
     type: ProductDto,
   })
-  @ProtectTo(RolesEnum.Admin, RolesEnum.Seller)
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Post()
   public async create(
     @RequestUser() requestUser: UserEntity,
@@ -111,8 +126,10 @@ export class ProductController {
    *
    * @param maxPrice stores the max price value
    * @param crudRequest stores the filters, joins, etc
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found elements
    */
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({
     summary: 'Retrieves all the products with price less than "maxPrice" value',
   })
@@ -123,11 +140,11 @@ export class ProductController {
     description:
       'Selects products with full Price parameter less than this value.',
   })
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with price less than "maxPrice" value',
     type: GetManyProductDtoResponse,
   })
+  @ApiNotFoundResponse({ description: 'Product not found' })
   @Get('less-than')
   public async getLessThan(
     @Query('maxPrice', ParseIntPipe) maxPrice: number,
@@ -147,10 +164,10 @@ export class ProductController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found products
    */
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({
     summary: 'Retrieves all the products with discount greater than 0',
   })
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with discount greater than 0',
     type: GetManyProductDtoResponse,
@@ -170,10 +187,10 @@ export class ProductController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found products
    */
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({
     summary: 'Retrieves all the products with no installment price',
   })
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products with no installment price',
     type: GetManyProductDtoResponse,
@@ -216,10 +233,10 @@ export class ProductController {
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found elements
    */
+  @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({
     summary: 'Retrieves all the products organized by "ordersAmount" field',
   })
-  @ApiPropertyGetManyDefaultResponse()
   @ApiOkResponse({
     description: 'Gets all the products organized by "ordersAmount" field',
     type: GetManyProductDtoResponse,
@@ -240,12 +257,18 @@ export class ProductController {
    * @param crudRequest store the joins, filters, etc
    * @returns the found entity dto
    */
+  @ApiPropertyGet()
+  @ApiOperation({ summary: 'Retrieves a single ProductDto' })
+  @ApiOkResponse({
+    description: 'Retrieve a single ProductDto',
+    type: ProductDto,
+  })
   @Get(':id')
-  public async get(
+  public async list(
     @Param('id') productId: number,
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<ProductDto> {
-    const entity = await this.productService.get(productId, crudRequest)
+    const entity = await this.productService.list(productId, crudRequest)
     return entity.toDto()
   }
 
@@ -256,8 +279,14 @@ export class ProductController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found entity dtos
    */
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves multiple ProductDto' })
+  @ApiOkResponse({
+    description: 'Get many base response',
+    type: GetManyProductDtoResponse,
+  })
   @Get()
-  public async getMore(
+  public async listMany(
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.productService.getMany(crudRequest)
@@ -271,10 +300,17 @@ export class ProductController {
    * @param productId stores the product id
    * @param requestUser stores the logged user data
    * @param updateProductPayload stores the new product data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    */
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @ApiOperation({ summary: 'Updates a single product' })
   @ApiOkResponse({ description: 'Updates a single product' })
-  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Patch(':id')
   public async update(
     @Param('id') productId: number,
@@ -294,8 +330,15 @@ export class ProductController {
    *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    */
   @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Delete(':id')
   public async delete(
     @Param('id') productId: number,
@@ -310,10 +353,19 @@ export class ProductController {
    *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {EntityAlreadyDisabledException} if the product entity is already disabled
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    */
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @ApiOperation({ summary: 'Disables a single product entity' })
   @ApiOkResponse({ description: 'Disables a single product entity' })
-  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
+  @ApiConflictResponse({ description: 'The product is already disabled' })
   @Put(':id/disable')
   public async disable(
     @Param('id') productId: number,
@@ -328,10 +380,19 @@ export class ProductController {
    *
    * @param productId stores the product id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {EntityAlreadyEnabledException} if the product entity is already enabled
+   * @throws {ForbiddenException} if the request user has no permissions
+   * to execute this action
    */
+  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
   @ApiOperation({ summary: 'Enables a single product entity' })
   @ApiOkResponse({ description: 'Enables a single product entity' })
-  @ProtectTo(RolesEnum.Seller, RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
+  @ApiConflictResponse({ description: 'The product is already enabled' })
   @Put(':id/enable')
   public async enable(
     @Param('id') productId: number,

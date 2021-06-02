@@ -22,7 +22,7 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
   @ApiProperty()
   @Column({
     type: 'text',
-    nullable: true
+    nullable: true,
   })
   public imageUrl: string
 
@@ -31,51 +31,51 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
     type: 'varchar',
     length: 100,
     nullable: false,
-    unique: true
+    unique: true,
   })
   public name: string
 
   @ApiProperty()
   @Column({
     type: 'text',
-    nullable: false
+    nullable: false,
   })
   public description: string
 
   @ApiProperty()
   @Column({
     type: 'float',
-    nullable: false
+    nullable: false,
   })
   public price: number
 
   @ApiPropertyOptional()
   @Column({
     type: 'float',
-    nullable: true
+    nullable: true,
   })
   public installmentPrice?: number
 
   @ApiPropertyOptional()
   @Column({
     type: 'int',
-    nullable: true,
-    default: 1
+    nullable: false,
+    default: 1,
   })
   public installmentAmount?: number
 
   @ApiPropertyOptional()
   @Column({
     type: 'float',
-    nullable: true,
-    default: 0
+    nullable: false,
+    default: 0,
   })
   public discount?: number
 
   @ApiProperty()
   @Column({
     type: 'int',
-    nullable: false
+    nullable: false,
   })
   public stockAmount: number
 
@@ -83,56 +83,56 @@ export class ProductEntity extends BaseEntity implements ToDto<ProductDto> {
   @Column({
     type: 'int',
     nullable: false,
-    default: 0
+    default: 0,
   })
   public ordersAmount?: number
 
   @ApiProperty()
   @Column({
     type: 'integer',
-    nullable: false
+    nullable: false,
   })
   public userId: number
 
   //#region Relations
 
   @ApiPropertyOptional({
-    type: () => UserEntity
+    type: () => UserEntity,
   })
   @ManyToOne(
     () => UserEntity,
     user => user.products,
-    { onDelete: 'CASCADE' }
+    { onDelete: 'CASCADE' },
   )
   public user?: UserEntity
 
   @ApiPropertyOptional({
     type: () => CategoryEntity,
-    isArray: true
+    isArray: true,
   })
   @ManyToMany(
     () => CategoryEntity,
-    category => category.products
+    category => category.products,
   )
   public categories?: CategoryEntity[]
 
   @ApiPropertyOptional({
     type: () => ProductGroupEntity,
-    isArray: true
+    isArray: true,
   })
   @OneToMany(
     () => ProductGroupEntity,
-    productGroup => productGroup.product
+    productGroup => productGroup.product,
   )
   public productGroups?: ProductGroupEntity[]
 
   @ApiPropertyOptional({
     type: () => RatingEntity,
-    isArray: true
+    isArray: true,
   })
   @OneToMany(
     () => RatingEntity,
-    rating => rating.product
+    rating => rating.product,
   )
   public ratings?: RatingEntity[]
 

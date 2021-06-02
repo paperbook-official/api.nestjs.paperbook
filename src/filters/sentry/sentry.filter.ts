@@ -3,11 +3,11 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  HttpStatus
+  HttpStatus,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-
 import * as Sentry from '@sentry/node'
+
 import { Request, Response } from 'express'
 
 /**
@@ -21,7 +21,7 @@ export class SentryFilter implements ExceptionFilter {
     Sentry.init({
       environment: configService.get<string>('NODE_ENV'),
       dsn: configService.get<string>('SENTRY_DSN'),
-      release: configService.get<string>('PACKAGE_VERSION')
+      release: configService.get<string>('PACKAGE_VERSION'),
     })
   }
 
@@ -33,7 +33,7 @@ export class SentryFilter implements ExceptionFilter {
    */
   public async catch(
     exception: HttpException,
-    host: ArgumentsHost
+    host: ArgumentsHost,
   ): Promise<void> {
     const context = host.switchToHttp()
     const response = context.getResponse<Response>()
@@ -44,12 +44,15 @@ export class SentryFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR
 
-    Sentry.setContext('request', { requestUrl: request.url })
-
     if (status >= 500) {
       Sentry.captureException(exception)
     }
 
-    response.status(status).json(exception.getResponse())
+    response.status(status).json({
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      message: exception.message,
+    })
   }
 }

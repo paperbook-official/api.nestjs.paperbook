@@ -28,7 +28,7 @@ export class CategoryDto extends BaseResponseDto {
 
     // relations
     this.products = entity.products?.map(productCategory =>
-      productCategory.toDto()
+      productCategory.toDto(),
     )
   }
 }
