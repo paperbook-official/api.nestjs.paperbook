@@ -166,12 +166,12 @@ export class AddressController {
     description: 'The user has no permission to access those sources',
   })
   @Get(':id')
-  public async list(
+  public async listOne(
     @Param('id') addressId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<AddressDto> {
-    const entity = await this.addressService.list(
+    const entity = await this.addressService.listOne(
       addressId,
       requestUser,
       crudRequest,

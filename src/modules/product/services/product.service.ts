@@ -69,7 +69,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
 
     if (categoryIds) {
       for (const id of categoryIds) {
-        const category = await this.categoryService.list(id)
+        const category = await this.categoryService.listOne(id)
         categories.push(category)
       }
     }
@@ -89,7 +89,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @throws {EntityNotFoundException} if the product was not found
    * @returns the found product entity
    */
-  public async list(
+  public async listOne(
     productId: number,
     crudRequest?: CrudRequest,
   ): Promise<ProductEntity> {
@@ -116,7 +116,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found products
    */
-  public async getLessThan(
+  public async listLessThan(
     maxPrice: number,
     crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
@@ -235,7 +235,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found products
    */
-  public async getOnSale(
+  public async listOnSale(
     crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.search.$and = [
@@ -255,7 +255,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param crudRequest stores the joins, filers, etc
    * @returns all the found products
    */
-  public async getFreeOfInterests(
+  public async listFreeOfInterests(
     crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.search.$and = [
@@ -277,7 +277,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param crudRequest stores the joins, filters, etc.
    * @returns all the found elements
    */
-  public async getRecent(
+  public async listRecent(
     crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.sort = [
@@ -295,7 +295,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
    * @param crudRequest stores the joins, filters, etc.
    * @returns all the found elements
    */
-  public async getMostBought(
+  public async listMostBought(
     crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     crudRequest.parsed.search.$and = [
@@ -372,7 +372,7 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
     const categories: CategoryEntity[] = []
 
     for (const id of categoryIds) {
-      const category = await this.categoryService.list(id)
+      const category = await this.categoryService.listOne(id)
       categories.push(category)
     }
 

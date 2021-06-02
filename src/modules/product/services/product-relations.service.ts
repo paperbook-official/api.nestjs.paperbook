@@ -41,7 +41,7 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
    * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found categories
    */
-  public async getCategoriesByProductId(
+  public async listCategoriesByProductId(
     productId: number,
     crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
@@ -76,7 +76,7 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
    * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found rating entities
    */
-  public async getRatingsByProductId(
+  public async listRatingsByProductId(
     productId: number,
     crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<RatingEntity> | RatingEntity[]> {
@@ -107,7 +107,7 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
    * @throws {EntityNotFoundException} if the product was not found
    * @returns the product review
    */
-  public async getReviewByProductId(
+  public async listReviewByProductId(
     productId: number,
   ): Promise<ProductReviewDto> {
     const entity = await ProductEntity.findOne({ id: productId })

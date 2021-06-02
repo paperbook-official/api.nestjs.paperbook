@@ -165,12 +165,12 @@ export class OrderController {
     description: 'The user has no permission to access those sources',
   })
   @Get(':id')
-  public async list(
+  public async listOne(
     @Param('id') orderId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<OrderDto> {
-    const entity = await this.orderService.list(
+    const entity = await this.orderService.listOne(
       orderId,
       requestUser,
       crudRequest,

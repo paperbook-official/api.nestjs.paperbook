@@ -146,11 +146,11 @@ export class ProductController {
   })
   @ApiNotFoundResponse({ description: 'Product not found' })
   @Get('less-than')
-  public async getLessThan(
+  public async listLessThan(
     @Query('maxPrice', ParseIntPipe) maxPrice: number,
-    @ParsedRequest() crudRequest: CrudRequest,
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.productService.getLessThan(
+    const entities = await this.productService.listLessThan(
       maxPrice,
       crudRequest,
     )
@@ -173,10 +173,10 @@ export class ProductController {
     type: GetManyProductDtoResponse,
   })
   @Get('on-sale')
-  public async getOnSale(
+  public async listOnSale(
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.productService.getOnSale(crudRequest)
+    const entities = await this.productService.listOnSale(crudRequest)
     return map(entities, entity => entity.toDto())
   }
 
@@ -196,10 +196,10 @@ export class ProductController {
     type: GetManyProductDtoResponse,
   })
   @Get('free-of-interests')
-  public async getFreeOfInterests(
+  public async listFreeOfInterests(
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.productService.getFreeOfInterests(crudRequest)
+    const entities = await this.productService.listFreeOfInterests(crudRequest)
     return map(entities, entity => entity.toDto())
   }
 
@@ -219,10 +219,10 @@ export class ProductController {
     type: GetManyProductDtoResponse,
   })
   @Get('recent')
-  public async getRecent(
+  public async listRecent(
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.productService.getRecent(crudRequest)
+    const entities = await this.productService.listRecent(crudRequest)
     return map(entities, entity => entity.toDto())
   }
 
@@ -242,10 +242,10 @@ export class ProductController {
     type: GetManyProductDtoResponse,
   })
   @Get('most-bought')
-  public async getMostBought(
+  public async listMostBought(
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.productService.getMostBought(crudRequest)
+    const entities = await this.productService.listMostBought(crudRequest)
     return map(entities, entity => entity.toDto())
   }
 
@@ -266,11 +266,11 @@ export class ProductController {
   })
   @ApiNotFoundResponse({ description: 'Product not found' })
   @Get(':id')
-  public async list(
+  public async listOne(
     @Param('id') productId: number,
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<ProductDto> {
-    const entity = await this.productService.list(productId, crudRequest)
+    const entity = await this.productService.listOne(productId, crudRequest)
     return entity.toDto()
   }
 

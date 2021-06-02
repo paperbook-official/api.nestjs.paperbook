@@ -28,7 +28,7 @@ import { some } from 'src/utils/crud'
 export class OrderService extends TypeOrmCrudService<OrderEntity> {
   public constructor(
     @InjectRepository(OrderEntity)
-    repository: Repository<OrderEntity>
+    repository: Repository<OrderEntity>,
   ) {
     super(repository)
   }
@@ -45,7 +45,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    */
   public async create(
     requestUser: UserEntity,
-    createOrderPayload: CreateOrderDto
+    createOrderPayload: CreateOrderDto,
   ): Promise<OrderEntity> {
     const { userId } = createOrderPayload
 
@@ -62,7 +62,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
     const entity = new OrderEntity({
       ...createOrderPayload,
       trackingCode: OrderService.generateTrackingCode(),
-      user
+      user,
     })
 
     return await entity.save()
@@ -79,14 +79,14 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    */
   public async listMany(
     requestUser: UserEntity,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
     const entities = await super.getMany(crudRequest)
 
     if (
       some(
         entities,
-        entity => !UserService.hasPermissions(entity.userId, requestUser)
+        entity => !UserService.hasPermissions(entity.userId, requestUser),
       )
     ) {
       throw new ForbiddenException()
@@ -106,10 +106,10 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    * those sources
    * @returns the found order entity
    */
-  public async list(
+  public async listOne(
     orderId: number,
     requestUser: UserEntity,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<OrderEntity> {
     const entity = crudRequest
       ? await super.getOne(crudRequest).catch(() => undefined)
@@ -139,7 +139,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
   public async update(
     orderId: number,
     requestUser: UserEntity,
-    updateOrderPayload: UpdateOrderDto
+    updateOrderPayload: UpdateOrderDto,
   ): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
 
@@ -188,7 +188,7 @@ export class OrderService extends TypeOrmCrudService<OrderEntity> {
    * @throws {EntityAlreadyDisabledException} if the order is already disabled   */
   public async disable(
     orderId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await OrderEntity.findOne({ id: orderId })
 

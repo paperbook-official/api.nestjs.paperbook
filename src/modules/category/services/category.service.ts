@@ -22,7 +22,7 @@ import { UpdatedCategoryDto } from '../models/update-category.dto'
 export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
   public constructor(
     @InjectRepository(CategoryEntity)
-    repository: Repository<CategoryEntity>
+    repository: Repository<CategoryEntity>,
   ) {
     super(repository)
   }
@@ -34,10 +34,10 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * @returns the created category
    */
   public async create(
-    createCategoryDto: CreateCategoryDto
+    createCategoryDto: CreateCategoryDto,
   ): Promise<CategoryEntity> {
     return await new CategoryEntity({
-      ...createCategoryDto
+      ...createCategoryDto,
     }).save()
   }
 
@@ -48,7 +48,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * @returns the found category entities
    */
   public async listMany(
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<CategoryEntity> | CategoryEntity[]> {
     return await super.getMany(crudRequest)
   }
@@ -61,9 +61,9 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    * @throws {EntityNotFoundException} if the category entity was not found
    * @returns the found category entity
    */
-  public async list(
+  public async listOne(
     categoryId: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<CategoryEntity> {
     const entity: CategoryEntity = crudRequest
       ? await super.getOne(crudRequest).catch(() => undefined)
@@ -85,7 +85,7 @@ export class CategoryService extends TypeOrmCrudService<CategoryEntity> {
    */
   public async update(
     categoryId: number,
-    updateCategoryPayload: UpdatedCategoryDto
+    updateCategoryPayload: UpdatedCategoryDto,
   ): Promise<void> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 

@@ -24,7 +24,7 @@ export class CategoryRelationsService extends TypeOrmCrudService<
     @InjectRepository(CategoryEntity)
     repository: Repository<CategoryEntity>,
     @Inject(forwardRef(() => ProductService))
-    private readonly productService: ProductService
+    private readonly productService: ProductService,
   ) {
     super(repository)
   }
@@ -37,9 +37,9 @@ export class CategoryRelationsService extends TypeOrmCrudService<
    * @throws {EntityNotFoundException} if the category was not found
    * @returns all the found products
    */
-  public async getProductsByCategoryId(
+  public async listProductsByCategoryId(
     categoryId: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     const entity = await CategoryEntity.findOne({ id: categoryId })
 
@@ -52,14 +52,14 @@ export class CategoryRelationsService extends TypeOrmCrudService<
       ...crudRequest.parsed.join,
       {
         field: 'categories',
-        select: ['id']
-      }
+        select: ['id'],
+      },
     ]
     crudRequest.parsed.search.$and = [
       ...crudRequest.parsed.search.$and,
       {
-        'categories.id': { $eq: categoryId }
-      }
+        'categories.id': { $eq: categoryId },
+      },
     ]
 
     return await this.productService.getMany(crudRequest)

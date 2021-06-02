@@ -3,14 +3,14 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
@@ -20,7 +20,7 @@ import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.
 import { CategoryDto } from '../models/category.dto'
 import {
   GetManyProductDtoResponse,
-  ProductDto
+  ProductDto,
 } from 'src/modules/product/models/product.dto'
 
 import { CategoryRelationsService } from '../services/category-relations.service'
@@ -34,15 +34,15 @@ import { map } from 'src/utils/crud'
  */
 @Crud({
   model: {
-    type: CategoryDto
+    type: CategoryDto,
   },
   query: {
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
       products: {},
-      categories: {}
-    }
+      categories: {},
+    },
   },
   routes: {
     exclude: [
@@ -52,16 +52,16 @@ import { map } from 'src/utils/crud'
       'replaceOneBase',
       'recoverOneBase',
       'getOneBase',
-      'getManyBase'
-    ]
-  }
+      'getManyBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('categories')
 @Controller('categories')
 export class CategoryRelationsController {
   public constructor(
-    private readonly categoryRelationsService: CategoryRelationsService
+    private readonly categoryRelationsService: CategoryRelationsService,
   ) {}
 
   /** Method that is called when the user access the "/categories/:id/products"
@@ -73,21 +73,21 @@ export class CategoryRelationsController {
    */
   @ApiPropertyGetManyDefaultResponse()
   @ApiOperation({
-    summary: 'Retrieves all the products of a single category'
+    summary: 'Retrieves all the products of a single category',
   })
   @ApiOkResponse({
     description: 'Gets all the products of a single category',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @ApiNotFoundResponse({ description: 'Category was not found' })
   @Get(':id/products')
-  public async getProductsByCategoryId(
+  public async listProductsByCategoryId(
     @Param('id') categoryId: number,
-    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest
+    @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
-    const entities = await this.categoryRelationsService.getProductsByCategoryId(
+    const entities = await this.categoryRelationsService.listProductsByCategoryId(
       categoryId,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }

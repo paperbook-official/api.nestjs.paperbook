@@ -90,11 +90,11 @@ export class ProductRelationsController {
   })
   @ApiNotFoundResponse({ description: 'Product not found' })
   @Get(':id/categories')
-  public async getCategoriesByProductId(
+  public async listCategoriesByProductId(
     @Param('id') productId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<CategoryDto> | CategoryDto[]> {
-    const entities = await this.productRelationsService.getCategoriesByProductId(
+    const entities = await this.productRelationsService.listCategoriesByProductId(
       productId,
       crudRequest,
     )
@@ -120,11 +120,11 @@ export class ProductRelationsController {
   })
   @ApiNotFoundResponse({ description: 'Product not found' })
   @Get(':id/ratings')
-  public async getRatingsByProductId(
+  public async listRatingsByProductId(
     @Param('id') productId: number,
     @ParsedRequest(RemoveIdSearchPipe) crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<RatingDto> | RatingDto[]> {
-    const entities = await this.productRelationsService.getRatingsByProductId(
+    const entities = await this.productRelationsService.listRatingsByProductId(
       productId,
       crudRequest,
     )
@@ -148,9 +148,9 @@ export class ProductRelationsController {
   })
   @ApiNotFoundResponse({ description: 'Product not found' })
   @Get(':id/review')
-  public async getReviewByProductId(
+  public async listReviewByProductId(
     @Param('id') productId: number,
   ): Promise<ProductReviewDto> {
-    return await this.productRelationsService.getReviewByProductId(productId)
+    return await this.productRelationsService.listReviewByProductId(productId)
   }
 }
