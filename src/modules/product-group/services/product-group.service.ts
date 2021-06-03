@@ -26,7 +26,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 > {
   public constructor(
     @InjectRepository(ProductGroupEntity)
-    repository: Repository<ProductGroupEntity>
+    repository: Repository<ProductGroupEntity>,
   ) {
     super(repository)
   }
@@ -35,16 +35,18 @@ export class ProductGroupService extends TypeOrmCrudService<
    * Method that can create a new product group entity
    *
    * @param createProductGroupDto stores the new product group data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {EntityNotFoundException} if the shopping cart was not found
    * @returns the created product group entity
    */
   public async create(
-    createProductGroupDto: CreateProductGroupDto
+    createProductGroupDto: CreateProductGroupDto,
   ): Promise<ProductGroupEntity> {
     const { productId, shoppingCartId } = createProductGroupDto
 
     const product = await ProductEntity.findOne({ id: productId })
     const shoppingCart = await ShoppingCartEntity.findOne({
-      id: shoppingCartId
+      id: shoppingCartId,
     })
 
     if (!product || !product.isActive) {
@@ -58,7 +60,7 @@ export class ProductGroupService extends TypeOrmCrudService<
     return await new ProductGroupEntity({
       ...createProductGroupDto,
       product,
-      shoppingCart
+      shoppingCart,
     }).save()
   }
 
@@ -67,11 +69,12 @@ export class ProductGroupService extends TypeOrmCrudService<
    *
    * @param productGroupId stores the product group id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the product group was not found
    * @returns the found product group entity
    */
-  public async get(
+  public async listOne(
     productGroupId: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<ProductGroupEntity> {
     let entity: ProductGroupEntity
 
@@ -93,10 +96,11 @@ export class ProductGroupService extends TypeOrmCrudService<
    *
    * @param productGroupId stores the product group id
    * @param updateProductGroupDto store the product group new data
+   * @throws {EntityNotFoundException} if the product group was not found
    */
   public async update(
     productGroupId: number,
-    updateProductGroupDto: UpdateProductGroupDto
+    updateProductGroupDto: UpdateProductGroupDto,
   ): Promise<void> {
     const entity = await ProductGroupEntity.findOne({ id: productGroupId })
 
@@ -106,7 +110,7 @@ export class ProductGroupService extends TypeOrmCrudService<
 
     await ProductGroupEntity.update(
       { id: productGroupId },
-      updateProductGroupDto
+      updateProductGroupDto,
     )
   }
 
@@ -114,6 +118,7 @@ export class ProductGroupService extends TypeOrmCrudService<
    * Method that can delete some product group entity
    *
    * @param productGroupId stores the product group id
+   * @throws {EntityNotFoundException} if the product group was not found
    */
   public async delete(productGroupId: number): Promise<void> {
     const entity = await ProductGroupEntity.findOne({ id: productGroupId })
@@ -129,6 +134,8 @@ export class ProductGroupService extends TypeOrmCrudService<
    * Method that can disables some product group
    *
    * @param productGroupId stores the product group id
+   * @throws {EntityNotFoundException} if the product group was not found
+   * @throws {EntityAlreadyDisabledException} if the product group entity is already disabled
    */
   public async disable(productGroupId: number): Promise<void> {
     const entity = await ProductGroupEntity.findOne({ id: productGroupId })
@@ -140,7 +147,7 @@ export class ProductGroupService extends TypeOrmCrudService<
     if (!entity.isActive) {
       throw new EntityAlreadyDisabledException(
         productGroupId,
-        ProductGroupEntity
+        ProductGroupEntity,
       )
     }
 
@@ -151,6 +158,8 @@ export class ProductGroupService extends TypeOrmCrudService<
    * Method that can enables some product group
    *
    * @param productGroupId stores the product group id
+   * @throws {EntityNotFoundException} if the product group was not found
+   * @throws {EntityAlreadyEnabledException} if the product group entity is already enabled
    */
   public async enable(productGroupId: number): Promise<void> {
     const entity = await ProductGroupEntity.findOne({ id: productGroupId })
@@ -162,7 +171,7 @@ export class ProductGroupService extends TypeOrmCrudService<
     if (entity.isActive) {
       throw new EntityAlreadyEnabledException(
         productGroupId,
-        ProductGroupEntity
+        ProductGroupEntity,
       )
     }
 

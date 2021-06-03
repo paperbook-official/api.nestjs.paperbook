@@ -7,26 +7,34 @@ import {
   Patch,
   Post,
   Put,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common'
 import {
+  ApiConflictResponse,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger'
 import {
   Crud,
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
+import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
+import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
-import { ProductGroupDto } from '../models/product-group.dto'
+import {
+  GetManyProductGroupDtoResponse,
+  ProductGroupDto,
+} from '../models/product-group.dto'
 import { UpdateProductGroupDto } from '../models/update-product-group.dto'
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
@@ -41,31 +49,35 @@ import { map } from 'src/utils/crud'
  */
 @Crud({
   model: {
-    type: ProductGroupDto
+    type: ProductGroupDto,
   },
   query: {
     persist: ['id', 'isActive'],
     filter: [{ field: 'isActive', operator: '$eq', value: true }],
     join: {
       product: {},
-      shoppingCart: {}
-    }
+      shoppingCart: {},
+    },
   },
   routes: {
     exclude: [
       'createManyBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
-    ]
-  }
+      'replaceOneBase',
+      'getOneBase',
+      'recoverOneBase',
+      'getManyBase',
+      'deleteOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('product-groups')
 @Controller('product-groups')
 export class ProductGroupController {
   public constructor(
-    private readonly productGroupService: ProductGroupService
+    private readonly productGroupService: ProductGroupService,
   ) {}
 
   /**
@@ -73,17 +85,24 @@ export class ProductGroupController {
    * route with the "POST" method
    *
    * @param createProductGroupDto stores the new product group data
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {EntityNotFoundException} if the shopping cart was not found
    * @returns the created product group entity dto
    */
+  @ProtectTo(RolesEnum.Admin)
   @ApiOperation({ summary: 'Creates a new product group' })
   @ApiCreatedResponse({
     description: 'Gets the created product group',
-    type: ProductGroupDto
+    type: ProductGroupDto,
   })
-  @ProtectTo(RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product not found' })
+  @ApiNotFoundResponse({ description: 'Shopping cart not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Post()
   public async create(
-    @Body() createProductGroupDto: CreateProductGroupDto
+    @Body() createProductGroupDto: CreateProductGroupDto,
   ): Promise<ProductGroupDto> {
     const entity = await this.productGroupService.create(createProductGroupDto)
     return entity.toDto()
@@ -95,17 +114,28 @@ export class ProductGroupController {
    *
    * @param productGroupId stores the product group id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns the found product group entity dto
    */
   @ProtectTo(RolesEnum.Admin)
+  @ApiPropertyGet()
+  @ApiOperation({ summary: 'Retrieves a single ProductGroupDto' })
+  @ApiOkResponse({
+    description: 'Retrieve a single ProductGroupDto',
+    type: ProductGroupDto,
+  })
+  @ApiNotFoundResponse({ description: 'Product not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Get(':id')
-  public async get(
+  public async listOne(
     @Param('id') productGroupId: number,
-    @ParsedRequest() crudRequest?: CrudRequest
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<ProductGroupDto> {
-    const entity = await this.productGroupService.get(
+    const entity = await this.productGroupService.listOne(
       productGroupId,
-      crudRequest
+      crudRequest,
     )
     return entity.toDto()
   }
@@ -118,9 +148,18 @@ export class ProductGroupController {
    * @returns all the found product group entity dtos
    */
   @ProtectTo(RolesEnum.Admin)
+  @ApiPropertyGetManyDefaultResponse()
+  @ApiOperation({ summary: 'Retrieves multiple ProductDto' })
+  @ApiOkResponse({
+    description: 'Get many base response',
+    type: GetManyProductGroupDtoResponse,
+  })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Get()
-  public async getMore(
-    @ParsedRequest() crudRequest?: CrudRequest
+  public async listMany(
+    @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductGroupDto> | ProductGroupDto[]> {
     const entities = await this.productGroupService.getMany(crudRequest)
     return map(entities, entity => entity.toDto())
@@ -132,14 +171,19 @@ export class ProductGroupController {
    *
    * @param productGroupId stores the product group id
    * @param updateProductGroupDto stores the product group new data
+   * @throws {EntityNotFoundException} if the product group was not found
    */
+  @ProtectTo(RolesEnum.Admin)
   @ApiOperation({ summary: 'Updates a single product group' })
   @ApiOkResponse({ description: 'Updates a single product group' })
-  @ProtectTo(RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product group not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Patch(':id')
   public async update(
     @Param('id') productGroupId: number,
-    @Body() updateProductGroupDto: UpdateProductGroupDto
+    @Body() updateProductGroupDto: UpdateProductGroupDto,
   ): Promise<void> {
     await this.productGroupService.update(productGroupId, updateProductGroupDto)
   }
@@ -149,8 +193,13 @@ export class ProductGroupController {
    * route with the "DELETE" method
    *
    * @param productGroupId stores the product group id
+   * @throws {EntityNotFoundException} if the product group was not found
    */
   @ProtectTo(RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product group not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Delete(':id')
   public async delete(@Param('id') productGroupId: number): Promise<void> {
     await this.productGroupService.delete(productGroupId)
@@ -161,10 +210,17 @@ export class ProductGroupController {
    * route with the "PUT" method
    *
    * @param productId stores the product id
+   * @throws {EntityNotFoundException} if the product group was not found
+   * @throws {EntityAlreadyDisabledException} if the product group entity is already disabled
    */
+  @ProtectTo(RolesEnum.Admin)
   @ApiOperation({ summary: 'Disables a single product group entity' })
   @ApiOkResponse({ description: 'Disables a single product group entity' })
-  @ProtectTo(RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product group not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
+  @ApiConflictResponse({ description: 'The product group is already disabled' })
   @Put(':id/disable')
   public async disable(@Param('id') productId: number): Promise<void> {
     await this.productGroupService.disable(productId)
@@ -175,10 +231,17 @@ export class ProductGroupController {
    * route with the "PUT" method
    *
    * @param productId stores the product id
+   * @throws {EntityNotFoundException} if the product group was not found
+   * @throws {EntityAlreadyEnabledException} if the product group entity is already enabled
    */
+  @ProtectTo(RolesEnum.Admin)
   @ApiOperation({ summary: 'Enables a single product group entity' })
   @ApiOkResponse({ description: 'Enables a single product group entity' })
-  @ProtectTo(RolesEnum.Admin)
+  @ApiNotFoundResponse({ description: 'Product group not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
+  @ApiConflictResponse({ description: 'The product group is already enabled' })
   @Put(':id/enable')
   public async enable(@Param('id') productId: number): Promise<void> {
     await this.productGroupService.enable(productId)

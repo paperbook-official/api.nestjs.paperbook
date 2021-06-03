@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { ProductGroupEntity } from '../entities/product-group.entity'
 
+import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
 import { BaseResponseDto } from 'src/common/base-response.dto'
 import { OrderDto } from 'src/modules/order/models/order.dto'
 import { ProductDto } from 'src/modules/product/models/product.dto'
@@ -29,7 +30,7 @@ export class ProductGroupDto extends BaseResponseDto {
 
   @ApiPropertyOptional({
     type: () => ProductDto,
-    isArray: true
+    isArray: true,
   })
   public product?: ProductDto
 
@@ -55,4 +56,14 @@ export class ProductGroupDto extends BaseResponseDto {
     this.shoppingCart = entity.shoppingCart?.toDto()
     this.order = entity.order?.toDto()
   }
+}
+
+/**
+ * The app's main get many product dto response
+ *
+ * Class that deals with the products return data with pagination
+ */
+export class GetManyProductGroupDtoResponse extends BaseGetManyDefaultResponseDto {
+  @ApiProperty({ type: ProductGroupDto, isArray: true })
+  data: ProductGroupDto[]
 }
