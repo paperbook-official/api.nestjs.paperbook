@@ -316,6 +316,33 @@ export class ProductService extends TypeOrmCrudService<ProductEntity> {
   }
 
   /**
+   * Method that can get only product entity from the
+   *
+   * @param productId stores the product id
+   * @param crudRequest stores the joins, filter, etc
+   * @throws {EntityNotFoundException} if the product was not found
+   * @returns the found product entity
+   */
+  public async listOne(
+    productId: number,
+    crudRequest?: CrudRequest,
+  ): Promise<ProductEntity> {
+    let entity: ProductEntity
+
+    if (crudRequest) {
+      entity = await super.getOne(crudRequest).catch(() => undefined)
+    } else {
+      entity = await ProductEntity.findOne({ id: productId })
+    }
+
+    if (!entity || !entity.isActive) {
+      throw new EntityNotFoundException(productId, ProductEntity)
+    }
+
+    return entity
+  }
+
+  /**
    * Method that can change the data of some product
    *
    * @param productId stores the product id

@@ -255,6 +255,7 @@ export class ProductController {
    *
    * @param productId stores the product id
    * @param crudRequest store the joins, filters, etc
+   * @throws {EntityNotFoundException} if the product was not found
    * @returns the found entity dto
    */
   @ApiPropertyGet()
@@ -263,6 +264,7 @@ export class ProductController {
     description: 'Retrieve a single ProductDto',
     type: ProductDto,
   })
+  @ApiNotFoundResponse({ description: 'Product not found' })
   @Get(':id')
   public async list(
     @Param('id') productId: number,
