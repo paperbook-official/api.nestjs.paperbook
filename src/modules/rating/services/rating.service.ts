@@ -28,7 +28,7 @@ import { UserService } from 'src/modules/user/services/user.service'
 export class RatingService extends TypeOrmCrudService<RatingEntity> {
   public constructor(
     @InjectRepository(RatingEntity)
-    private readonly repository: Repository<RatingEntity>
+    private readonly repository: Repository<RatingEntity>,
   ) {
     super(repository)
   }
@@ -38,11 +38,15 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    *
    * @param requestUser stores the logged user data
    * @param createRatingPayload stores the new rating data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {EntityNotFoundException} if the product was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    * @returns the created rating entity
    */
   public async create(
     requestUser: UserEntity,
-    createRatingPayload: CreateRatingDto
+    createRatingPayload: CreateRatingDto,
   ): Promise<RatingEntity> {
     const { userId, productId } = createRatingPayload
 
@@ -65,7 +69,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
     return await new RatingEntity({
       ...createRatingPayload,
       user,
-      product
+      product,
     }).save()
   }
 
@@ -74,11 +78,12 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    *
    * @param ratingId stores the rating id
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the rating was not found
    * @returns the found rating entity
    */
-  public async get(
+  public async listOne(
     ratingId: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<RatingEntity> {
     let entity: RatingEntity
 
@@ -101,8 +106,8 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    * @param productId stores the product id
    * @returns the product review
    */
-  public async getReviewByProductId(
-    productId: number
+  public async listReviewByProductId(
+    productId: number,
   ): Promise<ProductReviewDto> {
     const response: { stars: number; amount: number }[] = await this.repository
       .createQueryBuilder('rating')
@@ -112,7 +117,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
       .getRawMany()
 
     const filteredArray = response.filter(
-      entity => entity.stars !== undefined && entity.amount !== undefined
+      entity => entity.stars !== undefined && entity.amount !== undefined,
     )
 
     const amounts = filteredArray.map(entity => entity.amount)
@@ -132,7 +137,7 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
         pond.length === 0
           ? 0
           : pond.reduce((prev, value) => prev + value) / total,
-      total
+      total,
     }
   }
 
@@ -142,11 +147,14 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    * @param ratingId stores the rating entity id
    * @param requestUser stores the logged user data
    * @param updateRatingPayload stores the rating entity new data
+   * @throws {EntityNotFoundException} if the rating was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    */
   public async update(
     ratingId: number,
     requestUser: UserEntity,
-    updateRatingPayload: UpdateRatingDto
+    updateRatingPayload: UpdateRatingDto,
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
@@ -166,10 +174,13 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    *
    * @param ratingId stores the rating entity id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the rating was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    */
   public async delete(
     ratingId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
@@ -189,10 +200,14 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    *
    * @param ratingId stores the rating entity id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the rating was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyDisabledException} if the rating is already disabled
    */
   public async disable(
     ratingId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 
@@ -216,10 +231,14 @@ export class RatingService extends TypeOrmCrudService<RatingEntity> {
    *
    * @param ratingId stores the rating entity id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the rating was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyEnabledException} if the rating is already enabled
    */
   public async enable(
     ratingId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await RatingEntity.findOne({ id: ratingId })
 

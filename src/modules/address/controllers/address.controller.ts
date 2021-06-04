@@ -192,7 +192,7 @@ export class AddressController {
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @ApiOperation({ summary: 'Updates a single address' })
-  @ApiOkResponse({ description: 'Updates the user' })
+  @ApiOkResponse({ description: 'Updates the address' })
   @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiForbiddenResponse({
     description: 'The user has no permission to access those sources',

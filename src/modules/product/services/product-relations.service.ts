@@ -116,6 +116,6 @@ export class ProductRelationsService extends TypeOrmCrudService<ProductEntity> {
       throw new EntityNotFoundException(productId, ProductEntity)
     }
 
-    return await this.ratingService.getReviewByProductId(productId)
+    return await this.ratingService.listReviewByProductId(productId)
   }
 }
