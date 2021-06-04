@@ -10,6 +10,10 @@ import {
 
 import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
 
+import { ParseBoolOrUndefinedPipe } from 'src/pipes/parse-bool-or-undefined/parse-bool-or-undefined.pipe'
+import { ParseNumberOrUndefinedPipe } from 'src/pipes/parse-number-or-undefined/parse-number-or-undefined.pipe'
+
+import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
 import {
   GetManyProductDtoResponse,
   ProductDto
@@ -19,9 +23,6 @@ import { ProductService } from 'src/modules/product/services/product.service'
 
 import { map } from 'src/utils/crud'
 
-import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
-import { ParseBoolOrUndefinedPipe } from 'src/pipes/parse-bool-or-undefined/parse-bool-or-undefined.pipe'
-import { ParseNumberOrUndefinedPipe } from 'src/pipes/parse-number-or-undefined/parse-number-or-undefined.pipe'
 
 /**
  * The app's main search controller class
