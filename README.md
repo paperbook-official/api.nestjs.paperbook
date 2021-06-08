@@ -1,53 +1,147 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+<!-- color: #e0234e; -->
+<div align="center">
+  <a href="http://nestjs.com/" target="blank">
+    <img src="./assets/nest.svg" width="700" alt="Nest Logo" />
+  </a>
+</div>
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
-[travis-url]: https://travis-ci.org/nestjs/nest
-[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
-[linux-url]: https://travis-ci.org/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
-<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
-<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
-  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<br>
 
-## Description
+<div align="center">
+  <img src="./assets/icon.svg" alt="Icon">
+</div>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<br>
 
-## Installation
+## **Description**
+
+The project consists of an online platform for buying and selling books and stationery. Written with Typescript the backend provides the necessary data for the <a href="https://github.com/AppliedProject05/web.react.paperbook">application frontend</a>.
+
+<hr />
+
+## **Getting started**
+
+First you must to clone the repository using:
 
 ```bash
+$ git clone 'https://github.com/AppliedProject05/api.nestjs.paperbook.git'
+```
+
+After that install all the needed dependencies with:
+
+```bash
+$ npm install -g @nestjs/cli
+
 $ npm install
 ```
 
-## Running the app
+This project uses <strong>husky's commit-msg hook</strong> and <a href="https://commitlint.js.org/">commitlint</a>. For using them run the following commands:
+
+```bash
+$ npx husky install
+
+$ npx husky add .husky/commit-msg 'npx --no-install commitlint --edit $1'
+```
+
+<hr />
+
+## **Running the app**
 
 ```bash
 # development
-$ npm run start
+$ nest start
 
 # watch mode
-$ npm run start:dev
+$ nest start --watch
 
 # production mode
-$ npm run start:prod
+$ nest start --prod
 ```
 
-## Test
+### **Docker**
+
+The application uses Docker and it can be runned using the follwing:
+
+```bash
+$ sudo docker-compose -up
+```
+
+<hr />
+
+## **Databases**
+
+### **SQLite**
+
+To test this application, SQlite database can be used, it is added in dependencies by default. To use simply run any of the application startup commands shown above.
+
+> **obs: You must not forget of setting up the .env file**
+
+### **Postgres**
+
+The PostgreSQL is used for production environments.
+
+<hr />
+
+## **Migrations**
+
+For creating a new migration run the command:
+
+```bash
+$ npm run typeorm:migrate MIGRATION_NAME
+```
+
+And for executing all the migrations run:
+
+```bash
+$ npm run typeorm:run
+```
+
+<hr />
+
+## **Structure**
+
+Always, when creating a new entity, create a folder in 'src/modules' with the entity name (Ex: 'src/modules/product' ).
+Inside the folder, it must have the following structure:
+
+- `product`
+  - `controllers` (All the controllers related with products)
+    - `product.controller.ts`
+  - `services` (All the services related with products)
+    - `service.controller.ts`
+  - `entities` (All the entities related with products)
+    - `product.entity.ts`
+  - `models` (All the models related with products)
+    - `create-product.dto.ts`
+    - `product.dto.ts`
+    - `update-product.dto.ts`
+  - `product.module.ts`
+
+<hr>
+
+## **Authentication**
+
+This project has only one authentication method, the **local**.
+Basically login to the application can be done using the user's email and password.
+
+<hr>
+
+## **Swagger**
+
+The backend is integrated with <a href="https://swagger.io/">Swagger API</a>, allowing the developer to view and test the API routes.
+
+To use this put in browser url the following:
+
+```
+API_ENDPOINT/swagger
+```
+
+<hr>
+
+## **Sentry**
+
+The application is also integrated with <a href="https://sentry.io/">Sentry</a> this way it allows tracking exceptions and storing them.
+
+<!-- ## **Test**
 
 ```bash
 # unit tests
@@ -58,18 +152,20 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
-```
+``` -->
 
-## Support
+<!-- ## **Support**
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+## **Stay in touch**
 
 - Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
 - Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Twitter - [@nestframework](https://twitter.com/nestframework) -->
 
-## License
+<hr>
 
-  Nest is [MIT licensed](LICENSE).
+## **License**
+
+Paperbook API is [MIT licensed](LICENSE).
