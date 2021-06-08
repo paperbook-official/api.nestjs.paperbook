@@ -1,10 +1,14 @@
 {
-  "name": "api.nestjs",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "paperbook-api",
+  "version": "1.0.0",
+  "description": "The project consists of an online platform for buying and selling books and stationery. Written with Typescript the backend provides the necessary data for the application frontend.",
+  "author": {
+    "name": "Caique Torres",
+    "email": "caiquetorres.bastos@hotmail.com",
+    "url": "https://github.com/caiquetorres"
+  },
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
