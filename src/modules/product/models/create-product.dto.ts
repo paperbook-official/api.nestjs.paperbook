@@ -81,7 +81,10 @@ export class CreateProductDto {
   )
   public userId: number
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    type: 'number',
+    isArray: true,
+  })
   @IsOptional()
   @IsArray({ message: 'It is required to send a valid array' })
   public categoryIds: number[]

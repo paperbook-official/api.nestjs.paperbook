@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest } from '@nestjsx/crud'
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm'
@@ -13,10 +13,9 @@ import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 
 import { PasswordService } from 'src/modules/password/services/password.service'
-
-import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main user service class
@@ -28,7 +27,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   public constructor(
     @InjectRepository(UserEntity)
     repository: Repository<UserEntity>,
-    private readonly passwordService: PasswordService
+    private readonly passwordService: PasswordService,
   ) {
     super(repository)
   }
@@ -42,7 +41,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const entity = new UserEntity(createUserPayload)
 
     entity.password = await this.passwordService.encryptPassword(
-      entity.password
+      entity.password,
     )
     entity.roles = entity.roles ?? RolesEnum.Common
 
@@ -56,12 +55,15 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * permission to execute this action
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    * @returns the found user entity
    */
-  public async get(
+  public async listOne(
     userId: number,
     requestUser: UserEntity,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<UserEntity> {
     let entity: UserEntity
 
@@ -71,10 +73,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
           ...crudRequest.parsed.search.$and,
           {
             id: {
-              $eq: userId
-            }
-          }
-        ]
+              $eq: userId,
+            },
+          },
+        ],
       }
       entity = await super.getOne(crudRequest).catch(() => undefined)
     } else {
@@ -98,7 +100,6 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
-   *
    * @throws {EntityNotFoundException} if the user was not found
    * @throws {ForbiddenException} if the request user has no permission
    * to execute this action
@@ -106,7 +107,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   public async update(
     userId: number,
     requestUser: UserEntity,
-    updatedUserPayload: UpdateUserDto
+    updatedUserPayload: UpdateUserDto,
   ): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 
@@ -127,6 +128,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * permission to execute this action
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    */
   public async delete(userId: number, requestUser: UserEntity): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
@@ -147,6 +151,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * permission to execute this action
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyDisabledException} if the user is already disabled
    */
   public async disable(userId: number, requestUser: UserEntity): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
@@ -172,6 +180,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * permission to execute this action
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyEnabledException} if the user is already enabled
    */
   public async enable(userId: number, requestUser: UserEntity): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
@@ -196,10 +208,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {ConflictException} if user already has the seller role
    */
   public async modifyUserRolesToSeller(
     userId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 
@@ -212,9 +228,8 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     if (entity.roles.includes(RolesEnum.Seller)) {
-      throw new HttpException(
+      throw new ConflictException(
         `The entity identified by "${entity.id}" of type "${UserEntity.name}" has already the seller role`,
-        HttpStatus.CONFLICT
       )
     }
 
@@ -226,10 +241,14 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {ConflictException} if user already has the common role
    */
   public async modifyUserRolesToCommon(
     userId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): Promise<void> {
     const entity = await UserEntity.findOne({ id: userId })
 
@@ -242,9 +261,8 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
 
     if (entity.roles.includes(RolesEnum.Common)) {
-      throw new HttpException(
+      throw new ConflictException(
         `The entity identified by "${entity.id}" of type "${UserEntity.name}" has already the common role`,
-        HttpStatus.CONFLICT
       )
     }
 
@@ -262,7 +280,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    */
   public static hasPermissions(
     userId: number,
-    requestUser: UserEntity
+    requestUser: UserEntity,
   ): boolean {
     return userId === requestUser.id || this.isAdminUser(requestUser)
   }
