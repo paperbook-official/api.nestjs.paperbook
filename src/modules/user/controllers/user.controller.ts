@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common'
 import {
   ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -31,7 +33,7 @@ import { UserEntity } from '../entities/user.entity'
 
 import { CreateUserDto } from '../models/create-user.dto'
 import { UpdateUserDto } from '../models/update-user.dto'
-import { UserDto } from '../models/user.dto'
+import { GetManyUserDtoResponse, UserDto } from '../models/user.dto'
 import { RolesEnum } from 'src/models/enums/roles.enum'
 
 import { UserService } from '../services/user.service'
@@ -64,6 +66,10 @@ import { map } from 'src/utils/crud'
       'createOneBase',
       'updateOneBase',
       'replaceOneBase',
+      'getOneBase',
+      'recoverOneBase',
+      'getManyBase',
+      'deleteOneBase',
     ],
   },
 })
@@ -99,18 +105,28 @@ export class UserController {
    *
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    * @returns the logged user data
    */
-  @ApiPropertyGet()
-  @ApiOperation({ summary: 'Gets the logged user' })
-  @ApiOkResponse({ description: 'Gets the logged user data', type: UserDto })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
+  @ApiPropertyGet()
+  @ApiOperation({ summary: 'Retrieves the logged user' })
+  @ApiOkResponse({
+    description: 'Retrieves the logged user data',
+    type: UserDto,
+  })
+  @ApiNotFoundResponse({ description: 'Shopping cart not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Get('me')
-  public async getMe(
+  public async listMe(
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<UserDto> {
-    const entity = await this.userService.get(
+    const entity = await this.userService.listOne(
       requestUser.id,
       requestUser,
       crudRequest,
@@ -125,16 +141,33 @@ export class UserController {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    * @returns the found user data
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
+  @ApiPropertyGet()
+  @ApiOperation({ summary: 'Retrieves a single UserDto' })
+  @ApiOkResponse({
+    description: 'Retrieve a single UserDto',
+    type: UserDto,
+  })
+  @ApiNotFoundResponse({ description: 'Shopping cart not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Get(':id')
-  public async get(
+  public async listOne(
     @Param('id') userId: number,
     @RequestUser() requestUser: UserEntity,
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<UserDto> {
-    const entity = await this.userService.get(userId, requestUser, crudRequest)
+    const entity = await this.userService.listOne(
+      userId,
+      requestUser,
+      crudRequest,
+    )
     return entity.toDto()
   }
 
@@ -146,8 +179,13 @@ export class UserController {
    * @returns the found user data
    */
   @ProtectTo(RolesEnum.Admin)
+  @ApiOperation({ summary: 'Retrieves multiple UserDto' })
+  @ApiOkResponse({
+    description: 'Get many base response',
+    type: GetManyUserDtoResponse,
+  })
   @Get()
-  public async getMore(
+  public async listMany(
     @ParsedRequest() crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<UserDto> | UserDto[]> {
     const getManyDefaultResponse = await this.userService.getMany(crudRequest)
@@ -161,10 +199,17 @@ export class UserController {
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
    * @param updatedUserPayload stores the new user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to execute this action
    */
-  @ApiOperation({ summary: 'Updates a single user' })
-  @ApiOkResponse({ description: 'Updates user' })
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
+  @ApiOperation({ summary: 'Updates a single user entity' })
+  @ApiOkResponse({ description: 'Updates a single user entity' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Patch(':id')
   public async update(
     @Param('id') userId: number,
@@ -180,8 +225,17 @@ export class UserController {
    *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    */
   @ProtectTo(RolesEnum.Admin)
+  @ApiOperation({ summary: 'Delete a single user entity' })
+  @ApiOkResponse({ description: 'Delete one base response' })
+  @ApiNotFoundResponse({ description: 'User cart not found' })
+  @ApiForbiddenResponse({
+    description: 'The user has no permission to access those sources',
+  })
   @Delete(':id')
   public async delete(
     @Param('id') userId: number,
@@ -196,10 +250,14 @@ export class UserController {
    *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyDisabledException} if the user is already disabled
    */
+  @ProtectTo(RolesEnum.Admin)
   @ApiOperation({ summary: 'Disables a single user' })
   @ApiOkResponse({ description: 'Disables a single user' })
-  @ProtectTo(RolesEnum.Admin)
   @Put(':id/disable')
   public async disable(
     @Param('id') userId: number,
@@ -214,10 +272,14 @@ export class UserController {
    *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityAlreadyEnabledException} if the user is already enabled
    */
+  @ProtectTo(RolesEnum.Admin)
   @ApiOperation({ summary: 'Enables a single user' })
   @ApiOkResponse({ description: 'Enables a single user' })
-  @ProtectTo(RolesEnum.Admin)
   @Put(':id/enable')
   public async enable(
     @Param('id') userId: number,
@@ -232,12 +294,16 @@ export class UserController {
    *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {ConflictException} if user already has the seller role
    */
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @ApiOperation({ summary: 'Changes a single user role from "*" to "seller"' })
   @ApiOkResponse({
     description: 'Changes a single user role from "*" to "seller"',
   })
-  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/to-seller')
   public async modifyUserRolesToSeller(
     @Param('id') userId: number,
@@ -252,12 +318,16 @@ export class UserController {
    *
    * @param userId stores the target user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {ConflictException} if user already has the common role
    */
+  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @ApiOperation({ summary: 'Changes a single user role from "*" to "common"' })
   @ApiOkResponse({
     description: 'Changes a single user role from "*" to "common"',
   })
-  @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @Put(':id/to-common')
   public async modifyUserRolesToCommon(
     @Param('id') userId: number,
