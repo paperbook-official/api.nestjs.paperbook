@@ -4,7 +4,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud'
@@ -49,7 +49,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
     private readonly shoppingCartService: ShoppingCartService,
     @Inject(forwardRef(() => AddressService))
     private readonly addressService: AddressService,
-    private readonly productGroupService: ProductGroupService
+    private readonly productGroupService: ProductGroupService,
   ) {
     super(repository)
   }
@@ -61,12 +61,15 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
    * @param requestUser stores the logged user data
    * @param crudRequest stores the joins, filters, etc
    * permission to execute this action
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    * @returns all the found elements
    */
   public async getAddressesByUserId(
     userId: number,
     requestUser: UserEntity,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<AddressEntity> | AddressEntity[]> {
     const entity = await UserEntity.findOne({ id: userId })
 
@@ -83,10 +86,10 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
         ...crudRequest.parsed.search.$and,
         {
           userId: {
-            $eq: userId
-          }
-        }
-      ]
+            $eq: userId,
+          },
+        },
+      ],
     }
 
     return await this.addressService.getMany(crudRequest)
@@ -98,11 +101,12 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the user id
    * @param crudRequest stores the joins, filters, etc
    * permission to execute this action
+   * @throws {EntityNotFoundException} if the user was not found
    * @returns all the product entities
    */
   public async getProductsByUserId(
     userId: number,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductEntity> | ProductEntity[]> {
     const entity = await UserEntity.findOne({ id: userId })
 
@@ -115,10 +119,10 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
         ...crudRequest.parsed.search.$and,
         {
           userId: {
-            $eq: userId
-          }
-        }
-      ]
+            $eq: userId,
+          },
+        },
+      ],
     }
 
     return await this.productService.getMany(crudRequest)
@@ -138,7 +142,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
   public async getShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<ShoppingCartEntity> {
     const entity = await UserEntity.findOne({ id: userId })
 
@@ -158,10 +162,10 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
           ...crudRequest.parsed.search.$and,
           {
             userId: {
-              $eq: userId
-            }
-          }
-        ]
+              $eq: userId,
+            },
+          },
+        ],
       }
       shoppingCart = await this.shoppingCartService.getOne(crudRequest)
     } else {
@@ -189,7 +193,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
   public async getOrdersByUserId(
     userId: number,
     requestUser: UserEntity,
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<OrderEntity> | OrderEntity[]> {
     const entity = await UserEntity.findOne({ id: userId })
 
@@ -206,10 +210,10 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
         ...crudRequest.parsed.search.$and,
         {
           userId: {
-            $eq: userId
-          }
-        }
-      ]
+            $eq: userId,
+          },
+        },
+      ],
     }
 
     return await this.orderService.getMany(crudRequest)
@@ -221,12 +225,16 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
    * @param userId stores the user id
    * @param requestUser store the logged user data
    * @param addProductGroupDtos stores the product group entity data
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @returns the created product group entities
    */
   public async addProductInShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity,
     addProductGroupDtos: AddProductGroupDto[],
-    clean: boolean
+    clean: boolean,
   ): Promise<ProductGroupEntity[]> {
     const user = await UserEntity.findOne({ id: userId })
 
@@ -247,22 +255,22 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
       shoppingCart = await new ShoppingCartEntity({ userId, user }).save()
       await UserEntity.update(
         { id: userId },
-        { shoppingCartId: shoppingCart.id }
+        { shoppingCartId: shoppingCart.id },
       )
       await user.reload()
     } else {
       if (user.shoppingCartId) {
         shoppingCart = await ShoppingCartEntity.findOne({
-          id: user.shoppingCartId
+          id: user.shoppingCartId,
         })
       } else {
         shoppingCart = await new ShoppingCartEntity({
           userId,
-          user
+          user,
         }).save()
         await UserEntity.update(
           { id: userId },
-          { shoppingCartId: shoppingCart.id }
+          { shoppingCartId: shoppingCart.id },
         )
         await user.reload()
       }
@@ -275,18 +283,18 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
 
       let productGroup = await ProductGroupEntity.findOne({
         productId,
-        shoppingCartId: user.shoppingCartId
+        shoppingCartId: user.shoppingCartId,
       })
 
       if (!productGroup) {
         productGroup = await this.productGroupService.create({
           shoppingCartId: shoppingCart.id,
           amount,
-          productId
+          productId,
         })
       } else {
         await this.productGroupService.update(productGroup.id, {
-          amount: productGroup.amount + amount
+          amount: productGroup.amount + amount,
         })
         await productGroup.reload()
       }
@@ -304,11 +312,14 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
    * @param requestUser stores the logged user data
    * @param removeProductGroupDto stores an object that informs how many product will be remove
    * and which product is
+   * @throws {EntityNotFoundException} if the user was not found
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
    */
   public async removeProductFromShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity,
-    removeProductGroupDto: RemoveProductGroupDto
+    removeProductGroupDto: RemoveProductGroupDto,
   ): Promise<void> {
     const user = await UserEntity.findOne({ id: userId })
 
@@ -331,7 +342,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
 
     const productGroup = await ProductGroupEntity.findOne({
       productId,
-      shoppingCartId
+      shoppingCartId,
     })
 
     if (!productGroup || !productGroup.isActive) {
@@ -352,12 +363,19 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
    *
    * @param userId stores the user id
    * @param requestUser stores the logged user data
+   * @throws {EntityNotFoundException} if the user does not have shopping
+   * cart
+   * @throws {ForbiddenException} if the request user has no permission
+   * to access those sources
+   * @throws {EntityNotFoundException} if the address was not found
+   * @throws {BadRequestException} if the product amout is biggest
+   * than the available amount
    * @returns the created order entity
    */
   public async finishShoppingCartByUserId(
     userId: number,
     requestUser: UserEntity,
-    finishShoppingCartDto: FinishShoppingCartDto
+    finishShoppingCartDto: FinishShoppingCartDto,
   ): Promise<OrderEntity> {
     if (!UserService.hasPermissions(userId, requestUser)) {
       throw new ForbiddenException()
@@ -367,14 +385,14 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
     const shoppingCart = await ShoppingCartEntity.findOne({ userId })
     if (!shoppingCart || !shoppingCart.isActive) {
       throw new NotFoundException(
-        `The user with identifier ${userId} has no shopping cart`
+        `The user with identifier ${userId} has no shopping cart`,
       )
     }
 
     const {
       addressId,
       shippingPrice,
-      installmentAmount
+      installmentAmount,
     } = finishShoppingCartDto
 
     // validate if the address exists
@@ -384,17 +402,17 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
     }
 
     const productGroups = await ProductGroupEntity.find({
-      shoppingCartId: shoppingCart.id
+      shoppingCartId: shoppingCart.id,
     })
 
     const products = await ProductEntity.findByIds(
-      productGroups.map(productGroup => productGroup.productId)
+      productGroups.map(productGroup => productGroup.productId),
     )
 
     if (
       products.some(
         (product, index) =>
-          product.stockAmount - productGroups[index].amount < 0
+          product.stockAmount - productGroups[index].amount < 0,
       )
     ) {
       throw new BadRequestException('The amount required is out of bounds')
@@ -407,7 +425,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
       shippingPrice,
       userId,
       installmentAmount,
-      trackingCode: OrderService.generateTrackingCode()
+      trackingCode: OrderService.generateTrackingCode(),
     }).save()
 
     // duplicate all the product group entities and relate them with the order entity
@@ -417,7 +435,7 @@ export class UserRelationsService extends TypeOrmCrudService<UserEntity> {
       await new ProductGroupEntity({
         amount,
         productId,
-        orderId: order.id
+        orderId: order.id,
       }).save()
     }
 

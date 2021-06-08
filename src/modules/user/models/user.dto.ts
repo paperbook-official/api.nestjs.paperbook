@@ -2,14 +2,14 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 import { UserEntity } from '../entities/user.entity'
 
+import { BaseGetManyDefaultResponseDto } from 'src/common/base-get-many-default-response.dto'
 import { BaseResponseDto } from 'src/common/base-response.dto'
+import { RolesEnum } from 'src/models/enums/roles.enum'
 import { AddressDto } from 'src/modules/address/models/address.dto'
 import { OrderDto } from 'src/modules/order/models/order.dto'
 import { ProductDto } from 'src/modules/product/models/product.dto'
 import { RatingDto } from 'src/modules/rating/models/rating.dto'
 import { ShoppingCartDto } from 'src/modules/shopping-cart/models/shopping-cart.dto'
-
-import { RolesEnum } from 'src/models/enums/roles.enum'
 
 /**
  * The app's main user dto class
@@ -38,31 +38,31 @@ export class UserDto extends BaseResponseDto {
   //#region Relations
 
   @ApiPropertyOptional({
-    type: () => ShoppingCartDto
+    type: () => ShoppingCartDto,
   })
   public shoppingCart?: ShoppingCartDto
 
   @ApiPropertyOptional({
     type: () => AddressDto,
-    isArray: true
+    isArray: true,
   })
   public addresses?: AddressDto[]
 
   @ApiPropertyOptional({
     type: () => ProductDto,
-    isArray: true
+    isArray: true,
   })
   public products?: ProductDto[]
 
   @ApiPropertyOptional({
     type: () => OrderDto,
-    isArray: true
+    isArray: true,
   })
   public orders?: OrderDto[]
 
   @ApiPropertyOptional({
     type: () => RatingDto,
-    isArray: true
+    isArray: true,
   })
   public ratings?: RatingDto[]
 
@@ -85,4 +85,14 @@ export class UserDto extends BaseResponseDto {
     this.orders = entity.orders?.map(order => order.toDto())
     this.ratings = entity.ratings?.map(rating => rating.toDto())
   }
+}
+
+/**
+ * The app's main get many user dto response
+ *
+ * Class that deals with the user return data with pagination
+ */
+export class GetManyUserDtoResponse extends BaseGetManyDefaultResponseDto {
+  @ApiProperty({ type: UserDto, isArray: true })
+  data: UserDto[]
 }
