@@ -161,10 +161,10 @@ export class ShoppingCartController {
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
   @ApiProperty()
-  @ApiOperation({ summary: 'Retrieves multiple ShoppingCartDto' })
+  @ApiOperation({ summary: 'Retrieves a single ShoppingCartDto' })
   @ApiOkResponse({
-    description: 'Get many base response',
-    type: GetManyShoppingCartDtoResponse,
+    description: 'Retrieve a single ShoppingCartDto',
+    type: ShoppingCartDto,
   })
   @ApiNotFoundResponse({ description: 'Shopping cart not found' })
   @ApiForbiddenResponse({
