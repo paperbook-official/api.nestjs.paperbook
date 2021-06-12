@@ -26,8 +26,8 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
-import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
+import { ApiQueryGetMany } from 'src/decorators/api-query-get-many/api-query-get-many.decorator'
+import { ApiQueryGet } from 'src/decorators/api-query-get/api-query-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
 import { CategoryDto, GetManyCategoryDtoResponse } from '../models/category.dto'
@@ -104,7 +104,7 @@ export class CategoryController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found category entity dtos
    */
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({ summary: 'Retrieves multiple CategoryDto' })
   @ApiOkResponse({
     description: 'Get many base response',
@@ -126,7 +126,7 @@ export class CategoryController {
    * @param crudRequest stores the joins, filters, etc
    * @returns the found category entity dto
    */
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOperation({ summary: 'Retrieve a single CategoryDto' })
   @ApiOkResponse({
     description: 'Retrieve a single CategoryDto',

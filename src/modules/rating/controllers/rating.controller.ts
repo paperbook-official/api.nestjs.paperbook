@@ -27,8 +27,8 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
-import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
+import { ApiQueryGetMany } from 'src/decorators/api-query-get-many/api-query-get-many.decorator'
+import { ApiQueryGet } from 'src/decorators/api-query-get/api-query-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
@@ -118,8 +118,8 @@ export class RatingController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found rating entity dtos
    */
-  @ApiPropertyGetManyDefaultResponse()
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
+  @ApiQueryGetMany()
   @ApiOperation({ summary: 'Retrieves multiple ShoppingCartDto' })
   @ApiOkResponse({
     description: 'Get many base response',
@@ -143,7 +143,7 @@ export class RatingController {
    * @returns the found rating entity dto
    */
   @ApiProperty()
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOperation({ summary: 'Retrieves a single RatingDto' })
   @ApiOkResponse({
     description: 'Retrieve a single RatingDto',

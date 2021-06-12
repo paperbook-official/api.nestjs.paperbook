@@ -29,8 +29,8 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
-import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
+import { ApiQueryGetMany } from 'src/decorators/api-query-get-many/api-query-get-many.decorator'
+import { ApiQueryGet } from 'src/decorators/api-query-get/api-query-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
@@ -129,7 +129,7 @@ export class ProductController {
    * @throws {EntityNotFoundException} if the product was not found
    * @returns all the found elements
    */
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({
     summary: 'Retrieves all the products with price less than "maxPrice" value',
   })
@@ -164,7 +164,7 @@ export class ProductController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found products
    */
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({
     summary: 'Retrieves all the products with discount greater than 0',
   })
@@ -187,7 +187,7 @@ export class ProductController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found products
    */
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({
     summary: 'Retrieves all the products with no installment price',
   })
@@ -213,7 +213,7 @@ export class ProductController {
   @ApiOperation({
     summary: 'Retrieves all the products organized by "createdAt" field',
   })
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOkResponse({
     description: 'Gets all the products organized by "createdAt" field',
     type: GetManyProductDtoResponse,
@@ -233,7 +233,7 @@ export class ProductController {
    * @param crudRequest stores the joins, filter, etc
    * @returns all the found elements
    */
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({
     summary: 'Retrieves all the products organized by "ordersAmount" field',
   })
@@ -258,7 +258,7 @@ export class ProductController {
    * @throws {EntityNotFoundException} if the product was not found
    * @returns the found entity dto
    */
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOperation({ summary: 'Retrieves a single ProductDto' })
   @ApiOkResponse({
     description: 'Retrieve a single ProductDto',
@@ -281,7 +281,7 @@ export class ProductController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found entity dtos
    */
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({ summary: 'Retrieves multiple ProductDto' })
   @ApiOkResponse({
     description: 'Get many base response',

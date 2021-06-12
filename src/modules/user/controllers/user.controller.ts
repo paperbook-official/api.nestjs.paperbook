@@ -25,7 +25,7 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
+import { ApiQueryGet } from 'src/decorators/api-query-get/api-query-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
@@ -111,7 +111,7 @@ export class UserController {
    * @returns the logged user data
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOperation({ summary: 'Retrieves the logged user' })
   @ApiOkResponse({
     description: 'Retrieves the logged user data',
@@ -147,7 +147,7 @@ export class UserController {
    * @returns the found user data
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOperation({ summary: 'Retrieves a single UserDto' })
   @ApiOkResponse({
     description: 'Retrieve a single UserDto',
