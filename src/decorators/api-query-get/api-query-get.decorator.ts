@@ -6,10 +6,10 @@ import { ApiQuery } from '@nestjs/swagger'
 /**
  * Decorator that sets all the get swagger properties
  */
-export function ApiPropertyGet(): <TFunction extends Function, Y>(
+export function ApiQueryGet(): <TFunction extends Function, Y>(
   target: object | TFunction,
   propertyKey?: string | symbol,
-  descriptor?: TypedPropertyDescriptor<Y>
+  descriptor?: TypedPropertyDescriptor<Y>,
 ) => void {
   return applyDecorators(
     ApiQuery({
@@ -18,7 +18,7 @@ export function ApiPropertyGet(): <TFunction extends Function, Y>(
       type: 'string',
       isArray: true,
       description:
-        'Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#fields">Docs</a>'
+        'Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#fields">Docs</a>',
     }),
     ApiQuery({
       required: false,
@@ -26,14 +26,14 @@ export function ApiPropertyGet(): <TFunction extends Function, Y>(
       type: 'string',
       isArray: true,
       description:
-        'Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join">Docs</a>'
+        'Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join">Docs</a>',
     }),
     ApiQuery({
       required: false,
       name: 'cache',
       type: 'integer',
       description:
-        'Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache">Docs</a>'
-    })
+        'Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache">Docs</a>',
+    }),
   )
 }

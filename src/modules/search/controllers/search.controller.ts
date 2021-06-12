@@ -5,10 +5,10 @@ import {
   CrudRequest,
   CrudRequestInterceptor,
   GetManyDefaultResponse,
-  ParsedRequest
+  ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
+import { ApiQueryGetMany } from 'src/decorators/api-query-get-many/api-query-get-many.decorator'
 
 import { ParseBoolOrUndefinedPipe } from 'src/pipes/parse-bool-or-undefined/parse-bool-or-undefined.pipe'
 import { ParseNumberOrUndefinedPipe } from 'src/pipes/parse-number-or-undefined/parse-number-or-undefined.pipe'
@@ -16,13 +16,12 @@ import { ParseNumberOrUndefinedPipe } from 'src/pipes/parse-number-or-undefined/
 import { SortBySearchEnum } from 'src/models/enums/sort-by-search.enum'
 import {
   GetManyProductDtoResponse,
-  ProductDto
+  ProductDto,
 } from 'src/modules/product/models/product.dto'
 
 import { ProductService } from 'src/modules/product/services/product.service'
 
 import { map } from 'src/utils/crud'
-
 
 /**
  * The app's main search controller class
@@ -31,7 +30,7 @@ import { map } from 'src/utils/crud'
  */
 @Crud({
   model: {
-    type: ProductDto
+    type: ProductDto,
   },
   query: {
     persist: ['id', 'isActive'],
@@ -42,8 +41,8 @@ import { map } from 'src/utils/crud'
       'user.addresses': {},
       categories: {},
       shoppingCarts: {},
-      ratings: {}
-    }
+      ratings: {},
+    },
   },
   routes: {
     exclude: [
@@ -54,9 +53,9 @@ import { map } from 'src/utils/crud'
       'getOneBase',
       'createOneBase',
       'updateOneBase',
-      'replaceOneBase'
-    ]
-  }
+      'replaceOneBase',
+    ],
+  },
 })
 @UseInterceptors(CrudRequestInterceptor)
 @ApiTags('search')
@@ -80,55 +79,55 @@ export class SearchController {
    * @returns all the found products that match with the queries
    */
   @ApiOperation({
-    summary: 'Retries all the products that match with the queries'
+    summary: 'Retries all the products that match with the queries',
   })
   @ApiQuery({
     required: false,
     name: 'name',
     type: 'string',
-    description: 'Selects products with the name like this query'
+    description: 'Selects products with the name like this query',
   })
   @ApiQuery({
     required: false,
     name: 'categoryId',
     type: 'integer',
-    description: 'Selects products with the category id equals this query'
+    description: 'Selects products with the category id equals this query',
   })
   @ApiQuery({
     required: false,
     name: 'minPrice',
     type: 'integer',
-    description: 'Selects products with the full price greater than this query'
+    description: 'Selects products with the full price greater than this query',
   })
   @ApiQuery({
     required: false,
     name: 'maxPrice',
     type: 'integer',
-    description: 'Selects products with the full price less than this query'
+    description: 'Selects products with the full price less than this query',
   })
   @ApiQuery({
     required: false,
     name: 'state',
     type: 'string',
-    description: 'Selects products with the user state equals this query'
+    description: 'Selects products with the user state equals this query',
   })
   @ApiQuery({
     required: false,
     name: 'freeOfInterests',
     type: 'boolean',
-    description: 'Selects products with free of interests prices'
+    description: 'Selects products with free of interests prices',
   })
   @ApiQuery({
     required: false,
     name: 'sortBy',
     enum: SortBySearchEnum,
     description:
-      'Sort the values based on the min price or max price of them with discount'
+      'Sort the values based on the min price or max price of them with discount',
   })
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOkResponse({
     description: 'Gets all the products that matches with the queries',
-    type: GetManyProductDtoResponse
+    type: GetManyProductDtoResponse,
   })
   @Get()
   public async search(
@@ -147,7 +146,7 @@ export class SearchController {
     @Query('sortBy')
     sortBy?: SortBySearchEnum,
     @ParsedRequest()
-    crudRequest?: CrudRequest
+    crudRequest?: CrudRequest,
   ): Promise<GetManyDefaultResponse<ProductDto> | ProductDto[]> {
     const entities = await this.searchService.search(
       name,
@@ -157,7 +156,7 @@ export class SearchController {
       state,
       freeOfInterests,
       sortBy,
-      crudRequest
+      crudRequest,
     )
     return map(entities, entity => entity.toDto())
   }

@@ -6,13 +6,10 @@ import { ApiQuery } from '@nestjs/swagger'
 /**
  * Decorator that sets all the get many swagger properties
  */
-export function ApiPropertyGetManyDefaultResponse(): <
-  TFunction extends Function,
-  Y
->(
+export function ApiQueryGetMany(): <TFunction extends Function, Y>(
   target: object | TFunction,
   propertyKey?: string | symbol,
-  descriptor?: TypedPropertyDescriptor<Y>
+  descriptor?: TypedPropertyDescriptor<Y>,
 ) => void {
   return applyDecorators(
     ApiQuery({
@@ -21,14 +18,14 @@ export function ApiPropertyGetManyDefaultResponse(): <
       type: 'string',
       isArray: true,
       description:
-        'Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#fields">Docs</a>'
+        'Selects resource fields. <a href="https://github.com/nestjsx/crud/wiki/Requests#fields">Docs</a>',
     }),
     ApiQuery({
       required: false,
       name: 's',
       type: 'string',
       description:
-        'Adds search condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#search">Docs</a>'
+        'Adds search condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#search">Docs</a>',
     }),
     ApiQuery({
       required: false,
@@ -36,7 +33,7 @@ export function ApiPropertyGetManyDefaultResponse(): <
       type: 'string',
       isArray: true,
       description:
-        'Adds filter condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#filter">Docs</a>'
+        'Adds filter condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#filter">Docs</a>',
     }),
     ApiQuery({
       required: false,
@@ -44,7 +41,7 @@ export function ApiPropertyGetManyDefaultResponse(): <
       type: 'string',
       isArray: true,
       description:
-        'Adds OR condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#or">Docs</a>'
+        'Adds OR condition. <a href="https://github.com/nestjsx/crud/wiki/Requests#or">Docs</a>',
     }),
     ApiQuery({
       required: false,
@@ -52,7 +49,7 @@ export function ApiPropertyGetManyDefaultResponse(): <
       type: 'string',
       isArray: true,
       description:
-        'Adds sort by field. <a href="https://github.com/nestjsx/crud/wiki/Requests#sort">Docs</a>'
+        'Adds sort by field. <a href="https://github.com/nestjsx/crud/wiki/Requests#sort">Docs</a>',
     }),
     ApiQuery({
       required: false,
@@ -60,35 +57,35 @@ export function ApiPropertyGetManyDefaultResponse(): <
       type: 'string',
       isArray: true,
       description:
-        'Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join">Docs</a>'
+        'Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join">Docs</a>',
     }),
     ApiQuery({
       required: false,
       name: 'limit',
       type: 'integer',
       description:
-        'Limit amount of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#limit">Docs</a>'
+        'Limit amount of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#limit">Docs</a>',
     }),
     ApiQuery({
       required: false,
       name: 'offset',
       type: 'integer',
       description:
-        'Offset amount of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#offset">Docs</a>'
+        'Offset amount of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#offset">Docs</a>',
     }),
     ApiQuery({
       required: false,
       name: 'page',
       type: 'integer',
       description:
-        'Page portion of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#page">Docs</a>'
+        'Page portion of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#page">Docs</a>',
     }),
     ApiQuery({
       required: false,
       name: 'cache',
       type: 'integer',
       description:
-        'Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache">Docs</a>'
-    })
+        'Reset cache (if was enabled). <a href="https://github.com/nestjsx/crud/wiki/Requests#cache">Docs</a>',
+    }),
   )
 }

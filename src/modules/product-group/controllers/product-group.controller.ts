@@ -26,8 +26,8 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
-import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
+import { ApiQueryGetMany } from 'src/decorators/api-query-get-many/api-query-get-many.decorator'
+import { ApiQueryGet } from 'src/decorators/api-query-get/api-query-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 
 import { CreateProductGroupDto } from '../models/create-product-group.dto'
@@ -118,7 +118,7 @@ export class ProductGroupController {
    * @returns the found product group entity dto
    */
   @ProtectTo(RolesEnum.Admin)
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOperation({ summary: 'Retrieves a single ProductGroupDto' })
   @ApiOkResponse({
     description: 'Retrieve a single ProductGroupDto',
@@ -148,7 +148,7 @@ export class ProductGroupController {
    * @returns all the found product group entity dtos
    */
   @ProtectTo(RolesEnum.Admin)
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({ summary: 'Retrieves multiple ProductDto' })
   @ApiOkResponse({
     description: 'Get many base response',
