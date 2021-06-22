@@ -15,7 +15,7 @@
 
 ## **Description**
 
-The project consists of an online platform for buying and selling books and stationery. Written with Typescript the backend provides the necessary data for the <a href="https://github.com/AppliedProject05/web.react.paperbook">application frontend</a>.
+The project consists of an online platform for buying and selling books and stationery. Written with Typescript the backend provides the necessary data for the <a href="https://github.com/paperbook-official/web.react.paperbook">application frontend</a>.
 
 <hr />
 
@@ -24,7 +24,7 @@ The project consists of an online platform for buying and selling books and stat
 First you must to clone the repository using:
 
 ```bash
-$ git clone 'https://github.com/AppliedProject05/api.nestjs.paperbook.git'
+$ git clone 'https://github.com/paperbook-official/api.nestjs.paperbook.git'
 ```
 
 After that install all the needed dependencies with:
