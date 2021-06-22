@@ -26,8 +26,8 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
-import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
+import { ApiQueryGetMany } from 'src/decorators/api-query-get-many/api-query-get-many.decorator'
+import { ApiQueryGet } from 'src/decorators/api-query-get/api-query-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
@@ -121,7 +121,7 @@ export class AddressController {
    * @returns the found address entity dtos
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({ summary: 'Retrieves multiple AddressDto' })
   @ApiOkResponse({
     description: 'Get many base response',
@@ -155,7 +155,7 @@ export class AddressController {
    * @returns the found address entity dto
    */
   @ProtectTo(RolesEnum.Common, RolesEnum.Seller, RolesEnum.Admin)
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOperation({ summary: 'Retrieves a single AddressDto' })
   @ApiOkResponse({
     description: 'Retrieve a single AddressDto',

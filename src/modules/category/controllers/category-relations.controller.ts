@@ -13,7 +13,7 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
+import { ApiQueryGetMany } from 'src/decorators/api-query-get-many/api-query-get-many.decorator'
 
 import { RemoveIdSearchPipe } from 'src/pipes/remove-id-search/remove-id-search.pipe'
 
@@ -71,7 +71,7 @@ export class CategoryRelationsController {
    * @param crudRequest stores the joins, filters, etc
    * @returns all the found product entity dtos
    */
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOperation({
     summary: 'Retrieves all the products of a single category',
   })

@@ -24,8 +24,8 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud'
 
-import { ApiPropertyGetManyDefaultResponse } from 'src/decorators/api-property-get-many/api-property-get-many.decorator'
-import { ApiPropertyGet } from 'src/decorators/api-property-get/api-property-get.decorator'
+import { ApiQueryGetMany } from 'src/decorators/api-query-get-many/api-query-get-many.decorator'
+import { ApiQueryGet } from 'src/decorators/api-query-get/api-query-get.decorator'
 import { ProtectTo } from 'src/decorators/protect-to/protect-to.decorator'
 import { RequestUser } from 'src/decorators/request-user/request-user.decorator'
 
@@ -109,7 +109,7 @@ export class UserRelationsController {
    * @returns all the found data
    */
   @ApiOperation({ summary: 'Retrieves all the logged user addresses' })
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOkResponse({
     description: 'Gets all the logged user addresses',
     type: GetManyAddressDtoResponse,
@@ -137,7 +137,7 @@ export class UserRelationsController {
    * @returns all the found data
    */
   @ApiOperation({ summary: 'Retrieves all the logged user products' })
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOkResponse({
     description: 'Gets all the logged user products',
     type: GetManyProductDtoResponse,
@@ -262,7 +262,7 @@ export class UserRelationsController {
   @ApiOperation({
     summary: 'Retrieves the logged user shopping carts',
   })
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOkResponse({
     description: 'Gets the logged user shopping carts',
     type: ShoppingCartDto,
@@ -290,7 +290,7 @@ export class UserRelationsController {
    * @returns all the found data
    */
   @ApiOperation({ summary: 'Retrieves all the logged user orders' })
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOkResponse({
     description: 'Gets all the logged user orders',
     type: GetManyOrderDtoResponse,
@@ -319,7 +319,7 @@ export class UserRelationsController {
    * @returns all the found data
    */
   @ApiOperation({ summary: 'Retrieves all the user addresses' })
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOkResponse({
     description: 'Gets all the user addresses',
     type: GetManyAddressDtoResponse,
@@ -348,7 +348,7 @@ export class UserRelationsController {
    * @returns all the found data
    */
   @ApiOperation({ summary: 'Retrieves all the user products' })
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOkResponse({
     description: 'Gets all the user products',
     type: GetManyProductDtoResponse,
@@ -479,7 +479,7 @@ export class UserRelationsController {
   @ApiOperation({
     summary: 'Retrieves all the user shopping carts',
   })
-  @ApiPropertyGet()
+  @ApiQueryGet()
   @ApiOkResponse({
     description: 'Gets the logged user shopping carts',
     type: ShoppingCartDto,
@@ -509,7 +509,7 @@ export class UserRelationsController {
    * @returns all the found data
    */
   @ApiOperation({ summary: 'Retrieves all the user orders' })
-  @ApiPropertyGetManyDefaultResponse()
+  @ApiQueryGetMany()
   @ApiOkResponse({
     description: 'Gets all the user orders',
     type: GetManyOrderDtoResponse,
